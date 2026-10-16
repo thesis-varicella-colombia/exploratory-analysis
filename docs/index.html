@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Notificaciones anuales de varicela y tasas de notificación en Colombia, 2007–2025.">
     <title>Varicela en Colombia | Panorama anual</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <style>
       :root { color-scheme: light; font-family: system-ui, sans-serif; color: #173042; background: #f3f7f9; }
       * { box-sizing: border-box; }
@@ -45,14 +46,20 @@
       .chart-status:empty { display: none; }
       .chart-modal { width: min(94vw, 1200px); max-width: none; max-height: 92vh; border: 0; border-radius: .9rem; padding: 0; color: #173042; background: white; box-shadow: 0 20px 70px #092b3699; }
       .chart-modal::backdrop { background: #092b36b8; }
-      .dialog-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: .5rem 1rem; border-bottom: 1px solid #dce6e8; padding: .85rem 1rem; }
+      .dialog-header { position: relative; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: .5rem 1rem; border-bottom: 1px solid #dce6e8; padding: .85rem 1rem; }
       .dialog-header h2 { display: flex; align-items: center; gap: .6rem; margin: 0; font-size: clamp(1.05rem, 2.5vw, 1.35rem); }
       .modal-title-icon { font-size: 1.2rem; }
-      .dialog-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
-      .dialog-header .chart-toolbar { margin: 0; }
-      .dialog-close { font-size: 1.35rem; line-height: 1; min-width: 2.2rem; }
+      .dialog-actions { display: flex; flex-wrap: nowrap; align-items: center; gap: .5rem; margin-left: auto; }
+      .dialog-header .chart-toolbar { flex-wrap: nowrap; margin: 0; }
+      .dialog-header .chart-status { position: absolute; top: calc(100% + .4rem); right: 1rem; z-index: 2; max-width: min(22rem, calc(100vw - 2rem)); padding: .35rem .55rem; border: 1px solid #d5e0e3; border-radius: .4rem; background: white; box-shadow: 0 4px 12px #092b3626; }
+      .dialog-close { flex: 0 0 auto; font-size: 1.35rem; line-height: 1; min-width: 2.2rem; }
       .chart-modal-chart { width: 100%; min-height: 390px; max-height: 70vh; overflow: auto; padding: 1rem; }
       .chart-modal-chart .vega-embed { width: 100%; }
+      .modal-tooltip { position: fixed; z-index: 10; max-width: min(22rem, calc(100vw - 1rem)); padding: .55rem .7rem; border: 1px solid #c9d8dd; border-radius: .4rem; background: white; box-shadow: 0 5px 18px #092b3640; color: #173042; font-size: .85rem; pointer-events: none; }
+      .modal-tooltip[hidden] { display: none; }
+      .modal-tooltip dl { display: grid; grid-template-columns: auto auto; gap: .2rem .7rem; margin: 0; }
+      .modal-tooltip dt { font-weight: 700; }
+      .modal-tooltip dd { margin: 0; text-align: right; }
       .legend { display: flex; flex-wrap: wrap; gap: .65rem 1.4rem; padding: 0; margin: .5rem 0 0; list-style: none; font-size: .9rem; color: #425c68; }
       .legend li { display: flex; align-items: center; gap: .45rem; }
       .swatch { width: .9rem; height: .9rem; border-radius: .2rem; background: #197f7a; }
@@ -127,24 +134,25 @@
 
       <section class="panel" aria-labelledby="age-title">
         <h2 id="age-title">Varicela por grupo de edad</h2>
-        <p class="intro">Cada línea representa un grupo de edad a lo largo de 2008–2025. El año 2007 queda fuera de estas series por la discrepancia documentada arriba.</p>
+        <p class="intro">Cada línea representa un grupo de edad a lo largo de 2007–2025. Los valores de 2007 se muestran para inspeccionar la discrepancia documentada arriba.</p>
+        <p class="note">Los conteos y tasas por edad de 2007 provienen de la misma base integrada cuyo total anual está cuestionado. Se incluyen como referencia diagnóstica y no sustentan conclusiones sobre la tendencia.</p>
         <div class="age-grid">
           <div>
             <h3>Casos notificados por grupo de edad</h3>
             <p>Número de notificaciones por año epidemiológico.</p>
-            <div class="age-chart" id="chart-age-cases" role="img" aria-label="Series anuales de notificaciones de varicela para cinco grupos de edad entre 2008 y 2025"></div>
+            <div class="age-chart" id="chart-age-cases" role="img" aria-label="Series anuales de notificaciones de varicela para cinco grupos de edad entre 2007 y 2025; 2007 es diagnóstico"></div>
             <p class="scroll-hint">Desplaza el gráfico horizontalmente para ver todos los años.</p>
           </div>
           <div>
             <h3>Incidencia notificada por grupo de edad</h3>
             <p>Notificaciones por 100.000 habitantes del mismo grupo y año.</p>
-            <div class="age-chart" id="chart-age-rates" role="img" aria-label="Series anuales de incidencia notificada por 100.000 habitantes para cinco grupos de edad entre 2008 y 2025"></div>
+            <div class="age-chart" id="chart-age-rates" role="img" aria-label="Series anuales de incidencia notificada por 100.000 habitantes para cinco grupos de edad entre 2007 y 2025; 2007 es diagnóstico"></div>
             <p class="scroll-hint">Desplaza el gráfico horizontalmente para ver todos los años.</p>
           </div>
         </div>
         <p class="age-note" id="age-unknown-note"></p>
         <p class="age-note">Cada tasa usa la población anual de su grupo de edad como denominador. Las notificaciones sin edad registrada se conservan en el CSV y la tabla, pero no forman una línea porque no constituyen un grupo de edad.</p>
-        <p><a href="data_processed/age_group_series_2008_2025.csv">Descargar el CSV por grupo de edad</a>.</p>
+        <p><a href="data_processed/age_group_series_2007_2025.csv">Descargar el CSV por grupo de edad</a>.</p>
         <details>
           <summary>Ver tabla anual por grupo de edad</summary>
           <div class="table-scroll">
@@ -186,6 +194,7 @@
         </div>
       </div>
       <div class="chart-modal-chart" id="chart-modal-chart" role="img"></div>
+      <div class="modal-tooltip" id="chart-modal-tooltip" hidden></div>
     </dialog>
 
     <footer class="wrap">Proyecto de análisis espacio-temporal de la varicela en Colombia.</footer>
