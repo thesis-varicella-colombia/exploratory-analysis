@@ -14,8 +14,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PARQUET = ROOT / "data/sivigila_integrado_semanal_municipal.parquet"
 POPULATION = ROOT / "data/population_municipal_2007_2025.csv"
-OUTPUT = ROOT / "docs/data_processed/annual_series_2007_2023.csv"
-YEARS = range(2007, 2024)
+OUTPUT = ROOT / "docs/data_processed/annual_series_2007_2025.csv"
+YEARS = range(2007, 2026)
 OFFICIAL_2007 = 69695  # Varicella protocol, section 5.1.2, p. 4; source in data/README.md.
 
 
@@ -25,7 +25,7 @@ def read_notifications():
                SUM(casos_total) AS notifications,
                COUNT(DISTINCT codigo_municipio) AS reporting_entities
         FROM read_parquet('{PARQUET}/*.parquet')
-        WHERE ano_epidemiologico BETWEEN 2007 AND 2023
+        WHERE ano_epidemiologico BETWEEN 2007 AND 2025
         GROUP BY 1 ORDER BY 1
     """
     result = subprocess.run(

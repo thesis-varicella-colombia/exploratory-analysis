@@ -6,6 +6,8 @@ Esta carpeta guarda **copias locales** de los insumos necesarios para regenerar 
 
 Ambos insumos proceden de [`thesis-varicella-colombia/data-processing`](https://github.com/thesis-varicella-colombia/data-processing). El Parquet local coincide archivo por archivo con el del repositorio de origen; el CSV de población se copió de allí el 16 de octubre de 2026. En esa fecha, la copia local de origen tenía `HEAD` en `cca6bec23ad449563d569e28ac064fdba6b25a39`. Los archivos de datos no estaban registrados en Git en ese repositorio; por ello el commit **no identifica por sí solo** su contenido. Los SHA-256 de abajo identifican las copias exactas utilizadas aquí.
 
+Las notificaciones originales proceden de los [microdatos de Sivigila publicados por el Instituto Nacional de Salud (INS)](https://portalsivigila.ins.gov.co/Paginas/Buscador.aspx); `data-processing` los convirtió, procesó e integró antes de producir el Parquet usado aquí.
+
 | Insumo local | Ruta en `data-processing` | Contenido |
 | --- | --- | --- |
 | `sivigila_integrado_semanal_municipal.parquet/` | `data/processed/integration_data/sivigila_integrado_semanal_municipal.parquet/` | Notificaciones de varicela (evento 831) por entidad DIVIPOLA de residencia y semana epidemiológica reportada, con variables de población y otras fuentes integradas. |
@@ -24,9 +26,9 @@ La [documentación de población del repositorio de origen](https://github.com/t
 
 ## Uso en los gráficos anuales
 
-`scripts/generate_annual_series.py` suma `casos_total` por año epidemiológico. Estas son **notificaciones**, no personas enfermas deduplicadas. El script divide ese total entre la suma de `poblacion_total` de **todos** los municipios del CSV anual y multiplica por 100.000. No suma la población integrada del Parquet: esta se repite en cada semana y solo está presente donde hubo notificaciones. La salida se llama *tasa anual de notificación por 100.000 habitantes*; no estima la incidencia clínica real. El CSV de población contiene algunas filas con valor cero: se conservan en la suma y su cantidad se informa por año en `zero_population_entities`.
+`scripts/generate_annual_series.py` suma `casos_total` por año epidemiológico. Estas son **notificaciones**, no personas enfermas deduplicadas. El script divide ese total entre la suma de `poblacion_total` de **todos** los municipios del CSV anual y multiplica por 100.000. No suma la población integrada del Parquet: esta se repite en cada semana y solo está presente donde hubo notificaciones. La salida se llama *tasa anual de notificación por 100.000 habitantes* y describe lo registrado en la fuente procesada. El CSV de población contiene algunas filas con valor cero: se conservan en la suma y su cantidad se informa por año en `zero_population_entities`.
 
-Para 2007, el [protocolo de vigilancia de varicela, sección 5.1.2, página 4](https://www.minsalud.gov.co/Documentos%20y%20Publicaciones/PROTOCOLO%20VARICELA.pdf) informa **69.695 casos**. Ese valor se conserva como referencia en el script y en el CSV derivado. La base local suma **26.441 notificaciones** y solo registra **106 entidades de residencia** ese año. La diferencia señala una discrepancia de cobertura o definición aún no resuelta; por eso 2007 se muestra como diagnóstico y se excluye de la serie analítica de tasas 2008–2023. Véase también el [README principal](../README.md).
+Para 2007, el [protocolo de vigilancia de varicela, sección 5.1.2, página 4](https://www.minsalud.gov.co/Documentos%20y%20Publicaciones/PROTOCOLO%20VARICELA.pdf) informa **69.695 casos**. Ese valor se conserva como referencia en el script y en el CSV derivado. La base local suma **26.441 notificaciones** y solo registra **106 entidades de residencia** ese año. La diferencia señala una discrepancia de cobertura o definición aún no resuelta; por eso 2007 se muestra como diagnóstico y se excluye de la línea de tasas 2008–2025. El periodo actualizado de trabajo es 2008–2025, aunque la propuesta original terminaba en 2023. Véase también el [README principal](../README.md).
 
 Para regenerar el CSV desde la raíz de este repositorio, con Python 3 y DuckDB CLI instalado:
 
@@ -34,4 +36,14 @@ Para regenerar el CSV desde la raíz de este repositorio, con Python 3 y DuckDB 
 python3 scripts/generate_annual_series.py
 ```
 
-El script produce `docs/data_processed/annual_series_2007_2023.csv` sin leer archivos externos al repositorio.
+El script produce `docs/data_processed/annual_series_2007_2025.csv` sin leer archivos externos al repositorio.
+
+## Serie por grupo de edad
+
+`scripts/generate_age_group_series.py` produce `docs/data_processed/age_group_series_2008_2025.csv`. Para cada año suma las notificaciones de los cinco grupos de edad disponibles en el Parquet: menor de 1, 1–4, 5–14, 15–49 y 50 años o más. Las notificaciones con edad desconocida se incluyen en el CSV y la tabla como `unknown`, pero no forman una línea; no se les calcula una tasa porque no existe un denominador de población para esa categoría. En 2008 hay 1.183 notificaciones sin edad registrada; el script comprueba que los cinco grupos y esa categoría sumen el total anual.
+
+La tasa de cada grupo divide sus notificaciones anuales entre la suma de la población municipal anual de ese mismo grupo y multiplica por 100.000. La fuente y la convención son las mismas que para la serie nacional. El año 2007 se omite de estos gráficos por la discrepancia documentada arriba.
+
+```bash
+python3 scripts/generate_age_group_series.py
+```

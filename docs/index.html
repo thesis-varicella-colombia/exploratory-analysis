@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Notificaciones anuales de varicela y tasas de notificación en Colombia, 2007–2023.">
+    <meta name="description" content="Notificaciones anuales de varicela y tasas de notificación en Colombia, 2007–2025.">
     <title>Varicela en Colombia | Panorama anual</title>
     <style>
       :root { color-scheme: light; font-family: system-ui, sans-serif; color: #173042; background: #f3f7f9; }
@@ -30,6 +30,29 @@
       .intro { margin-top: 0; color: #425c68; }
       .chart { min-height: 355px; width: 100%; overflow-x: auto; }
       .chart .vega-embed { width: 100%; }
+      .chart-toolbar { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: .5rem; margin: .4rem 0 .35rem; }
+      .chart-toolbar button, .dialog-close { display: inline-flex; align-items: center; justify-content: center; gap: .35rem; border: 1px solid #d5e0e3; border-radius: .5rem; background: white; color: #173042; padding: .4rem .7rem; font: inherit; cursor: pointer; }
+      .chart-toolbar button:hover, .dialog-close:hover { background: #eaf4f2; }
+      .chart-toolbar button:focus-visible, .dialog-close:focus-visible { outline: 3px solid #176b68; outline-offset: 2px; }
+      .chart-toolbar button:disabled { opacity: .45; cursor: default; }
+      .chart-toolbar .expand-button { border-color: #a9d4ce; background: #e6f3f1; color: #176b68; font-weight: 600; }
+      .chart-toolbar .expand-button:hover { background: #d3ebe7; }
+      .control-icon { width: 1rem; height: 1rem; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+      .zoom-group { display: inline-flex; align-items: center; border: 1px solid #d5e0e3; border-radius: .5rem; overflow: hidden; }
+      .chart-toolbar .zoom-group button { border: 0; border-radius: 0; font-size: 1.2rem; font-weight: 700; min-width: 2.2rem; padding: .28rem .55rem; }
+      .zoom-value { min-width: 3.3rem; text-align: center; color: #607480; font-size: .85rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+      .chart-status { color: #425c68; font-size: .86rem; }
+      .chart-status:empty { display: none; }
+      .chart-modal { width: min(94vw, 1200px); max-width: none; max-height: 92vh; border: 0; border-radius: .9rem; padding: 0; color: #173042; background: white; box-shadow: 0 20px 70px #092b3699; }
+      .chart-modal::backdrop { background: #092b36b8; }
+      .dialog-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: .5rem 1rem; border-bottom: 1px solid #dce6e8; padding: .85rem 1rem; }
+      .dialog-header h2 { display: flex; align-items: center; gap: .6rem; margin: 0; font-size: clamp(1.05rem, 2.5vw, 1.35rem); }
+      .modal-title-icon { font-size: 1.2rem; }
+      .dialog-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+      .dialog-header .chart-toolbar { margin: 0; }
+      .dialog-close { font-size: 1.35rem; line-height: 1; min-width: 2.2rem; }
+      .chart-modal-chart { width: 100%; min-height: 390px; max-height: 70vh; overflow: auto; padding: 1rem; }
+      .chart-modal-chart .vega-embed { width: 100%; }
       .legend { display: flex; flex-wrap: wrap; gap: .65rem 1.4rem; padding: 0; margin: .5rem 0 0; list-style: none; font-size: .9rem; color: #425c68; }
       .legend li { display: flex; align-items: center; gap: .45rem; }
       .swatch { width: .9rem; height: .9rem; border-radius: .2rem; background: #197f7a; }
@@ -47,6 +70,13 @@
       tr.questioned { background: #fff7f0; }
       .notes { padding-left: 1.3rem; }
       .notes li + li { margin-top: .55rem; }
+      .age-grid { display: grid; gap: 2rem; }
+      .age-grid > div { min-width: 0; }
+      .age-grid h3 { margin: 0 0 .35rem; }
+      .age-grid p { margin: 0; color: #425c68; font-size: .9rem; }
+      .age-chart { min-height: 395px; width: 100%; overflow-x: auto; }
+      .age-chart .vega-embed { width: 100%; }
+      .age-note { margin-top: 1rem; color: #425c68; font-size: .92rem; }
       footer { padding: 0 0 2rem; color: #4b6470; font-size: .9rem; }
       @media (max-width: 700px) { .summary { grid-template-columns: 1fr; } header { padding: 2.6rem 0; } .chart { min-height: 320px; } .scroll-hint { display: block; } }
     </style>
@@ -60,7 +90,7 @@
       <div class="wrap">
         <p class="eyebrow">Análisis exploratorio · Colombia</p>
         <h1>Varicela: notificaciones y tasas anuales</h1>
-        <p>Una primera mirada a los registros de vigilancia entre 2007 y 2023. El año 2007 se muestra para documentar una discrepancia de datos y queda fuera del periodo analítico principal.</p>
+        <p>Una primera mirada a los registros de vigilancia entre 2007 y 2025. El año 2007 se muestra para documentar una discrepancia de datos y queda fuera del periodo analítico principal.</p>
       </div>
     </header>
 
@@ -77,7 +107,7 @@
         <div class="chart" id="chart-cases" role="img" aria-label="Gráfico de barras de notificaciones anuales de varicela, con 2007 destacado y la cifra del protocolo oficial marcada"></div>
         <p class="scroll-hint">Desplaza el gráfico horizontalmente para ver todos los años.</p>
         <ul class="legend" aria-label="Leyenda del gráfico de notificaciones">
-          <li><span class="swatch"></span> Base integrada, 2008–2023</li>
+          <li><span class="swatch"></span> Base integrada, 2008–2025</li>
           <li><span class="swatch warning"></span> Base integrada, 2007</li>
           <li><span class="swatch reference"></span> Protocolo, 2007</li>
         </ul>
@@ -85,22 +115,54 @@
 
       <section class="panel" aria-labelledby="rate-title">
         <h2 id="rate-title">Tasa anual de notificación</h2>
-        <p class="intro">Notificaciones por 100.000 habitantes. El punto de 2007 aparece separado de la línea analítica de 2008–2023 porque su total es cuestionado.</p>
-        <div class="chart" id="chart-rates" role="img" aria-label="Gráfico de tasas anuales de notificación por 100.000 habitantes; 2007 aparece separado de la serie 2008 a 2023"></div>
+        <p class="intro">Notificaciones por 100.000 habitantes. El punto de 2007 aparece separado de la serie descriptiva de 2008–2025 porque su total es cuestionado.</p>
+        <div class="chart" id="chart-rates" role="img" aria-label="Gráfico de tasas anuales de notificación por 100.000 habitantes; 2007 aparece separado de la serie 2008 a 2025"></div>
         <p class="scroll-hint">Desplaza el gráfico horizontalmente para ver todos los años.</p>
         <ul class="legend" aria-label="Leyenda del gráfico de tasas">
-          <li><span class="swatch"></span> Periodo analítico, 2008–2023</li>
+          <li><span class="swatch"></span> Serie descriptiva, 2008–2025</li>
           <li><span class="swatch warning"></span> 2007, solo diagnóstico</li>
         </ul>
-        <p class="note"><strong>Interpretación:</strong> esta tasa describe registros notificados, no la incidencia clínica real. La diferencia entre 2007 y otros años no demuestra por sí sola la causa de la discrepancia.</p>
+        <p class="note"><strong>Interpretación:</strong> esta tasa se calculó con las notificaciones de varicela del evento 831 de Sivigila (INS) contenidas en la base integrada y la población anual. Describe lo registrado en esta fuente. La discrepancia de 2007 con el protocolo requiere revisión; la comparación por sí sola no identifica su causa.</p>
+      </section>
+
+      <section class="panel" aria-labelledby="age-title">
+        <h2 id="age-title">Varicela por grupo de edad</h2>
+        <p class="intro">Cada línea representa un grupo de edad a lo largo de 2008–2025. El año 2007 queda fuera de estas series por la discrepancia documentada arriba.</p>
+        <div class="age-grid">
+          <div>
+            <h3>Casos notificados por grupo de edad</h3>
+            <p>Número de notificaciones por año epidemiológico.</p>
+            <div class="age-chart" id="chart-age-cases" role="img" aria-label="Series anuales de notificaciones de varicela para cinco grupos de edad entre 2008 y 2025"></div>
+            <p class="scroll-hint">Desplaza el gráfico horizontalmente para ver todos los años.</p>
+          </div>
+          <div>
+            <h3>Incidencia notificada por grupo de edad</h3>
+            <p>Notificaciones por 100.000 habitantes del mismo grupo y año.</p>
+            <div class="age-chart" id="chart-age-rates" role="img" aria-label="Series anuales de incidencia notificada por 100.000 habitantes para cinco grupos de edad entre 2008 y 2025"></div>
+            <p class="scroll-hint">Desplaza el gráfico horizontalmente para ver todos los años.</p>
+          </div>
+        </div>
+        <p class="age-note" id="age-unknown-note"></p>
+        <p class="age-note">Cada tasa usa la población anual de su grupo de edad como denominador. Las notificaciones sin edad registrada se conservan en el CSV y la tabla, pero no forman una línea porque no constituyen un grupo de edad.</p>
+        <p><a href="data_processed/age_group_series_2008_2025.csv">Descargar el CSV por grupo de edad</a>.</p>
+        <details>
+          <summary>Ver tabla anual por grupo de edad</summary>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th scope="col">Año</th><th scope="col">Grupo de edad</th><th scope="col">Notificaciones</th><th scope="col">Población</th><th scope="col">Tasa por 100.000</th></tr></thead>
+              <tbody id="age-table"><tr><td colspan="5">Cargando datos…</td></tr></tbody>
+            </table>
+          </div>
+        </details>
       </section>
 
       <section class="panel" aria-labelledby="method-title">
         <h2 id="method-title">Datos y método</h2>
         <p>El numerador suma notificaciones del evento 831 por año epidemiológico reportado. El denominador suma una vez la población anual de todos los municipios del archivo de población local; no se suma la población repetida en las filas semanales del Parquet.</p>
         <p>El valor de 2007 de la base es 43.254 registros menor que el informado en el protocolo, aproximadamente un 62 %. El contraste motiva excluir 2007 del análisis principal, pero no identifica la causa de la diferencia.</p>
+        <p>La propuesta original llegaba hasta 2023; este trabajo amplía el periodo de análisis hasta 2025. Los datos locales contienen registros de las semanas 1–52 de 2024 y 1–53 de 2025. La conciliación de estos dos años con cifras oficiales está pendiente.</p>
         <ul class="notes">
-          <li><a href="data_processed/annual_series_2007_2023.csv">Descargar el CSV de los gráficos</a>. Su procedencia y el comando para regenerarlo están en el <a href="https://github.com/thesis-varicella-colombia/exploratory-analysis/blob/main/data/README.md">README de datos</a>.</li>
+          <li><a href="data_processed/annual_series_2007_2025.csv">Descargar el CSV de los gráficos</a>. Su procedencia y el comando para regenerarlo están en el <a href="https://github.com/thesis-varicella-colombia/exploratory-analysis/blob/main/data/README.md">README de datos</a>.</li>
           <li><a href="https://www.minsalud.gov.co/Documentos%20y%20Publicaciones/PROTOCOLO%20VARICELA.pdf">Protocolo de vigilancia de varicela</a>, sección 5.1.2, p. 4: 69.695 casos en 2007.</li>
         </ul>
         <details>
@@ -114,6 +176,17 @@
         </details>
       </section>
     </main>
+
+    <dialog class="chart-modal" id="chart-modal" aria-labelledby="chart-modal-title">
+      <div class="dialog-header">
+        <h2><span class="modal-title-icon" aria-hidden="true">📊</span><span id="chart-modal-title"></span></h2>
+        <div class="dialog-actions">
+          <div id="chart-modal-controls"></div>
+          <button class="dialog-close" id="chart-modal-close" type="button" aria-label="Cerrar gráfico ampliado">×</button>
+        </div>
+      </div>
+      <div class="chart-modal-chart" id="chart-modal-chart" role="img"></div>
+    </dialog>
 
     <footer class="wrap">Proyecto de análisis espacio-temporal de la varicela en Colombia.</footer>
   </body>
