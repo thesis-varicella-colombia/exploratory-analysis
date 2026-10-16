@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+data/**/*.crc
+data/**/_SUCCESS
+/diego_rojas_propuesta_trabajo_de_grado.pdf
+/PLAN_EDA_2_SEMANAS.md
+/data/sivigila_integrado_semanal_municipal.parquet/
+/.idea/
