@@ -1,7 +1,7 @@
 "use strict";
 
 const DATA_URL = "data_processed/annual_series_2007_2025.csv";
-const AGE_DATA_URL = "data_processed/age_group_series_2008_2025.csv";
+const AGE_DATA_URL = "data_processed/age_group_series_2007_2025.csv";
 const NUMBER = new Intl.NumberFormat("es-CO");
 const RATE = new Intl.NumberFormat("es-CO", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const SCHEMA = "https://vega.github.io/schema/vega-lite/v6.json";
@@ -24,6 +24,7 @@ const ICONS = {
 const modal = document.querySelector("#chart-modal");
 const modalChart = document.querySelector("#chart-modal-chart");
 const modalControls = document.querySelector("#chart-modal-controls");
+const modalTooltip = document.querySelector("#chart-modal-tooltip");
 let modalView = null;
 
 document.querySelector("#chart-modal-close").addEventListener("click", () => modal.close());
@@ -32,19 +33,79 @@ modal.addEventListener("close", () => {
   modalView = null;
   modalChart.replaceChildren();
   modalControls.replaceChildren();
+  modalTooltip.hidden = true;
+  modalTooltip.replaceChildren();
 });
 
-async function copyChartImage(view, status) {
+function showModalTooltip(handler, event, item, value) {
+  if (value == null || value === "") {
+    modalTooltip.hidden = true;
+    return;
+  }
+  modalTooltip.replaceChildren();
+  if (typeof value === "object" && !Array.isArray(value)) {
+    const list = document.createElement("dl");
+    for (const [label, content] of Object.entries(value)) {
+      const name = document.createElement("dt");
+      name.textContent = label;
+      const detail = document.createElement("dd");
+      detail.textContent = String(content);
+      list.append(name, detail);
+    }
+    modalTooltip.append(list);
+  } else {
+    modalTooltip.textContent = String(value);
+  }
+  modalTooltip.hidden = false;
+  const bounds = modalTooltip.getBoundingClientRect();
+  modalTooltip.style.left = `${Math.max(8, Math.min(event.clientX + 12, window.innerWidth - bounds.width - 8))}px`;
+  modalTooltip.style.top = `${Math.max(8, Math.min(event.clientY + 12, window.innerHeight - bounds.height - 8))}px`;
+}
+
+async function visibleChartPng(view, chart, zoom) {
+  const svgBounds = chart.querySelector("svg").getBoundingClientRect();
+  const viewport = chart.getBoundingClientRect();
+  const left = Math.max(svgBounds.left, viewport.left);
+  const top = Math.max(svgBounds.top, viewport.top);
+  const right = Math.min(svgBounds.right, viewport.left + chart.clientWidth);
+  const bottom = Math.min(svgBounds.bottom, viewport.top + chart.clientHeight);
+  if (right <= left || bottom <= top) throw new Error("The chart is outside the visible area");
+
+  const source = await view.toCanvas(2 * zoom);
+  const scaleX = source.width / svgBounds.width;
+  const scaleY = source.height / svgBounds.height;
+  const cropped = document.createElement("canvas");
+  cropped.width = Math.round((right - left) * scaleX);
+  cropped.height = Math.round((bottom - top) * scaleY);
+  const context = cropped.getContext("2d");
+  context.fillStyle = "#ffffff";
+  context.fillRect(0, 0, cropped.width, cropped.height);
+  context.drawImage(
+    source,
+    (left - svgBounds.left) * scaleX,
+    (top - svgBounds.top) * scaleY,
+    (right - left) * scaleX,
+    (bottom - top) * scaleY,
+    0, 0, cropped.width, cropped.height,
+  );
+  return new Promise((resolve, reject) => {
+    cropped.toBlob((blob) => blob ? resolve(blob) : reject(new Error("PNG export failed")), "image/png");
+  });
+}
+
+async function copyChartImage(view, status, visibleArea) {
   if (!navigator.clipboard?.write || typeof ClipboardItem === "undefined") {
     status.textContent = "La copia de imágenes requiere HTTPS o localhost y un navegador compatible.";
     return;
   }
   try {
-    const image = view.toImageURL("png", 2)
-      .then((url) => fetch(url))
-      .then((response) => response.blob());
+    const image = visibleArea
+      ? visibleChartPng(view, visibleArea.chart, visibleArea.zoom)
+      : view.toImageURL("png", 2)
+        .then((url) => fetch(url))
+        .then((response) => response.blob());
     await navigator.clipboard.write([new ClipboardItem({ "image/png": image })]);
-    status.textContent = "Imagen copiada. Ya puedes pegarla en Word o Google Docs.";
+    status.textContent = "Imagen copiada";
   } catch (error) {
     status.textContent = "No se pudo copiar la imagen. Comprueba el permiso del portapapeles.";
     console.error(error);
@@ -96,7 +157,10 @@ function addChartControls(container, chart, view, openModal) {
     zoomIn = button("+", "Acercar gráfico", () => changeZoom(0.25), null, zoomGroup);
     toolbar.append(zoomGroup);
   }
-  button(openModal ? "" : "Copiar", "Copiar gráfico como imagen PNG", () => copyChartImage(view, status), "copy");
+  button(openModal ? "" : "Copiar", "Copiar gráfico como imagen PNG", () => {
+    const visibleArea = openModal ? null : { chart, zoom };
+    copyChartImage(view, status, visibleArea);
+  }, "copy");
   toolbar.append(status);
   container.append(toolbar);
 
@@ -120,7 +184,7 @@ async function openChartModal(title, description, spec) {
   modal.showModal();
   try {
     const modalSpec = { ...spec, width: CHART_WIDTH };
-    const result = await vegaEmbed(modalChart, modalSpec, EMBED_OPTIONS);
+    const result = await vegaEmbed(modalChart, modalSpec, { ...EMBED_OPTIONS, tooltip: showModalTooltip });
     if (!modal.open) {
       result.view.finalize();
       return;
@@ -343,14 +407,14 @@ async function loadAgeCharts() {
     const response = await fetch(AGE_DATA_URL);
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const rows = parseAgeCsv(await response.text());
-    if (rows.length !== 108 || rows.some((row) => !row.age_label) || rows[0].year !== 2008 || rows.at(-1).year !== 2025) {
+    if (rows.length !== 114 || rows.some((row) => !row.age_label) || rows[0].year !== 2007 || rows.at(-1).year !== 2025) {
       throw new Error("The age-group series is incomplete");
     }
     fillAgeTable(rows);
     const unknown = rows.filter((row) => row.age_group === "unknown")
       .reduce((total, row) => total + row.notifications, 0);
     document.querySelector("#age-unknown-note").textContent =
-      `Entre 2008 y 2025 hay ${NUMBER.format(unknown)} notificaciones sin edad registrada.`;
+      `Entre 2007 y 2025 hay ${NUMBER.format(unknown)} notificaciones sin edad registrada.`;
     if (typeof vegaEmbed !== "function") throw new Error("Vega-Lite could not be loaded");
     await Promise.all([
       renderChart(chartIds[0], "Casos notificados por grupo de edad", ageSpec(rows, "notifications")),

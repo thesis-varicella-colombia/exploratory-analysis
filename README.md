@@ -1,6 +1,12 @@
 # Análisis espacio-temporal de la varicela en Colombia
 
-Este repositorio contiene la [propuesta de trabajo de grado](diego_rojas_propuesta_trabajo_de_grado.pdf) y los datos consolidados de notificaciones de varicela (evento 831 de Sivigila) en [`data/sivigila_integrado_semanal_municipal.parquet/`](data/sivigila_integrado_semanal_municipal.parquet/).
+## Ver la página publicada
+
+**Abrir los gráficos en línea:** [https://thesis-varicella-colombia.github.io/exploratory-analysis/](https://thesis-varicella-colombia.github.io/exploratory-analysis/)
+
+La página se puede consultar directamente en el navegador. No hace falta descargar el repositorio ni instalar Python o DuckDB para verla.
+
+Este repositorio contiene datos consolidados de notificaciones de varicela (evento 831 de Sivigila) en [`data/sivigila_integrado_semanal_municipal.parquet/`](data/sivigila_integrado_semanal_municipal.parquet/) y una página para explorarlos.
 
 ## Alcance de los datos
 
@@ -12,7 +18,7 @@ Cada fila corresponde a una entidad DIVIPOLA de **residencia** y una combinació
 
 ## Exclusión de 2007
 
-El periodo de análisis actualizado es **2008–2025**. La propuesta original contemplaba 2007–2023; este trabajo incorpora 2024 y 2025. El año 2007 se excluye de los análisis de tasas, comparaciones temporales y modelos estadísticos por una discrepancia importante entre la base consolidada y la cifra oficial disponible:
+El periodo de análisis es **2008–2025**. El año 2007 aparece en los gráficos para diagnosticar una discrepancia importante entre la base consolidada y la cifra oficial disponible, pero se excluye de las conclusiones de tendencia y los modelos estadísticos:
 
 | Fuente | Notificaciones o casos de varicela en 2007 |
 | --- | ---: |
@@ -21,7 +27,7 @@ El periodo de análisis actualizado es **2008–2025**. La propuesta original co
 
 La cifra de la base es **43.254 registros menor**, aproximadamente un **62 %** por debajo de la publicada en el protocolo. En 2007 solo aparecen **106 entidades DIVIPOLA de residencia** con notificaciones. La comparación señala una discrepancia importante, pero no establece su causa: podrían influir las fuentes, los cortes, las definiciones o la cobertura de los registros. Las exclusiones documentadas por códigos de residencia no válidos suman 5.780 registros **en todos los años**, por lo que no explican por sí solas la diferencia de 2007.
 
-Se excluye 2007 del periodo analítico para evitar que esa discrepancia distorsione la incidencia y la tendencia anterior a la vacunación. Sus registros permanecen en el parquet para auditar la fuente y el procesamiento. Si se aclara la diferencia, se reevaluará esta decisión.
+Se excluye 2007 del periodo analítico principal para evitar que esa discrepancia distorsione las conclusiones sobre incidencia y tendencia anterior a la vacunación. Sus registros permanecen en el parquet y se muestran en los gráficos para auditar la fuente y el procesamiento. Si se aclara la diferencia, se reevaluará esta decisión.
 
 ## Gráficos anuales y vista local
 
@@ -35,4 +41,4 @@ python3 scripts/generate_age_group_series.py
 python3 -m http.server 8000 --directory docs
 ```
 
-Abrir `http://localhost:8000/` en el navegador. El servidor local es necesario para cargar el CSV mediante JavaScript; abrir `docs/index.html` directamente como archivo puede bloquear esa carga. Los gráficos usan Vega-Lite desde un CDN, por lo que la vista local necesita conexión a Internet. Para publicar en GitHub Pages, configurar la fuente como rama `main` y carpeta `/docs` después de incorporar los cambios a esa rama.
+Abrir `http://localhost:8000/` en el navegador. El servidor local es necesario para cargar el CSV mediante JavaScript; abrir `docs/index.html` directamente como archivo puede bloquear esa carga. Los gráficos usan Vega-Lite desde un CDN, por lo que la vista local necesita conexión a Internet. Los cambios locales aparecerán en la [página publicada](https://thesis-varicella-colombia.github.io/exploratory-analysis/) después de incorporarlos y publicarlos mediante GitHub Pages.

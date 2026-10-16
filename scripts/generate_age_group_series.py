@@ -14,8 +14,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PARQUET = ROOT / "data/sivigila_integrado_semanal_municipal.parquet"
 POPULATION = ROOT / "data/population_municipal_2007_2025.csv"
-OUTPUT = ROOT / "docs/data_processed/age_group_series_2008_2025.csv"
-YEARS = range(2008, 2026)
+OUTPUT = ROOT / "docs/data_processed/age_group_series_2007_2025.csv"
+YEARS = range(2007, 2026)
 AGE_GROUPS = (
     ("under_1", "casos_menor_1", "poblacion_menor_1"),
     ("1_4", "casos_1_4", "poblacion_1_4"),
@@ -36,7 +36,7 @@ def read_notifications():
                {case_columns},
                SUM(casos_edad_desconocida) AS unknown
         FROM read_parquet('{PARQUET}/*.parquet')
-        WHERE ano_epidemiologico BETWEEN 2008 AND 2025
+        WHERE ano_epidemiologico BETWEEN 2007 AND 2025
         GROUP BY 1 ORDER BY 1
     """
     result = subprocess.run(
