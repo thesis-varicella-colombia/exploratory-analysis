@@ -3,26 +3,118 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Página de prueba del proyecto de análisis espacio-temporal de la varicela en Colombia.">
-    <title>Varicela en Colombia | Página de prueba</title>
+    <meta name="description" content="Notificaciones anuales de varicela y tasas de notificación en Colombia, 2007–2023.">
+    <title>Varicela en Colombia | Panorama anual</title>
     <style>
-      :root { color-scheme: light; font-family: system-ui, sans-serif; }
-      body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #f3f7f9; color: #173042; }
-      main { box-sizing: border-box; width: min(100% - 2rem, 44rem); padding: clamp(2rem, 6vw, 4rem); background: white; border-radius: 1rem; box-shadow: 0 12px 36px #17304214; }
-      .label { display: inline-block; padding: .4rem .75rem; border-radius: 999px; background: #dcefea; color: #17634f; font-size: .85rem; font-weight: 700; }
-      h1 { margin: 1.5rem 0 1rem; font-size: clamp(2rem, 5vw, 3rem); line-height: 1.15; }
-      p { max-width: 36rem; font-size: 1.1rem; line-height: 1.6; }
-      a { color: #17634f; font-weight: 600; }
-      a:focus-visible { outline: 3px solid #17634f; outline-offset: 3px; }
+      :root { color-scheme: light; font-family: system-ui, sans-serif; color: #173042; background: #f3f7f9; }
+      * { box-sizing: border-box; }
+      body { margin: 0; }
+      a { color: #176b68; }
+      a:focus-visible, summary:focus-visible { outline: 3px solid #176b68; outline-offset: 3px; }
+      .wrap { width: min(100% - 2rem, 72rem); margin-inline: auto; }
+      header { background: #103d49; color: white; padding: 3.5rem 0 3rem; }
+      .eyebrow { margin: 0 0 .75rem; color: #9de0d7; font-size: .88rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+      h1 { max-width: 50rem; margin: 0; font-size: clamp(2.1rem, 5vw, 3.6rem); line-height: 1.1; }
+      header p:last-child { max-width: 47rem; margin: 1.25rem 0 0; color: #d6e9eb; font-size: 1.12rem; line-height: 1.6; }
+      main { padding: 2.5rem 0 4rem; }
+      .summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin-bottom: 2.5rem; }
+      .metric, .panel { background: white; border: 1px solid #dce6e8; border-radius: .9rem; box-shadow: 0 8px 24px #1235400a; }
+      .metric { padding: 1.25rem 1.4rem; }
+      .metric span { display: block; font-size: .88rem; color: #4b6470; }
+      .metric strong { display: block; margin-top: .35rem; font-size: clamp(1.65rem, 3vw, 2.3rem); font-variant-numeric: tabular-nums; }
+      .metric small { display: block; margin-top: .25rem; line-height: 1.4; color: #4b6470; }
+      .metric.flag strong { color: #a54f19; }
+      .panel { padding: clamp(1.1rem, 3vw, 2rem); margin-bottom: 1.5rem; }
+      h2 { margin: 0 0 .5rem; font-size: clamp(1.35rem, 2.8vw, 1.8rem); }
+      .panel p, .notes li { max-width: 66rem; line-height: 1.6; }
+      .intro { margin-top: 0; color: #425c68; }
+      .chart { min-height: 355px; width: 100%; overflow-x: auto; }
+      .chart .vega-embed { width: 100%; }
+      .legend { display: flex; flex-wrap: wrap; gap: .65rem 1.4rem; padding: 0; margin: .5rem 0 0; list-style: none; font-size: .9rem; color: #425c68; }
+      .legend li { display: flex; align-items: center; gap: .45rem; }
+      .swatch { width: .9rem; height: .9rem; border-radius: .2rem; background: #197f7a; }
+      .swatch.warning { background: #d97736; }
+      .swatch.reference { background: #7541a4; transform: rotate(45deg) scale(.75); }
+      .note { margin-bottom: 0; padding: .8rem 1rem; border-left: 4px solid #d97736; background: #fff7f0; }
+      .scroll-hint { display: none; margin: .5rem 0 0; color: #425c68; font-size: .9rem; }
+      details { margin-top: 1.5rem; }
+      summary { cursor: pointer; font-weight: 700; }
+      .table-scroll { overflow-x: auto; margin-top: .9rem; }
+      table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+      th, td { padding: .6rem .75rem; border-bottom: 1px solid #dce6e8; text-align: right; white-space: nowrap; }
+      th:first-child, td:first-child { text-align: left; }
+      th { background: #ecf4f4; }
+      tr.questioned { background: #fff7f0; }
+      .notes { padding-left: 1.3rem; }
+      .notes li + li { margin-top: .55rem; }
+      footer { padding: 0 0 2rem; color: #4b6470; font-size: .9rem; }
+      @media (max-width: 700px) { .summary { grid-template-columns: 1fr; } header { padding: 2.6rem 0; } .chart { min-height: 320px; } .scroll-hint { display: block; } }
     </style>
+    <script defer src="https://cdn.jsdelivr.net/npm/vega@6.4.0/build/vega.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/vega-lite@6.5.0/build/vega-lite.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/vega-embed@7.3.0/build/vega-embed.min.js"></script>
+    <script defer src="charts.js"></script>
   </head>
   <body>
-    <main>
-      <span class="label">Página de prueba</span>
-      <h1>Análisis de la varicela en Colombia</h1>
-      <p>Este sitio está en preparación. El proyecto estudia las notificaciones de varicela en Colombia durante el periodo 2008–2023.</p>
-      <p>Por ahora, esta página permite comprobar que la publicación funciona correctamente.</p>
-      <a href="https://github.com/thesis-varicella-colombia/exploratory-analysis">Ver el repositorio del proyecto</a>
+    <header>
+      <div class="wrap">
+        <p class="eyebrow">Análisis exploratorio · Colombia</p>
+        <h1>Varicela: notificaciones y tasas anuales</h1>
+        <p>Una primera mirada a los registros de vigilancia entre 2007 y 2023. El año 2007 se muestra para documentar una discrepancia de datos y queda fuera del periodo analítico principal.</p>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <section class="summary" aria-label="Resumen de 2007">
+        <div class="metric flag"><span>Base integrada · 2007</span><strong id="count-2007">26.441</strong><small>Notificaciones registradas</small></div>
+        <div class="metric"><span>Protocolo oficial · 2007</span><strong id="official-2007">69.695</strong><small>Casos informados en el protocolo</small></div>
+        <div class="metric"><span>Entidades con registros · 2007</span><strong id="entities-2007">106</strong><small>Residencias DIVIPOLA presentes en la base</small></div>
+      </section>
+
+      <section class="panel" aria-labelledby="cases-title">
+        <h2 id="cases-title">Notificaciones por año</h2>
+        <p class="intro">Suma anual de <code>casos_total</code> en la base integrada. El rombo morado indica la cifra de 2007 publicada en el protocolo; las fuentes pueden diferir en cobertura o definición.</p>
+        <div class="chart" id="chart-cases" role="img" aria-label="Gráfico de barras de notificaciones anuales de varicela, con 2007 destacado y la cifra del protocolo oficial marcada"></div>
+        <p class="scroll-hint">Desplaza el gráfico horizontalmente para ver todos los años.</p>
+        <ul class="legend" aria-label="Leyenda del gráfico de notificaciones">
+          <li><span class="swatch"></span> Base integrada, 2008–2023</li>
+          <li><span class="swatch warning"></span> Base integrada, 2007</li>
+          <li><span class="swatch reference"></span> Protocolo, 2007</li>
+        </ul>
+      </section>
+
+      <section class="panel" aria-labelledby="rate-title">
+        <h2 id="rate-title">Tasa anual de notificación</h2>
+        <p class="intro">Notificaciones por 100.000 habitantes. El punto de 2007 aparece separado de la línea analítica de 2008–2023 porque su total es cuestionado.</p>
+        <div class="chart" id="chart-rates" role="img" aria-label="Gráfico de tasas anuales de notificación por 100.000 habitantes; 2007 aparece separado de la serie 2008 a 2023"></div>
+        <p class="scroll-hint">Desplaza el gráfico horizontalmente para ver todos los años.</p>
+        <ul class="legend" aria-label="Leyenda del gráfico de tasas">
+          <li><span class="swatch"></span> Periodo analítico, 2008–2023</li>
+          <li><span class="swatch warning"></span> 2007, solo diagnóstico</li>
+        </ul>
+        <p class="note"><strong>Interpretación:</strong> esta tasa describe registros notificados, no la incidencia clínica real. La diferencia entre 2007 y otros años no demuestra por sí sola la causa de la discrepancia.</p>
+      </section>
+
+      <section class="panel" aria-labelledby="method-title">
+        <h2 id="method-title">Datos y método</h2>
+        <p>El numerador suma notificaciones del evento 831 por año epidemiológico reportado. El denominador suma una vez la población anual de todos los municipios del archivo de población local; no se suma la población repetida en las filas semanales del Parquet.</p>
+        <p>El valor de 2007 de la base es 43.254 registros menor que el informado en el protocolo, aproximadamente un 62 %. El contraste motiva excluir 2007 del análisis principal, pero no identifica la causa de la diferencia.</p>
+        <ul class="notes">
+          <li><a href="data_processed/annual_series_2007_2023.csv">Descargar el CSV de los gráficos</a>. Su procedencia y el comando para regenerarlo están en el <a href="https://github.com/thesis-varicella-colombia/exploratory-analysis/blob/main/data/README.md">README de datos</a>.</li>
+          <li><a href="https://www.minsalud.gov.co/Documentos%20y%20Publicaciones/PROTOCOLO%20VARICELA.pdf">Protocolo de vigilancia de varicela</a>, sección 5.1.2, p. 4: 69.695 casos en 2007.</li>
+        </ul>
+        <details>
+          <summary>Ver tabla anual de los gráficos</summary>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th scope="col">Año</th><th scope="col">Notificaciones</th><th scope="col">Población</th><th scope="col">Tasa por 100.000</th><th scope="col">Entidades con registros</th></tr></thead>
+              <tbody id="annual-table"><tr><td colspan="5">Cargando datos…</td></tr></tbody>
+            </table>
+          </div>
+        </details>
+      </section>
     </main>
+
+    <footer class="wrap">Proyecto de análisis espacio-temporal de la varicela en Colombia.</footer>
   </body>
 </html>
