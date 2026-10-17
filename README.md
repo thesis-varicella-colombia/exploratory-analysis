@@ -29,14 +29,15 @@ La cifra de la base es **43.254 registros menor**, aproximadamente un **62 %** p
 
 Se excluye 2007 del periodo analítico principal para evitar que esa discrepancia distorsione las conclusiones sobre incidencia y tendencia anterior a la vacunación. Sus registros permanecen en el parquet y se muestran en los gráficos para auditar la fuente y el procesamiento. Si se aclara la diferencia, se reevaluará esta decisión.
 
-## Gráficos anuales y vista local
+## Gráficos y vista local
 
-La [página estática](docs/index.html) muestra las notificaciones y tasas anuales nacionales, además de dos gráficos por grupo de edad. El [README de `data/`](data/README.md) documenta las fuentes y los cálculos. Cada CSV publicado tiene su propio script generador.
+La [página estática](docs/index.html) muestra las notificaciones y tasas anuales y semanales nacionales, además de dos gráficos por grupo de edad. El [README de `data/`](data/README.md) documenta las fuentes y los cálculos. Cada CSV publicado tiene su propio script generador.
 
 Desde la raíz del repositorio, con Python 3 y [DuckDB CLI](https://duckdb.org/docs/stable/clients/cli/overview.html) instalados:
 
 ```bash
 python3 scripts/generate_annual_series.py
+python3 scripts/generate_weekly_series.py
 python3 scripts/generate_age_group_series.py
 python3 -m http.server 8000 --directory docs
 ```

@@ -2,6 +2,7 @@
 
 const DATA_URL = "data_processed/annual_series_2007_2025.csv";
 const AGE_DATA_URL = "data_processed/age_group_series_2007_2025.csv";
+const WEEKLY_DATA_URL = "data_processed/weekly_series_2007_2025.csv?v=20261017-2";
 const NUMBER = new Intl.NumberFormat("es-CO");
 const RATE = new Intl.NumberFormat("es-CO", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const SCHEMA = "https://vega.github.io/schema/vega-lite/v6.json";
@@ -201,8 +202,10 @@ async function renderChart(selector, title, spec) {
   const chart = document.querySelector(selector);
   const result = await vegaEmbed(chart, spec, EMBED_OPTIONS);
   const controls = document.createElement("div");
+  controls.className = "chart-controls";
   chart.before(controls);
   addChartControls(controls, chart, result.view, () => openChartModal(title, chart.getAttribute("aria-label"), spec));
+  return result.view;
 }
 
 function csvObjects(text) {
@@ -233,6 +236,20 @@ function parseAgeCsv(text) {
     notifications: Number(row.notifications),
     population: row.population ? Number(row.population) : null,
     notification_rate_per_100k: row.notification_rate_per_100k ? Number(row.notification_rate_per_100k) : null,
+  }));
+}
+
+function parseWeeklyCsv(text) {
+  return csvObjects(text).map((row) => ({
+    year: Number(row.year),
+    week: Number(row.week),
+    week_position: Number(row.week_position),
+    age_group: row.age_group,
+    age_label: row.age_group === "all" ? "Todas las edades" : AGE_LABELS[row.age_group],
+    notifications: row.notifications === "" ? null : Number(row.notifications),
+    population: Number(row.population),
+    notification_rate_per_100k: row.notification_rate_per_100k === ""
+      ? null : Number(row.notification_rate_per_100k),
   }));
 }
 
@@ -301,7 +318,7 @@ function casesSpec(rows) {
           y: { field: "official_2007_cases", type: "quantitative" },
           tooltip: [
             { field: "year", title: "Año" },
-            { field: "official_2007_cases", title: "Protocolo: casos", format: ",d" },
+            { field: "official_2007_cases", title: "Documento oficial: casos", format: ",d" },
           ],
         },
       },
@@ -335,6 +352,59 @@ function ratesSpec(rows) {
         },
       },
     ],
+  };
+}
+
+function weeklySpec(rows, field) {
+  const isRate = field === "notification_rate_per_100k";
+  const yearTicks = rows.filter((row) => row.week === 1).map((row) => row.week_position);
+  const tooltip = [
+    { field: "age_label", title: "Grupo de edad" },
+    { field: "year", title: "Año epidemiológico" },
+    { field: "week", title: "Semana epidemiológica" },
+    { field: "notifications", title: "Notificaciones", format: ",d" },
+  ];
+  if (isRate) tooltip.push({ field, title: "Tasa semanal por 100.000", format: ".2f" });
+  return {
+    $schema: SCHEMA,
+    title: `${isRate ? "Incidencia notificada" : "Notificaciones"} por semana · ${rows[0].age_label}`,
+    width: CHART_WIDTH,
+    height: 300,
+    background: "transparent",
+    data: { values: rows },
+    encoding: {
+      x: {
+        field: "week_position", type: "quantitative", title: "Año epidemiológico",
+        scale: { domain: [1, rows.at(-1).week_position], nice: false, zero: false },
+        axis: {
+          values: yearTicks,
+          labelExpr: `2007 + indexof(${JSON.stringify(yearTicks)}, datum.value)`,
+          labelAngle: -45, labelColor: "#425c68", titleColor: "#425c68",
+        },
+      },
+      y: {
+        field, type: "quantitative",
+        title: isRate ? "Notificaciones semanales por 100.000" : "Notificaciones semanales",
+        scale: { zero: true },
+        axis: { gridColor: "#e4ecee", labelColor: "#425c68", titleColor: "#425c68" },
+      },
+    },
+    layer: [
+      {
+        transform: [{ filter: "datum.year >= 2008" }],
+        mark: { type: "line", color: "#197f7a", strokeWidth: 1.7 },
+      },
+      {
+        transform: [{ filter: "datum.year === 2007" }],
+        mark: { type: "line", color: "#d97736", strokeWidth: 1.7 },
+      },
+      {
+        transform: [{ filter: `datum.${field} != null` }],
+        mark: { type: "point", filled: true, opacity: 0.01, size: 110 },
+        encoding: { tooltip },
+      },
+    ],
+    config: { view: { stroke: null }, font: "system-ui, sans-serif" },
   };
 }
 
@@ -401,6 +471,29 @@ function fillAgeTable(rows) {
   }
 }
 
+function fillWeeklyTable(rows) {
+  const body = document.querySelector("#weekly-table");
+  const fragment = document.createDocumentFragment();
+  document.querySelector("#weekly-table-caption").textContent = rows[0].age_label;
+  for (const row of rows) {
+    const tr = document.createElement("tr");
+    if (row.year === 2007) tr.className = "questioned";
+    for (const value of [
+      row.year,
+      row.week,
+      row.notifications === null ? "—" : NUMBER.format(row.notifications),
+      NUMBER.format(row.population),
+      row.notification_rate_per_100k === null ? "—" : RATE.format(row.notification_rate_per_100k),
+    ]) {
+      const td = document.createElement("td");
+      td.textContent = value;
+      tr.append(td);
+    }
+    fragment.append(tr);
+  }
+  body.replaceChildren(fragment);
+}
+
 async function loadAgeCharts() {
   const chartIds = ["#chart-age-cases", "#chart-age-rates"];
   try {
@@ -433,6 +526,73 @@ async function loadAgeCharts() {
   }
 }
 
+async function loadWeeklyCharts() {
+  const chartIds = ["#chart-weekly-cases", "#chart-weekly-rates"];
+  const selector = document.querySelector("#weekly-age-group");
+  let views = [];
+
+  async function renderSelected(rows) {
+    for (const [index, id] of chartIds.entries()) {
+      views[index]?.finalize();
+      const chart = document.querySelector(id);
+      if (chart.previousElementSibling?.classList.contains("chart-controls")) {
+        chart.previousElementSibling.remove();
+      }
+      chart.replaceChildren();
+      const field = index === 0 ? "notifications" : "notification_rate_per_100k";
+      const title = `${index === 0 ? "Notificaciones por semana" : "Incidencia notificada por semana"} · ${rows[0].age_label}`;
+      chart.setAttribute("aria-label", `${title}, 2007–2025; 2007 es diagnóstico`);
+      views[index] = await renderChart(id, title, weeklySpec(rows, field));
+    }
+  }
+
+  try {
+    const response = await fetch(WEEKLY_DATA_URL, { cache: "no-store" });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const rows = parseWeeklyCsv(await response.text());
+    if (rows.length < 5880 || rows[0].year !== 2007 || rows[0].week !== 1 ||
+        rows.at(-1).year !== 2025 || rows.at(-1).week !== 53 ||
+        rows.filter((row) => row.week === 1 && row.age_group === "all").length !== 19 ||
+        rows.some((row) => !row.age_label)) {
+      throw new Error("The weekly series is incomplete");
+    }
+    let selectedRows = rows.filter((row) => row.age_group === selector.value);
+    fillWeeklyTable(selectedRows);
+    selector.addEventListener("change", async () => {
+      selector.disabled = true;
+      try {
+        selectedRows = rows.filter((row) => row.age_group === selector.value);
+        fillWeeklyTable(selectedRows);
+        if (typeof vegaEmbed !== "function") return;
+        await renderSelected(selectedRows);
+      } catch (error) {
+        for (const id of chartIds) {
+          const chart = document.querySelector(id);
+          if (!chart.querySelector("svg")) chart.textContent = `No se pudo actualizar el gráfico semanal: ${error.message}`;
+        }
+        console.error(error);
+      } finally {
+        selector.disabled = false;
+      }
+    });
+    if (typeof vegaEmbed !== "function") throw new Error("Vega-Lite could not be loaded");
+    await renderSelected(selectedRows);
+    selector.disabled = false;
+  } catch (error) {
+    for (const id of chartIds) {
+      const chart = document.querySelector(id);
+      if (!chart.querySelector("svg")) chart.textContent = `No se pudieron cargar los gráficos semanales: ${error.message}`;
+    }
+    const body = document.querySelector("#weekly-table");
+    if (body.textContent.includes("Cargando datos semanales")) {
+      body.innerHTML = `<tr><td colspan="5">No se pudo cargar la tabla semanal.</td></tr>`;
+    }
+    if (body.textContent.includes("No se pudo cargar")) selector.disabled = true;
+    else selector.disabled = false;
+    console.error(error);
+  }
+}
+
 async function main() {
   try {
     const response = await fetch(DATA_URL);
@@ -442,9 +602,6 @@ async function main() {
       throw new Error("The annual series does not contain all expected years");
     }
     fillTable(rows);
-    document.querySelector("#count-2007").textContent = NUMBER.format(rows[0].notifications);
-    document.querySelector("#official-2007").textContent = NUMBER.format(rows[0].official_2007_cases);
-    document.querySelector("#entities-2007").textContent = NUMBER.format(rows[0].reporting_entities);
     if (typeof vegaEmbed !== "function") throw new Error("Vega-Lite could not be loaded");
     await Promise.all([
       renderChart("#chart-cases", "Notificaciones por año", casesSpec(rows)),
@@ -462,4 +619,5 @@ async function main() {
 }
 
 main();
+loadWeeklyCharts();
 loadAgeCharts();
