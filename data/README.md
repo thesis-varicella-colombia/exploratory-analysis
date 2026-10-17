@@ -38,6 +38,18 @@ python3 scripts/generate_annual_series.py
 
 El script produce `docs/data_processed/annual_series_2007_2025.csv` sin leer archivos externos al repositorio.
 
+## Serie semanal nacional
+
+`scripts/generate_weekly_series.py` produce `docs/data_processed/weekly_series_2007_2025.csv`. Suma `casos_total` y los cinco conteos por grupo de edad del Parquet para cada año y semana epidemiológicos reportados, entre 2007 y 2025. Cada fila identifica el grupo mediante `age_group`; `all` representa todas las edades e incluye las notificaciones sin edad registrada. No se ofrece `unknown` como grupo seleccionable porque carece de denominador de población.
+
+Cada tasa semanal divide las notificaciones de la semana entre la población anual nacional del grupo correspondiente, tomada del mismo CSV de población utilizado en los gráficos anuales, y multiplica por 100.000. Por tanto, representa notificaciones **de esa semana** por 100.000 habitantes, no una tasa anual ni una tasa anualizada. Las tasas semanales redondeadas no se suman para obtener la tasa anual. El script comprueba que, en cada semana registrada, los cinco grupos y la categoría sin edad sumen el total nacional.
+
+`week_position` ordena las semanas consecutivamente y permite mostrar los años epidemiológicos en el eje horizontal, incluso cuando la fecha de inicio de una semana cae en el año calendario anterior. Si no existe registro nacional para una semana intermedia, el CSV deja vacíos el conteo y la tasa de todos los grupos, y la línea se interrumpe: no se imputa cero. Esto ocurre en la semana 51 de 2008. Si hay registros en una semana pero un grupo de edad no registra casos, su conteo es cero. El tramo de 2007 se presenta como referencia diagnóstica por la discrepancia descrita arriba.
+
+```bash
+python3 scripts/generate_weekly_series.py
+```
+
 ## Serie por grupo de edad
 
 `scripts/generate_age_group_series.py` produce `docs/data_processed/age_group_series_2007_2025.csv`. Para cada año suma las notificaciones de los cinco grupos de edad disponibles en el Parquet: menor de 1, 1–4, 5–14, 15–49 y 50 años o más. Las notificaciones con edad desconocida se incluyen en el CSV y la tabla como `unknown`, pero no forman una línea; no se les calcula una tasa porque no existe un denominador de población para esa categoría. En 2008 hay 1.183 notificaciones sin edad registrada; el script comprueba que los cinco grupos y esa categoría sumen el total anual.
