@@ -4,14 +4,17 @@ Esta carpeta guarda **copias locales** de los insumos necesarios para regenerar 
 
 ## Procedencia
 
-Ambos insumos proceden de [`thesis-varicella-colombia/data-processing`](https://github.com/thesis-varicella-colombia/data-processing). El Parquet local coincide archivo por archivo con el del repositorio de origen; el CSV de población se copió de allí el 16 de octubre de 2026. En esa fecha, la copia local de origen tenía `HEAD` en `cca6bec23ad449563d569e28ac064fdba6b25a39`. Los archivos de datos no estaban registrados en Git en ese repositorio; por ello el commit **no identifica por sí solo** su contenido. Los SHA-256 de abajo identifican las copias exactas utilizadas aquí.
+Los insumos proceden de [`thesis-varicella-colombia/data-processing`](https://github.com/thesis-varicella-colombia/data-processing). El Parquet local coincide archivo por archivo con el del repositorio de origen; el CSV de población se copió de allí el 16 de octubre de 2026. En esa fecha, la copia local de origen tenía `HEAD` en `cca6bec23ad449563d569e28ac064fdba6b25a39`. Los archivos de datos no estaban registrados en Git en ese repositorio; por ello el commit **no identifica por sí solo** su contenido. Los SHA-256 de abajo identifican las copias exactas utilizadas aquí. El GeoJSON MGN 2025 se copió del mismo repositorio a `data/` comprimido con XZ, sin modificar el contenido descomprimido.
 
 Las notificaciones originales proceden de los [microdatos de Sivigila publicados por el Instituto Nacional de Salud (INS)](https://portalsivigila.ins.gov.co/Paginas/Buscador.aspx); `data-processing` los convirtió, procesó e integró antes de producir el Parquet usado aquí.
 
-| Insumo local | Ruta en `data-processing` | Contenido |
+| Insumo local | Ruta y ficha en `data-processing` | Contenido |
 | --- | --- | --- |
-| `sivigila_integrado_semanal_municipal.parquet/` | `data/processed/integration_data/sivigila_integrado_semanal_municipal.parquet/` | Notificaciones de varicela (evento 831) por entidad DIVIPOLA de residencia y semana epidemiológica reportada, con variables de población y otras fuentes integradas. |
-| `population_municipal_2007_2025.csv` | `data/processed/population/population_municipal_2007_2025.csv` | Población municipal anual. Cada clave `codigo_municipio`–`ano_epidemiologico` aparece una vez. |
+| [`sivigila_integrado_semanal_municipal.parquet/`](sivigila_integrado_semanal_municipal.parquet/) | `data/processed/integration_data/sivigila_integrado_semanal_municipal.parquet/` · [ficha de integración](https://github.com/thesis-varicella-colombia/data-processing/blob/main/data/processed/integration_data/README.md) | Notificaciones de varicela (evento 831) por entidad DIVIPOLA de residencia y semana epidemiológica reportada, con variables de población y otras fuentes integradas. |
+| [`population_municipal_2007_2025.csv`](population_municipal_2007_2025.csv) | `data/processed/population/population_municipal_2007_2025.csv` · [ficha de población](https://github.com/thesis-varicella-colombia/data-processing/blob/main/data/processed/population/README.md) | Población municipal anual. Cada clave `codigo_municipio`–`ano_epidemiologico` aparece una vez. |
+| [`MGN_ADM_MPIO_GRAFICO.geojson.xz`](MGN_ADM_MPIO_GRAFICO.geojson.xz) | `data/raw/municipios/MGN_ADM_MPIO_GRAFICO.geojson` · [ficha geográfica](https://github.com/thesis-varicella-colombia/data-processing/blob/main/data/raw/municipios/README.md) | Geometría DANE MGN 2025 de municipios, áreas no municipalizadas e Isla; copia íntegra comprimida. |
+
+El Parquet integrado contiene además columnas de [cobertura municipal de vacunación](https://github.com/thesis-varicella-colombia/data-processing/blob/main/data/processed/vaccine_coverage/README.md), [precipitación CHIRPS](https://github.com/thesis-varicella-colombia/data-processing/blob/main/data/processed/chirps_precipitation/README.md) y [temperatura, humedad y precipitación ERA5](https://github.com/thesis-varicella-colombia/data-processing/blob/main/data/processed/climate/README.md). Estas fichas describen las fuentes originales, la preparación y las limitaciones de las variables integradas.
 
 ### Integridad de las copias
 
@@ -21,6 +24,9 @@ Las notificaciones originales proceden de los [microdatos de Sivigila publicados
 | `sivigila_integrado_semanal_municipal.parquet/part-00001-28a93b17-ad5a-4e7c-aa6c-0f91af7c65d8-c000.snappy.parquet` | `2e84e5eb0b6c6e84ee43a34de522dec742a9c627ea531d0cd44407dd9cd94fe7` |
 | `sivigila_integrado_semanal_municipal.parquet/part-00002-28a93b17-ad5a-4e7c-aa6c-0f91af7c65d8-c000.snappy.parquet` | `84c46566ae14be86c251d4bc2e72c056888a6751e88e8b1e38ff2bdd35d6611d` |
 | `population_municipal_2007_2025.csv` | `8b8392c3c9d03f130018ad895fab252ca5fd3bb1c37494c8367e515f3b8343f8` |
+| `MGN_ADM_MPIO_GRAFICO.geojson.xz` | `86d527cd493b2a8bc1513dc84dc775a7c52973f75528873dfa64f2b9d3f7b4e6` |
+
+SHA-256 del GeoJSON descomprimido: `e5bce5de037c0b5de0d20ccef291ddc274cfc09f29c509500bb8359bd551d7f7`.
 
 La [documentación de población del repositorio de origen](https://github.com/thesis-varicella-colombia/data-processing/blob/main/data/processed/population/README.md) explica cómo se construyó el CSV a partir de las proyecciones municipales. La [documentación del dataset integrado](https://github.com/thesis-varicella-colombia/data-processing/blob/main/data/processed/integration_data/README.md) describe las uniones y su unidad de observación.
 
@@ -58,4 +64,17 @@ La tasa de cada grupo divide sus notificaciones anuales entre la suma de la pobl
 
 ```bash
 python3 scripts/generate_age_group_series.py
+```
+
+## Mapa municipal
+
+`scripts/generate_spatial_series.py` produce `docs/data_processed/spatial_series_2008_2025.csv` para los años 2008–2025 y cuatro periodos: 2008–2014, 2015–2019, 2020–2021 y 2022–2025. Suma `casos_total` del Parquet por municipio y año y usa la población municipal del CSV local una sola vez por año. Cuando no hay filas de notificaciones para un municipio-año con población, registra cero notificaciones; esto describe la base y no prueba ausencia de enfermedad. Si falta población, la tasa queda vacía.
+
+La tasa anual es `notificaciones / población anual × 100.000`. La tasa de cada periodo es `suma de notificaciones / suma de poblaciones anuales × 100.000`: una tasa promedio anual ponderada por población, comparable entre periodos de distinta duración. Si un municipio no tiene población en todos los años de un periodo, el denominador incluye solo los años disponibles; la columna `years` indica cuántos son.
+
+El mapa usa `docs/data_processed/municipal_boundaries_dane.geojson`, generado desde la copia comprimida en `data/`. El [GeoJSON MGN 2025 del DANE](https://geoportal.dane.gov.co/mparcgis/rest/services/MGN2025/Serv_CapasMGN_2025/FeatureServer/317) se simplifica para la web conservando código DIVIPOLA, nombre, departamento y tipo de unidad. Contiene 1.122 polígonos: 1.103 municipios, 18 áreas no municipalizadas y una Isla. Todos sus códigos están en el CSV de población de 2025. El código histórico `94663` (Mapiripana) no tiene polígono separado en esta geometría de 2025; el mapa usa los límites de 2025 para todos los años, por lo que los cambios territoriales históricos no se representan.
+
+```bash
+python3 scripts/generate_spatial_series.py
+python3 scripts/prepare_spatial_boundaries.py
 ```

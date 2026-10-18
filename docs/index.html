@@ -7,6 +7,8 @@
           content="Notificaciones de varicela y tasas de notificación anuales y semanales en Colombia, 2007–2025.">
     <title>Varicela en Colombia | Panorama de notificaciones</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
     <style>
         :root {
             color-scheme: light;
@@ -78,6 +80,29 @@
             box-shadow: 0 8px 24px #1235400a;
             padding: clamp(1.1rem, 3vw, 2rem);
             margin-bottom: 1.5rem;
+        }
+
+        .toc ul {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: .6rem;
+            margin: 1rem 0 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .toc a {
+            display: block;
+            padding: .65rem .8rem;
+            border-radius: .5rem;
+            background: #e9f4f3;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .toc a:hover {
+            background: #d4eae6;
+            text-decoration: underline;
         }
 
         h2 {
@@ -480,6 +505,103 @@
             outline-offset: 2px;
         }
 
+        .spatial-controls {
+            display: grid;
+            justify-items: start;
+            gap: .6rem;
+            margin: 1rem 0;
+        }
+
+        .spatial-controls label {
+            font-weight: 700;
+        }
+
+        .spatial-controls select,
+        .spatial-combobox input {
+            box-sizing: border-box;
+            width: min(100%, 28rem);
+            padding: .5rem .7rem;
+            border: 1px solid #a9c5ca;
+            border-radius: .5rem;
+            background: white;
+            color: #173042;
+            font: inherit;
+        }
+
+        .spatial-controls select:focus-visible,
+        .spatial-combobox input:focus-visible {
+            outline: 3px solid #176b68;
+            outline-offset: 2px;
+        }
+
+        .spatial-combobox {
+            position: relative;
+            width: min(100%, 28rem);
+        }
+
+        .spatial-combobox input {
+            width: 100%;
+        }
+
+        .spatial-options {
+            position: absolute;
+            z-index: 1000;
+            top: calc(100% + .2rem);
+            left: 0;
+            right: 0;
+            max-height: 17rem;
+            overflow-y: auto;
+            border: 1px solid #a9c5ca;
+            border-radius: .5rem;
+            background: white;
+            box-shadow: 0 4px 12px #17304233;
+        }
+
+        .spatial-options[hidden] {
+            display: none;
+        }
+
+        .spatial-option {
+            padding: .45rem .7rem;
+            cursor: pointer;
+        }
+
+        .spatial-option:hover,
+        .spatial-option.active {
+            background: #d9efeb;
+        }
+
+        .spatial-map {
+            height: 560px;
+            width: 100%;
+            border: 1px solid #dce6e8;
+            border-radius: .5rem;
+            z-index: 0;
+        }
+
+        .spatial-legend {
+            padding: .7rem .8rem;
+            border-radius: .4rem;
+            background: #fff;
+            box-shadow: 0 1px 8px #17304244;
+            color: #173042;
+            font: 12px/1.5 system-ui, sans-serif;
+        }
+
+        .spatial-legend strong {
+            display: block;
+            margin-bottom: .25rem;
+        }
+
+        .spatial-legend-swatch {
+            display: inline-block;
+            width: 1rem;
+            height: .75rem;
+            margin-right: .4rem;
+            border: 1px solid #526b74;
+            vertical-align: middle;
+        }
+
         footer {
             padding: 0 0 2rem;
             color: #4b6470;
@@ -491,6 +613,10 @@
                 padding: 2.6rem 0;
             }
 
+            .toc ul {
+                grid-template-columns: 1fr;
+            }
+
             .chart {
                 min-height: 320px;
             }
@@ -498,24 +624,49 @@
             .scroll-hint {
                 display: block;
             }
+
+            .spatial-map {
+                height: 440px;
+            }
         }
     </style>
+    <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script defer src="https://cdn.jsdelivr.net/npm/vega@6.4.0/build/vega.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/vega-lite@6.5.0/build/vega-lite.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/vega-embed@7.3.0/build/vega-embed.min.js"></script>
-    <script defer src="charts.js?v=20261017-2"></script>
+    <script defer src="charts.js?v=20261017-8"></script>
+    <script defer src="spatial.js?v=20261017-5"></script>
 </head>
 <body>
 <header>
     <div class="wrap">
         <p class="eyebrow">Análisis exploratorio · Colombia</p>
         <h1>Varicela: notificaciones y tasas</h1>
-        <p>Un recorrido por las notificaciones de varicela en Colombia y sus tasas entre 2007 y 2025. Cada gráfico
-            permite examinar los datos antes de presentar las conclusiones y decisiones del análisis.</p>
+        <p>Este análisis exploratorio forma parte de la tesis «Análisis espacio-temporal del impacto de la vacunación
+            contra la Varicela en Colombia», desarrollada por <strong>Diego Clemente Rojas Chingate</strong> para optar
+            al título de magíster en Ciencias – Estadística de la <strong>Universidad Nacional de Colombia</strong>.
+            Examina las notificaciones de varicela y sus tasas entre 2007 y 2025 a partir de una base que también
+            integra población municipal, cobertura de vacunación y datos climáticos de precipitación, temperatura y
+            humedad.</p>
     </div>
 </header>
 
 <main class="wrap">
+    <nav class="panel toc" aria-labelledby="toc-title">
+        <h2 id="toc-title">Contenido</h2>
+        <ul>
+            <li><a href="#year-total">Varicela totales por año</a></li>
+            <li><a href="#age-title">Varicela por grupo de edad</a></li>
+            <li><a href="#weekly-title">Evolución por semana epidemiológica</a></li>
+            <li><a href="#age-shift-title">Impacto vacunación y cambios en la distribución etaria</a></li>
+            <li><a href="#spatial-title">Heterogeneidad espacial</a></li>
+            <li><a href="#method-title">Datos y método</a></li>
+        </ul>
+    </nav>
+    <p class="intro">En todas las gráficas se señalan tres hitos: 2015, introducción de la vacuna contra la varicela;
+        2019, introducción del refuerzo; y 2020–2021, pandemia. Las líneas discontinuas marcan los dos primeros años
+        y la franja sombreada marca el periodo de pandemia.</p>
     <section class="panel" aria-labelledby="year-total">
         <h2 id="year-total">Varicela totales por año</h2>
         <br>
@@ -734,6 +885,137 @@
         </ul>
     </section>
 
+
+    <section class="panel" aria-labelledby="age-shift-title">
+        <h2 id="age-shift-title">Impacto vacunación y cambios en la distribución etaria</h2>
+        <p class="intro">Las comparaciones entre periodos de la razón de incidencias y de la incidencia en menores de
+            1 año se resumen con la <strong>mediana</strong> de los valores anuales. Se usa la mediana porque es más
+            robusta frente a años con valores atípicos que la media aritmética. Los gráficos muestran todos los valores
+            anuales para que también se puedan ver esas variaciones.</p>
+
+        <h3>Composición etaria</h3>
+        <p class="intro">Participación de cada grupo de edad en las notificaciones de cada año:
+            <code>casos_grupo / casos_total</code>. Cada barra suma 100 % e incluye los casos sin edad registrada.</p>
+        <div class="age-chart" id="chart-age-shift" role="img"
+             aria-label="Gráfico de barras 100 % apiladas de la composición etaria de las notificaciones de varicela entre 2007 y 2025; 2007 es diagnóstico"></div>
+        <p class="scroll-hint">Desplaza el gráfico horizontalmente para ver todos los años.</p>
+        <p class="age-note">La composición muestra la carga relativa de notificaciones, no la incidencia por edad.
+            El grupo de 15–49 años reúne adolescentes mayores y adultos, por lo que no permite distinguirlos.
+            El año 2007 se conserva como referencia diagnóstica por la discrepancia descrita arriba.</p>
+
+        <h3>Razón de incidencias por edad (Age-shift)</h3>
+        <p class="intro">Definición principal para el análisis: <code> (Age-Shift Rating) ASR = incidencia 15–49 / incidencia 1–4</code>.
+            Un valor más alto indica mayor incidencia relativa en 15–49 años frente a 1–4 años. La razón inversa
+            <code>incidencia 1–4 / incidencia 15–49</code> se conserva en la tabla y al pasar el cursor, pero no se usa
+            como segunda definición de ASR.</p>
+        <div class="age-chart" id="chart-age-shift-ratio" role="img"
+             aria-label="Serie anual de la razón entre la incidencia de 15 a 49 años y la de 1 a 4 años entre 2007 y 2025; 2007 se muestra solo como diagnóstico"></div>
+        <p class="scroll-hint">Desplaza el gráfico horizontalmente para ver todos los años.</p>
+        <p class="age-note" id="age-shift-ratio-summary"></p>
+        <p class="age-note">Las incidencias se calculan con las notificaciones y poblaciones anuales de cada grupo.
+            El periodo anterior comprende 2008–2014; el posterior comienza en 2015. Se excluye 2007 de esa comparación
+            por la discrepancia del total anual. La pandemia y la introducción del refuerzo en 2019 también coinciden
+            con parte del periodo posterior.</p>
+        <details>
+            <summary>Ver incidencias y ambas razones por año</summary>
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                    <tr>
+                        <th scope="col">Año</th>
+                        <th scope="col">Incidencia 15–49</th>
+                        <th scope="col">Incidencia 1–4</th>
+                        <th scope="col">ASR 15–49 / 1–4</th>
+                        <th scope="col">Inversa 1–4 / 15–49</th>
+                    </tr>
+                    </thead>
+                    <tbody id="age-shift-ratio-table">
+                    <tr><td colspan="5">Cargando razones…</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </details>
+
+        <h3>Protección indirecta: menores de 1 año</h3>
+        <p class="intro">La primera dosis de varicela del esquema colombiano se administra a los 12 meses, por lo que
+            los menores de 1 año no son la población objetivo de esa dosis <a
+                    href="https://www2.minsalud.gov.co/Paginas/Vacuna-gratis-contra-la-varicela-llega-a-Colombia.aspx">(Ministerio de Salud)</a>.
+            Se muestra su incidencia notificada junto a la de 1–4 años como referencia descriptiva.</p>
+        <div class="age-chart" id="chart-infant-protection" role="img"
+             aria-label="Incidencia anual notificada de varicela en menores de 1 año y en niños de 1 a 4 años entre 2008 y 2025"></div>
+        <p class="scroll-hint">Desplaza el gráfico horizontalmente para ver todos los años.</p>
+        <p class="age-note" id="infant-protection-summary"></p>
+        <p class="age-note">Cada tasa usa la población anual del grupo como denominador. Se excluye 2007 por la
+            discrepancia documentada en la fuente. Una reducción en menores de 1 año sería compatible con protección
+            indirecta, pero también con otros cambios en exposición, atención o vigilancia.</p>
+
+        <h3>Conclusiones</h3>
+        <ul class="notes">
+            <li>Tras 2015 baja la participación de 1–4 años y crece la de 15–49, especialmente en años recientes: la carga relativa se desplaza hacia edades mayores.</li>
+            <li>El ASR (incidencia 15–49 / incidencia 1–4) pasó de una mediana de 0,17 en 2008–2014 a 0,23 en 2015–2025; llegó a 0,50 en 2024. Las incidencias se acercaron en términos relativos.</li>
+            <li>Un ASR mayor no implica más incidencia adulta: puede reflejar una caída infantil más intensa.</li>
+            <li>En menores de 1 año, fuera de la primera dosis, no hubo descenso inmediato: medianas de 567 y 571 por 100.000 en 2008–2014 y 2015–2019; en 2022–2025 fue 162.</li>
+            <li>La caída reciente en menores de 1 año acompaña la de 1–4 años y es compatible con protección indirecta, sin que este EDA pueda atribuirla solo a la vacuna.</li>
+            <li>Los cambios de 2020–2021 exigen considerar contactos, atención y notificación durante la pandemia; el refuerzo de 2019 impide tratar todo el periodo posterior a 2015 como una sola etapa.</li>
+        </ul>
+    </section>
+
+    <section class="panel" aria-labelledby="spatial-title">
+        <h2 id="spatial-title">Heterogeneidad espacial</h2>
+        <p class="intro">Mapa de Colombia por municipio de la incidencia notificada de varicela por 100.000 habitantes;
+            también incluye las áreas no municipalizadas para cubrir todo el territorio. Selecciona un año o periodo y
+            busca una entidad para resaltarla en el mapa.</p>
+        <div class="spatial-controls">
+            <label for="spatial-period">Año o periodo</label>
+            <select id="spatial-period" disabled>
+                <optgroup label="Periodos">
+                    <option value="2008-2014">2008–2014 · prevacunal</option>
+                    <option value="2015-2019">2015–2019 · transición / dosis única</option>
+                    <option value="2020-2021">2020–2021 · pandemia</option>
+                    <option value="2022-2025">2022–2025 · periodo reciente</option>
+                </optgroup>
+                <optgroup label="Años">
+                    <option value="2025" selected>2025</option>
+                    <option value="2024">2024</option>
+                    <option value="2023">2023</option>
+                    <option value="2022">2022</option>
+                    <option value="2021">2021</option>
+                    <option value="2020">2020</option>
+                    <option value="2019">2019</option>
+                    <option value="2018">2018</option>
+                    <option value="2017">2017</option>
+                    <option value="2016">2016</option>
+                    <option value="2015">2015</option>
+                    <option value="2014">2014</option>
+                    <option value="2013">2013</option>
+                    <option value="2012">2012</option>
+                    <option value="2011">2011</option>
+                    <option value="2010">2010</option>
+                    <option value="2009">2009</option>
+                    <option value="2008">2008</option>
+                </optgroup>
+            </select>
+            <label for="spatial-municipality">Municipio o entidad</label>
+            <div class="spatial-combobox">
+                <input id="spatial-municipality" type="search" role="combobox" aria-autocomplete="list"
+                       aria-expanded="false" aria-controls="spatial-municipality-options"
+                       placeholder="Buscar municipio, departamento o código" autocomplete="off" disabled>
+                <div id="spatial-municipality-options" class="spatial-options" role="listbox" hidden></div>
+            </div>
+        </div>
+        <div id="spatial-map" class="spatial-map"
+             aria-label="Mapa interactivo de tasas municipales de notificación de varicela en Colombia"></div>
+        <p id="spatial-map-status" class="age-note" role="status">Cargando mapa municipal…</p>
+        <p class="age-note">En cada año, la tasa es notificaciones / población anual × 100.000. En cada periodo,
+            suma las notificaciones y las poblaciones anuales correspondientes: es una <strong>tasa promedio anual</strong>,
+            comparable entre periodos de distinta duración. El cero indica que no hubo notificaciones en la base, no
+            necesariamente ausencia de enfermedad. Se excluye 2007 por la discrepancia documentada.</p>
+        <p class="age-note">La cartografía <a href="https://geoportal.dane.gov.co/mparcgis/rest/services/MGN2025/Serv_CapasMGN_2025/FeatureServer/317">MGN 2025 del DANE</a>
+            cubre Colombia con 1.103 municipios, 18 áreas no municipalizadas y la Isla de San Andrés. Cuando falta el
+            denominador, la unidad aparece en gris. Los límites de 2025 se aplican a todos los años y la escala de
+            colores es fija. El código histórico de Mapiripana (94663) no tiene polígono separado en esta capa.</p>
+        <p><a href="data_processed/spatial_series_2008_2025.csv" download>Descargar tasas municipales y periodos (CSV)</a>.</p>
+    </section>
 
     <section class="panel" aria-labelledby="method-title">
         <h2 id="method-title">Datos y método</h2>

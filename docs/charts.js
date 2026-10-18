@@ -17,6 +17,8 @@ const AGE_LABELS = {
 };
 const AGE_ORDER = Object.values(AGE_LABELS);
 const AGE_COLORS = ["#197f7a", "#d97736", "#7541a4", "#3569b0", "#b34b70"];
+const EVENT_COLOR = "#596b75";
+const PANDEMIC_COLOR = "#e8eef1";
 const EMBED_OPTIONS = { renderer: "svg", actions: { export: true, source: false, compiled: false, editor: false } };
 const ICONS = {
   expand: '<path d="M8 3H3v5m0-5 7 7m6 11h5v-5m0 5-7-7"/>',
@@ -200,6 +202,9 @@ async function openChartModal(title, description, spec) {
 
 async function renderChart(selector, title, spec) {
   const chart = document.querySelector(selector);
+  if (!chart.getAttribute("aria-label").includes("Marcas de contexto")) {
+    chart.setAttribute("aria-label", `${chart.getAttribute("aria-label")}. Marcas de contexto: vacuna introducida en 2015, refuerzo introducido en 2019 y pandemia en 2020–2021.`);
+  }
   const result = await vegaEmbed(chart, spec, EMBED_OPTIONS);
   const controls = document.createElement("div");
   controls.className = "chart-controls";
@@ -296,10 +301,71 @@ function sharedSpec(rows, yField, yTitle) {
   };
 }
 
+function eventLabelMark() {
+  return {
+    type: "text", align: "left", dx: 5, baseline: "top", fontSize: 12, fontWeight: 700,
+    color: "#173042",
+  };
+}
+
+function annualEventLayers() {
+  return [
+    {
+      data: { values: [{ year: 2020 }, { year: 2021 }] },
+      mark: { type: "rect", color: PANDEMIC_COLOR, opacity: 0.7 },
+      encoding: { x: { field: "year", type: "ordinal" }, y: { value: 0 }, y2: { value: 290 } },
+    },
+    {
+      data: { values: [{ year: 2015 }, { year: 2019 }] },
+      mark: { type: "rule", color: EVENT_COLOR, strokeDash: [4, 3], strokeWidth: 1.5 },
+      encoding: { x: { field: "year", type: "ordinal" }, y: { value: 0 }, y2: { value: 290 } },
+    },
+    ...[
+      { year: 2015, label: "Vacuna", y: 12 },
+      { year: 2019, label: "Refuerzo", y: 30 },
+      { year: 2020, label: "Pandemia 2020–21", y: 48 },
+    ].map(({ year, label, y }) => ({
+      data: { values: [{ year, label }] },
+      mark: eventLabelMark(),
+      encoding: { x: { field: "year", type: "ordinal" }, y: { value: y }, text: { field: "label" } },
+    })),
+  ];
+}
+
+function weeklyEventLayers(rows) {
+  const start = (year) => rows.find((row) => row.year === year && row.week === 1).week_position;
+  return [
+    {
+      data: { values: [{ start: start(2020), end: start(2022) }] },
+      mark: { type: "rect", color: PANDEMIC_COLOR, opacity: 0.7 },
+      encoding: {
+        x: { field: "start", type: "quantitative" }, x2: { field: "end" },
+        y: { value: 0 }, y2: { value: 300 },
+      },
+    },
+    {
+      data: { values: [{ position: start(2015) }, { position: start(2019) }] },
+      mark: { type: "rule", color: EVENT_COLOR, strokeDash: [4, 3], strokeWidth: 1.5 },
+      encoding: { x: { field: "position", type: "quantitative" }, y: { value: 0 }, y2: { value: 300 } },
+    },
+    ...[
+      { year: 2015, label: "Vacuna", y: 12 },
+      { year: 2019, label: "Refuerzo", y: 30 },
+      { year: 2020, label: "Pandemia 2020–21", y: 48 },
+    ].map(({ year, label, y }) => ({
+      data: { values: [{ position: start(year), label }] },
+      mark: eventLabelMark(),
+      encoding: { x: { field: "position", type: "quantitative" }, y: { value: y }, text: { field: "label" } },
+    })),
+  ];
+}
+
 function casesSpec(rows) {
+  const [eventBand, ...eventMarks] = annualEventLayers();
   return {
     ...sharedSpec(rows, "notifications", "Notificaciones"),
     layer: [
+      eventBand,
       {
         mark: { type: "bar", cornerRadiusTopLeft: 2, cornerRadiusTopRight: 2 },
         encoding: {
@@ -322,14 +388,17 @@ function casesSpec(rows) {
           ],
         },
       },
+      ...eventMarks,
     ],
   };
 }
 
 function ratesSpec(rows) {
+  const [eventBand, ...eventMarks] = annualEventLayers();
   return {
     ...sharedSpec(rows, "notification_rate_per_100k", "Notificaciones por 100.000 habitantes"),
     layer: [
+      eventBand,
       {
         transform: [{ filter: "datum.year >= 2008" }],
         mark: { type: "line", color: "#197f7a", strokeWidth: 3, point: { filled: true, fill: "#197f7a", size: 65 } },
@@ -351,12 +420,14 @@ function ratesSpec(rows) {
           ],
         },
       },
+      ...eventMarks,
     ],
   };
 }
 
 function weeklySpec(rows, field) {
   const isRate = field === "notification_rate_per_100k";
+  const [eventBand, ...eventMarks] = weeklyEventLayers(rows);
   const yearTicks = rows.filter((row) => row.week === 1).map((row) => row.week_position);
   const tooltip = [
     { field: "age_label", title: "Grupo de edad" },
@@ -390,6 +461,7 @@ function weeklySpec(rows, field) {
       },
     },
     layer: [
+      eventBand,
       {
         transform: [{ filter: "datum.year >= 2008" }],
         mark: { type: "line", color: "#197f7a", strokeWidth: 1.7 },
@@ -403,6 +475,7 @@ function weeklySpec(rows, field) {
         mark: { type: "point", filled: true, opacity: 0.01, size: 110 },
         encoding: { tooltip },
       },
+      ...eventMarks,
     ],
     config: { view: { stroke: null }, font: "system-ui, sans-serif" },
   };
@@ -410,13 +483,13 @@ function weeklySpec(rows, field) {
 
 function ageSpec(rows, field) {
   const isRate = field === "notification_rate_per_100k";
+  const [eventBand, ...eventMarks] = annualEventLayers();
   return {
     $schema: SCHEMA,
     width: CHART_WIDTH,
     height: 290,
     background: "transparent",
     data: { values: rows.filter((row) => row.age_group !== "unknown") },
-    mark: { type: "line", strokeWidth: 2.5, point: { filled: true, size: 55 } },
     encoding: {
       x: {
         field: "year", type: "ordinal", title: "Año epidemiológico",
@@ -428,27 +501,251 @@ function ageSpec(rows, field) {
         scale: { zero: true },
         axis: { gridColor: "#e4ecee", labelColor: "#425c68", titleColor: "#425c68" },
       },
-      color: {
-        field: "age_label", type: "nominal",
-        scale: { domain: AGE_ORDER.slice(0, 5), range: AGE_COLORS },
-        legend: { title: null, orient: "bottom", direction: "horizontal", columns: 3 },
+    },
+    layer: [
+      eventBand,
+      {
+        mark: { type: "line", strokeWidth: 2.5, point: { filled: true, size: 55 } },
+        encoding: {
+          color: {
+            field: "age_label", type: "nominal",
+            scale: { domain: AGE_ORDER.slice(0, 5), range: AGE_COLORS },
+            legend: { title: null, orient: "bottom", direction: "horizontal", columns: 3 },
+          },
+          tooltip: isRate
+            ? [
+                { field: "year", title: "Año" },
+                { field: "age_label", title: "Grupo de edad" },
+                { field: "notification_rate_per_100k", title: "Tasa por 100.000", format: ".2f" },
+                { field: "notifications", title: "Notificaciones", format: ",d" },
+                { field: "population", title: "Población", format: ",d" },
+              ]
+            : [
+                { field: "year", title: "Año" },
+                { field: "age_label", title: "Grupo de edad" },
+                { field: "notifications", title: "Notificaciones", format: ",d" },
+              ],
+        },
       },
-      tooltip: isRate
-        ? [
+      ...eventMarks,
+    ],
+    config: { view: { stroke: null }, font: "system-ui, sans-serif" },
+  };
+}
+
+function ageShiftSpec(rows) {
+  const totals = new Map();
+  for (const row of rows) totals.set(row.year, (totals.get(row.year) ?? 0) + row.notifications);
+  const values = rows.map((row) => ({
+    year: row.year,
+    age_label: row.age_label,
+    age_order: AGE_ORDER.indexOf(row.age_label),
+    notifications: row.notifications,
+    total: totals.get(row.year),
+    share: row.notifications / totals.get(row.year),
+  }));
+  const [eventBand, ...eventMarks] = annualEventLayers();
+  return {
+    $schema: SCHEMA,
+    width: CHART_WIDTH,
+    height: 290,
+    background: "transparent",
+    data: { values },
+    encoding: {
+      x: {
+        field: "year", type: "ordinal", title: "Año epidemiológico",
+        axis: { labelAngle: -45, labelColor: "#425c68", titleColor: "#425c68" },
+      },
+      y: {
+        field: "share", type: "quantitative", title: "Porcentaje de notificaciones",
+        stack: "zero", scale: { domain: [0, 1] },
+        axis: { format: ".0%", gridColor: "#e4ecee", labelColor: "#425c68", titleColor: "#425c68" },
+      },
+    },
+    layer: [
+      eventBand,
+      {
+        mark: { type: "bar", opacity: 0.9 },
+        encoding: {
+          color: {
+            field: "age_label", type: "nominal",
+            scale: { domain: AGE_ORDER, range: [...AGE_COLORS, "#91a0a8"] },
+            legend: { title: "Grupo de edad", orient: "bottom", direction: "horizontal", columns: 3 },
+          },
+          order: { field: "age_order", type: "quantitative" },
+          tooltip: [
+            { field: "year", title: "Año" },
+            { field: "age_label", title: "Grupo de edad" },
+            { field: "notifications", title: "Notificaciones", format: ",d" },
+            { field: "total", title: "Total anual", format: ",d" },
+            { field: "share", title: "Participación", format: ".1%" },
+          ],
+        },
+      },
+      ...eventMarks,
+    ],
+    config: { view: { stroke: null }, font: "system-ui, sans-serif" },
+  };
+}
+
+function ageShiftRatioRows(rows) {
+  const byYear = new Map();
+  for (const row of rows) {
+    if (!byYear.has(row.year)) byYear.set(row.year, new Map());
+    byYear.get(row.year).set(row.age_group, row);
+  }
+  return [...byYear].map(([year, groups]) => {
+    const adult = groups.get("15_49");
+    const child = groups.get("1_4");
+    const adultIncidence = adult.notifications / adult.population * 100000;
+    const childIncidence = child.notifications / child.population * 100000;
+    return {
+      year,
+      adult_incidence: adultIncidence,
+      child_incidence: childIncidence,
+      asr: adultIncidence / childIncidence,
+      inverse: childIncidence / adultIncidence,
+    };
+  });
+}
+
+function ageShiftRatioSpec(rows) {
+  const [eventBand, ...eventMarks] = annualEventLayers();
+  return {
+    $schema: SCHEMA,
+    width: CHART_WIDTH,
+    height: 290,
+    background: "transparent",
+    data: { values: rows },
+    encoding: {
+      x: {
+        field: "year", type: "ordinal", title: "Año epidemiológico",
+        axis: { labelAngle: -45, labelColor: "#425c68", titleColor: "#425c68" },
+      },
+      y: {
+        field: "asr", type: "quantitative", title: "ASR: incidencia 15–49 / incidencia 1–4",
+        scale: { zero: true },
+        axis: { gridColor: "#e4ecee", labelColor: "#425c68", titleColor: "#425c68", format: ".2f" },
+      },
+    },
+    layer: [
+      eventBand,
+      {
+        transform: [{ filter: "datum.year >= 2008" }],
+        mark: { type: "line", color: "#197f7a", strokeWidth: 3, point: { filled: true, size: 65 } },
+        encoding: {
+          tooltip: [
+            { field: "year", title: "Año" },
+            { field: "asr", title: "ASR 15–49 / 1–4", format: ".3f" },
+            { field: "inverse", title: "Inversa 1–4 / 15–49", format: ".2f" },
+            { field: "adult_incidence", title: "Incidencia 15–49 por 100.000", format: ".2f" },
+            { field: "child_incidence", title: "Incidencia 1–4 por 100.000", format: ".2f" },
+          ],
+        },
+      },
+      {
+        transform: [{ filter: "datum.year === 2007" }],
+        mark: { type: "point", filled: true, size: 170, color: "#d97736" },
+        encoding: {
+          tooltip: [
+            { field: "year", title: "Año diagnóstico" },
+            { field: "asr", title: "ASR 15–49 / 1–4", format: ".3f" },
+            { field: "inverse", title: "Inversa 1–4 / 15–49", format: ".2f" },
+          ],
+        },
+      },
+      ...eventMarks,
+    ],
+    config: { view: { stroke: null }, font: "system-ui, sans-serif" },
+  };
+}
+
+function fillAgeShiftRatio(rows) {
+  const body = document.querySelector("#age-shift-ratio-table");
+  body.replaceChildren();
+  for (const row of rows) {
+    const tr = document.createElement("tr");
+    if (row.year === 2007) tr.className = "questioned";
+    for (const value of [row.year, RATE.format(row.adult_incidence), RATE.format(row.child_incidence),
+      RATE.format(row.asr), RATE.format(row.inverse)]) {
+      const td = document.createElement("td");
+      td.textContent = value;
+      tr.append(td);
+    }
+    body.append(tr);
+  }
+  const median = (values) => {
+    const sorted = values.toSorted((a, b) => a - b);
+    const middle = Math.floor(sorted.length / 2);
+    return sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
+  };
+  const before = median(rows.filter((row) => row.year >= 2008 && row.year < 2015).map((row) => row.asr));
+  const after = median(rows.filter((row) => row.year >= 2015).map((row) => row.asr));
+  const asrIn = (year) => RATE.format(rows.find((row) => row.year === year).asr);
+  document.querySelector("#age-shift-ratio-summary").textContent =
+    `Mediana de ASR: ${RATE.format(before)} en 2008–2014 y ${RATE.format(after)} en 2015–2025. ` +
+    `La razón pasó de ${asrIn(2015)} en 2015 a ${asrIn(2019)} en 2019; cayó a ${asrIn(2021)} en 2021, ` +
+    `alcanzó ${asrIn(2024)} en 2024 y fue ${asrIn(2025)} en 2025. `;
+}
+
+function infantProtectionSpec(rows) {
+  const [eventBand, ...eventMarks] = annualEventLayers();
+  return {
+    $schema: SCHEMA,
+    width: CHART_WIDTH,
+    height: 290,
+    background: "transparent",
+    data: { values: rows.filter((row) => row.year >= 2008 && ["under_1", "1_4"].includes(row.age_group)) },
+    encoding: {
+      x: {
+        field: "year", type: "ordinal", title: "Año epidemiológico",
+        axis: { labelAngle: -45, labelColor: "#425c68", titleColor: "#425c68" },
+      },
+      y: {
+        field: "notification_rate_per_100k", type: "quantitative",
+        title: "Notificaciones por 100.000 habitantes",
+        scale: { zero: true },
+        axis: { gridColor: "#e4ecee", labelColor: "#425c68", titleColor: "#425c68" },
+      },
+    },
+    layer: [
+      eventBand,
+      {
+        mark: { type: "line", strokeWidth: 3, point: { filled: true, size: 65 } },
+        encoding: {
+          color: {
+            field: "age_label", type: "nominal",
+            scale: { domain: [AGE_LABELS.under_1, AGE_LABELS["1_4"]], range: ["#197f7a", "#3569b0"] },
+            legend: { title: "Grupo de edad", orient: "bottom", direction: "horizontal" },
+          },
+          tooltip: [
             { field: "year", title: "Año" },
             { field: "age_label", title: "Grupo de edad" },
             { field: "notification_rate_per_100k", title: "Tasa por 100.000", format: ".2f" },
             { field: "notifications", title: "Notificaciones", format: ",d" },
             { field: "population", title: "Población", format: ",d" },
-          ]
-        : [
-            { field: "year", title: "Año" },
-            { field: "age_label", title: "Grupo de edad" },
-            { field: "notifications", title: "Notificaciones", format: ",d" },
           ],
-    },
+        },
+      },
+      ...eventMarks,
+    ],
     config: { view: { stroke: null }, font: "system-ui, sans-serif" },
   };
+}
+
+function fillInfantProtectionSummary(rows) {
+  const infant = rows.filter((row) => row.age_group === "under_1");
+  const median = (start, end) => {
+    const values = infant.filter((row) => row.year >= start && row.year <= end)
+      .map((row) => row.notifications / row.population * 100000).toSorted((a, b) => a - b);
+    const middle = Math.floor(values.length / 2);
+    return values.length % 2 ? values[middle] : (values[middle - 1] + values[middle]) / 2;
+  };
+  document.querySelector("#infant-protection-summary").textContent =
+    `Mediana de la incidencia notificada en menores de 1 año: ${NUMBER.format(Math.round(median(2008, 2014)))} ` +
+    `por 100.000 en 2008–2014, ${NUMBER.format(Math.round(median(2015, 2019)))} en 2015–2019 y ` +
+    `${NUMBER.format(Math.round(median(2022, 2025)))} en 2022–2025. ` +
+    "La mediana no disminuyó en los primeros años tras 2015. La caída posterior coincide con la pandemia y otros cambios posibles en transmisión o notificación; estos datos no permiten atribuirla a protección indirecta.";
 }
 
 function fillAgeTable(rows) {
@@ -495,7 +792,7 @@ function fillWeeklyTable(rows) {
 }
 
 async function loadAgeCharts() {
-  const chartIds = ["#chart-age-cases", "#chart-age-rates"];
+  const chartIds = ["#chart-age-cases", "#chart-age-rates", "#chart-age-shift", "#chart-age-shift-ratio", "#chart-infant-protection"];
   try {
     const response = await fetch(AGE_DATA_URL);
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -504,6 +801,9 @@ async function loadAgeCharts() {
       throw new Error("The age-group series is incomplete");
     }
     fillAgeTable(rows);
+    const ratioRows = ageShiftRatioRows(rows);
+    fillAgeShiftRatio(ratioRows);
+    fillInfantProtectionSummary(rows);
     const unknown = rows.filter((row) => row.age_group === "unknown")
       .reduce((total, row) => total + row.notifications, 0);
     document.querySelector("#age-unknown-note").textContent =
@@ -512,6 +812,9 @@ async function loadAgeCharts() {
     await Promise.all([
       renderChart(chartIds[0], "Casos notificados por grupo de edad", ageSpec(rows, "notifications")),
       renderChart(chartIds[1], "Incidencia notificada por grupo de edad", ageSpec(rows, "notification_rate_per_100k")),
+      renderChart(chartIds[2], "Composición etaria de las notificaciones", ageShiftSpec(rows)),
+      renderChart(chartIds[3], "Razón de incidencias 15–49 / 1–4", ageShiftRatioSpec(ratioRows)),
+      renderChart(chartIds[4], "Incidencia en menores de 1 año y de 1–4 años", infantProtectionSpec(rows)),
     ]);
   } catch (error) {
     showError(error);

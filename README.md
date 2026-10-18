@@ -8,6 +8,18 @@ La página se puede consultar directamente en el navegador. No hace falta descar
 
 Este repositorio contiene datos consolidados de notificaciones de varicela (evento 831 de Sivigila) en [`data/sivigila_integrado_semanal_municipal.parquet/`](data/sivigila_integrado_semanal_municipal.parquet/) y una página para explorarlos.
 
+## Procedencia de los datos
+
+Los tres insumos locales se copiaron de [`data-processing`](https://github.com/thesis-varicella-colombia/data-processing). Sus archivos de datos no están publicados allí en Git; estos enlaces llevan a las fichas técnicas que documentan cómo se obtuvieron y procesaron:
+
+| Copia en este repositorio | Documentación en `data-processing` |
+| --- | --- |
+| [Notificaciones y variables integradas de varicela](data/sivigila_integrado_semanal_municipal.parquet/) | [Integración semanal municipal](https://github.com/thesis-varicella-colombia/data-processing/blob/main/data/processed/integration_data/README.md) |
+| [Población municipal anual](data/population_municipal_2007_2025.csv) | [Proyecciones municipales procesadas](https://github.com/thesis-varicella-colombia/data-processing/blob/main/data/processed/population/README.md) |
+| [GeoJSON municipal MGN 2025, comprimido](data/MGN_ADM_MPIO_GRAFICO.geojson.xz) | [Fuente geográfica y descarga](https://github.com/thesis-varicella-colombia/data-processing/blob/main/data/raw/municipios/README.md) |
+
+El [README de datos](data/README.md) registra las rutas de origen, las sumas SHA-256 y el uso de cada insumo. El conjunto integrado también incorpora [cobertura de vacunación](https://github.com/thesis-varicella-colombia/data-processing/blob/main/data/processed/vaccine_coverage/README.md) y [variables climáticas](https://github.com/thesis-varicella-colombia/data-processing/blob/main/data/processed/climate/README.md).
+
 ## Alcance de los datos
 
 Cada fila corresponde a una entidad DIVIPOLA de **residencia** y una combinación de año y semana epidemiológicos **reportados** en Sivigila. La entidad puede ser un municipio, un área no municipalizada o San Andrés (`Isla`). Solo aparecen combinaciones con al menos una notificación: una semana ausente no equivale automáticamente a cero casos.
@@ -31,7 +43,7 @@ Se excluye 2007 del periodo analítico principal para evitar que esa discrepanci
 
 ## Gráficos y vista local
 
-La [página estática](docs/index.html) muestra las notificaciones y tasas anuales y semanales nacionales, además de dos gráficos por grupo de edad. El [README de `data/`](data/README.md) documenta las fuentes y los cálculos. Cada CSV publicado tiene su propio script generador.
+La [página estática](docs/index.html) muestra las notificaciones y tasas anuales, semanales y por edad, además de un mapa municipal con años y periodos. El [README de `data/`](data/README.md) documenta las fuentes y los cálculos. Cada CSV publicado tiene su propio script generador.
 
 Desde la raíz del repositorio, con Python 3 y [DuckDB CLI](https://duckdb.org/docs/stable/clients/cli/overview.html) instalados:
 
@@ -39,7 +51,9 @@ Desde la raíz del repositorio, con Python 3 y [DuckDB CLI](https://duckdb.org/d
 python3 scripts/generate_annual_series.py
 python3 scripts/generate_weekly_series.py
 python3 scripts/generate_age_group_series.py
+python3 scripts/generate_spatial_series.py
+python3 scripts/prepare_spatial_boundaries.py
 python3 -m http.server 8000 --directory docs
 ```
 
-Abrir `http://localhost:8000/` en el navegador. El servidor local es necesario para cargar el CSV mediante JavaScript; abrir `docs/index.html` directamente como archivo puede bloquear esa carga. Los gráficos usan Vega-Lite desde un CDN, por lo que la vista local necesita conexión a Internet. Los cambios locales aparecerán en la [página publicada](https://thesis-varicella-colombia.github.io/exploratory-analysis/) después de incorporarlos y publicarlos mediante GitHub Pages.
+Abrir `http://localhost:8000/` en el navegador. El servidor local es necesario para cargar los CSV y el GeoJSON mediante JavaScript; abrir `docs/index.html` directamente como archivo puede bloquear esa carga. Los gráficos usan Vega-Lite y el mapa usa Leaflet y teselas de OpenStreetMap, por lo que la vista local necesita conexión a Internet. Los cambios locales aparecerán en la [página publicada](https://thesis-varicella-colombia.github.io/exploratory-analysis/) después de incorporarlos y publicarlos mediante GitHub Pages.
