@@ -82,6 +82,15 @@
             margin-bottom: 1.5rem;
         }
 
+        .development-notice {
+            background: #e9f4f3;
+            border-color: #a9d4ce;
+        }
+
+        .development-notice p {
+            margin: 0;
+        }
+
         .toc ul {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -653,6 +662,11 @@
 </header>
 
 <main class="wrap">
+    <aside class="panel development-notice" aria-label="Estado del proyecto">
+        <p><strong>Trabajo en desarrollo.</strong> Esta página y sus análisis se están construyendo. Aún faltan
+            contenidos por incorporar, y los resultados, gráficos y textos pueden cambiar a medida que avance el
+            proyecto.</p>
+    </aside>
     <nav class="panel toc" aria-labelledby="toc-title">
         <h2 id="toc-title">Contenido</h2>
         <ul>
