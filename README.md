@@ -1,5 +1,7 @@
 # Análisis espacio-temporal de la varicela en Colombia
 
+> **Trabajo en desarrollo.** Esta página y sus análisis se están construyendo. Aún faltan contenidos por incorporar, y los resultados, gráficos y textos pueden cambiar a medida que avance el proyecto.
+
 ## Ver la página publicada
 
 **Abrir los gráficos en línea:** [https://thesis-varicella-colombia.github.io/exploratory-analysis/](https://thesis-varicella-colombia.github.io/exploratory-analysis/)
