@@ -3,6 +3,18 @@
 const DATA_URL = "data_processed/annual_series_2007_2025.csv";
 const AGE_DATA_URL = "data_processed/age_group_series_2007_2025.csv";
 const WEEKLY_DATA_URL = "data_processed/weekly_series_2007_2025.csv?v=20261017-2";
+const LATITUDE_WEEK_DATA_URL = "data_processed/latitude_week_heatmap.csv?v=20261019-1";
+const SEASONAL_PERIODS = [
+  { label: "2008–2014", start: 2008, end: 2014 },
+  { label: "2016–2019", start: 2016, end: 2019 },
+  { label: "2022–2025", start: 2022, end: 2025 },
+];
+const SEASONAL_CHART_IDS = [
+  "#chart-seasonal-total",
+  "#chart-seasonal-2008-2014",
+  "#chart-seasonal-2016-2019",
+  "#chart-seasonal-2022-2025",
+];
 const NUMBER = new Intl.NumberFormat("es-CO");
 const RATE = new Intl.NumberFormat("es-CO", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const SCHEMA = "https://vega.github.io/schema/vega-lite/v6.json";
@@ -200,9 +212,9 @@ async function openChartModal(title, description, spec) {
   }
 }
 
-async function renderChart(selector, title, spec) {
+async function renderChart(selector, title, spec, { annualContext = true } = {}) {
   const chart = document.querySelector(selector);
-  if (!chart.getAttribute("aria-label").includes("Marcas de contexto")) {
+  if (annualContext && !chart.getAttribute("aria-label").includes("Marcas de contexto")) {
     chart.setAttribute("aria-label", `${chart.getAttribute("aria-label")}. Marcas de contexto: vacuna introducida en 2015, refuerzo introducido en 2019 y pandemia en 2020–2021.`);
   }
   const result = await vegaEmbed(chart, spec, EMBED_OPTIONS);
@@ -256,6 +268,223 @@ function parseWeeklyCsv(text) {
     notification_rate_per_100k: row.notification_rate_per_100k === ""
       ? null : Number(row.notification_rate_per_100k),
   }));
+}
+
+function parseLatitudeWeekCsv(text) {
+  return csvObjects(text).map((row) => ({
+    period: row.period,
+    department: row.department,
+    latitude: Number(row.latitude),
+    week: Number(row.week),
+    mean_rate_per_100k: Number(row.mean_rate_per_100k),
+    z_score: row.z_score === "" ? null : Number(row.z_score),
+    years_with_data: Number(row.years_with_data),
+  }));
+}
+
+function latitudeWeekSpec(rows, period) {
+  const values = rows.filter((row) => row.period === period);
+  const departmentOrder = [...new Map(values.map((row) =>
+    [row.department, { name: row.department, latitude: row.latitude }])).values()]
+    .sort((a, b) => b.latitude - a.latitude).map((row) => row.name);
+  return {
+    $schema: SCHEMA,
+    width: CHART_WIDTH,
+    height: { step: 21 },
+    background: "transparent",
+    data: { values },
+    mark: { type: "rect" },
+    encoding: {
+      x: {
+        field: "week", type: "ordinal", title: "Semana epidemiológica", sort: "ascending",
+        scale: { paddingInner: 0, paddingOuter: 0 },
+        axis: {
+          values: [1, 5, 9, 13, 17, 21, 25, 29, 33, 37, 41, 45, 49, 52],
+          labelAngle: 0, labelColor: "#425c68", titleColor: "#425c68",
+        },
+      },
+      y: {
+        field: "department", type: "ordinal", title: "Departamento (norte arriba, sur abajo)",
+        scale: { domain: departmentOrder, paddingInner: 0.08, paddingOuter: 0 },
+        axis: { labelLimit: 190, labelColor: "#425c68", titleColor: "#425c68" },
+      },
+      color: {
+        field: "z_score", type: "quantitative", title: "Anomalía Z",
+        scale: { domain: [-2, 0, 2], range: ["#3569b0", "#f7f7f4", "#c6503f"], clamp: true },
+        legend: { title: "Anomalía Z", orient: "right", gradientLength: 220 },
+      },
+      tooltip: [
+        { field: "department", title: "Departamento" },
+        { field: "latitude", title: "Latitud del centroide", format: ".2f" },
+        { field: "week", title: "Semana" },
+        { field: "mean_rate_per_100k", title: "Tasa semanal media por 100.000", format: ".2f" },
+        { field: "z_score", title: "Anomalía Z", format: ".2f" },
+        { field: "years_with_data", title: "Años con datos" },
+      ],
+    },
+    config: { view: { stroke: null }, font: "system-ui, sans-serif" },
+  };
+}
+
+async function loadLatitudeHeatmap() {
+  const chart = document.querySelector("#chart-latitude-week");
+  const selector = document.querySelector("#latitude-week-period");
+  let view = null;
+  try {
+    const response = await fetch(LATITUDE_WEEK_DATA_URL);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const rows = parseLatitudeWeekCsv(await response.text());
+    if (rows.length !== SEASONAL_PERIODS.length * 32 * 52 ||
+        rows.some((row) => !Number.isFinite(row.latitude) || !Number.isFinite(row.week) ||
+          !Number.isFinite(row.mean_rate_per_100k) || !Number.isFinite(row.z_score))) {
+      throw new Error("Los datos departamentales del mapa de calor están incompletos");
+    }
+    if (typeof vegaEmbed !== "function") throw new Error("Vega-Lite no está disponible");
+
+    async function renderSelected() {
+      view?.finalize();
+      if (chart.previousElementSibling?.classList.contains("chart-controls")) {
+        chart.previousElementSibling.remove();
+      }
+      chart.replaceChildren();
+      const title = `Anomalía semanal por departamento · ${selector.value}`;
+      chart.setAttribute("aria-label", `${title}; 32 unidades continentales ordenadas de norte arriba a sur abajo`);
+      view = await renderChart("#chart-latitude-week", title, latitudeWeekSpec(rows, selector.value),
+        { annualContext: false });
+    }
+
+    selector.addEventListener("change", async () => {
+      selector.disabled = true;
+      try {
+        await renderSelected();
+      } catch (error) {
+        chart.textContent = `No se pudo actualizar el mapa de calor: ${error.message}`;
+        console.error(error);
+      } finally {
+        selector.disabled = false;
+      }
+    });
+    await renderSelected();
+    selector.disabled = false;
+  } catch (error) {
+    chart.textContent = `No se pudo cargar el mapa de calor: ${error.message}`;
+    console.error(error);
+  }
+}
+
+function linearQuantile(sortedValues, probability) {
+  const index = (sortedValues.length - 1) * probability;
+  const lower = Math.floor(index);
+  const fraction = index - lower;
+  return sortedValues[lower] + fraction * (sortedValues[Math.ceil(index)] - sortedValues[lower]);
+}
+
+function seasonalSummaryRows(rows) {
+  const result = [];
+  for (const period of SEASONAL_PERIODS) {
+    for (const ageGroup of ["all", "5_14", "15_49"]) {
+      for (let week = 1; week <= 52; week += 1) {
+        const values = rows.filter((row) => row.year >= period.start && row.year <= period.end &&
+          row.week === week && row.age_group === ageGroup &&
+          Number.isFinite(row.notification_rate_per_100k))
+          .map((row) => row.notification_rate_per_100k).sort((a, b) => a - b);
+        if (values.length === 0) continue;
+        result.push({
+          period: period.label,
+          age_group: ageGroup,
+          age_label: ageGroup === "all" ? "Todas las edades" : AGE_LABELS[ageGroup],
+          week,
+          p25: linearQuantile(values, 0.25),
+          median: linearQuantile(values, 0.5),
+          p75: linearQuantile(values, 0.75),
+          years_with_data: values.length,
+        });
+      }
+    }
+  }
+  return result;
+}
+
+function seasonalSpec(rows, mode) {
+  const isTotal = mode === "total";
+  const values = rows.filter((row) => isTotal ? row.age_group === "all" :
+    row.period === mode && (row.age_group === "5_14" || row.age_group === "15_49"));
+  const field = isTotal ? "period" : "age_label";
+  const domain = isTotal ? SEASONAL_PERIODS.map((period) => period.label) :
+    [AGE_LABELS["5_14"], AGE_LABELS["15_49"]];
+  const range = isTotal ? ["#197f7a", "#d97736", "#7541a4"] : ["#3569b0", "#b34b70"];
+  return {
+    $schema: SCHEMA,
+    width: CHART_WIDTH,
+    height: 300,
+    background: "transparent",
+    data: { values },
+    encoding: {
+      x: {
+        field: "week", type: "quantitative", title: "Semana epidemiológica",
+        scale: { domain: [1, 52], nice: false, zero: false },
+        axis: { values: [1, 5, 9, 13, 17, 21, 25, 29, 33, 37, 41, 45, 49, 52],
+          labelColor: "#425c68", titleColor: "#425c68" },
+      },
+      color: {
+        field, type: "nominal", scale: { domain, range },
+        legend: { title: isTotal ? "Periodo" : "Grupo de edad", orient: "bottom" },
+      },
+    },
+    layer: [
+      {
+        mark: { type: "area", opacity: 0.18 },
+        encoding: {
+          y: { field: "p25", type: "quantitative", title: "Tasa semanal por 100.000",
+            scale: { zero: true }, axis: { gridColor: "#e4ecee" } },
+          y2: { field: "p75" },
+        },
+      },
+      {
+        mark: { type: "line", strokeWidth: 2.5 },
+        encoding: { y: { field: "median", type: "quantitative" } },
+      },
+      {
+        mark: { type: "point", filled: true, opacity: 0.01, size: 130 },
+        encoding: {
+          y: { field: "median", type: "quantitative" },
+          tooltip: [
+            { field: "period", title: "Periodo" },
+            { field: "age_label", title: "Grupo de edad" },
+            { field: "week", title: "Semana" },
+            { field: "median", title: "Mediana", format: ".2f" },
+            { field: "p25", title: "Percentil 25", format: ".2f" },
+            { field: "p75", title: "Percentil 75", format: ".2f" },
+            { field: "years_with_data", title: "Años con tasa" },
+          ],
+        },
+      },
+    ],
+    config: { view: { stroke: null }, font: "system-ui, sans-serif" },
+  };
+}
+
+async function loadSeasonalCharts(rows) {
+  try {
+    const summary = seasonalSummaryRows(rows);
+    if (summary.length !== SEASONAL_PERIODS.length * 3 * 52) {
+      throw new Error("Faltan semanas o grupos en el resumen estacional");
+    }
+    if (typeof vegaEmbed !== "function") throw new Error("Vega-Lite no está disponible");
+    await Promise.all([
+      renderChart(SEASONAL_CHART_IDS[0], "Curva estacional típica: tasa total", seasonalSpec(summary, "total"),
+        { annualContext: false }),
+      ...SEASONAL_PERIODS.map((period, index) =>
+        renderChart(SEASONAL_CHART_IDS[index + 1], `Curva estacional: escolares y adultos · ${period.label}`,
+          seasonalSpec(summary, period.label), { annualContext: false })),
+    ]);
+  } catch (error) {
+    for (const id of SEASONAL_CHART_IDS) {
+      const chart = document.querySelector(id);
+      if (!chart.querySelector("svg")) chart.textContent = `No se pudieron cargar las curvas estacionales: ${error.message}`;
+    }
+    console.error(error);
+  }
 }
 
 function fillTable(rows) {
@@ -879,7 +1108,7 @@ async function loadWeeklyCharts() {
       }
     });
     if (typeof vegaEmbed !== "function") throw new Error("Vega-Lite could not be loaded");
-    await renderSelected(selectedRows);
+    await Promise.all([renderSelected(selectedRows), loadSeasonalCharts(rows)]);
     selector.disabled = false;
   } catch (error) {
     for (const id of chartIds) {
@@ -892,6 +1121,10 @@ async function loadWeeklyCharts() {
     }
     if (body.textContent.includes("No se pudo cargar")) selector.disabled = true;
     else selector.disabled = false;
+    for (const id of SEASONAL_CHART_IDS) {
+      const chart = document.querySelector(id);
+      if (!chart.querySelector("svg")) chart.textContent = `No se pudieron cargar las curvas estacionales: ${error.message}`;
+    }
     console.error(error);
   }
 }
@@ -924,3 +1157,4 @@ async function main() {
 main();
 loadWeeklyCharts();
 loadAgeCharts();
+loadLatitudeHeatmap();

@@ -129,6 +129,32 @@
             color: #425c68;
         }
 
+        .formula {
+            margin: .75rem 0 1rem;
+            padding: .8rem;
+            overflow-x: auto;
+            border-radius: .5rem;
+            background: #f3f7f9;
+            font-size: 1.15rem;
+        }
+
+        .seasonal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 21rem), 1fr));
+            gap: 1rem;
+        }
+
+        .seasonal-grid > div {
+            min-width: 0;
+        }
+
+        .component-title {
+            margin: 1.75rem 0 .75rem;
+            font-size: clamp(1.4rem, 2.5vw, 1.65rem);
+            line-height: 1.25;
+            color: #103d49;
+        }
+
         .chart {
             min-height: 355px;
             width: 100%;
@@ -644,7 +670,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/vega@6.4.0/build/vega.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/vega-lite@6.5.0/build/vega-lite.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/vega-embed@7.3.0/build/vega-embed.min.js"></script>
-    <script defer src="charts.js?v=20261017-8"></script>
+    <script defer src="charts.js?v=20261019-2"></script>
     <script defer src="spatial.js?v=20261017-5"></script>
 </head>
 <body>
@@ -673,12 +699,13 @@
             <li><a href="#year-total">Varicela totales por año</a></li>
             <li><a href="#age-title">Varicela por grupo de edad</a></li>
             <li><a href="#weekly-title">Evolución por semana epidemiológica</a></li>
+            <li><a href="#seasonality-title">Estacionalidad y Gradiente Latitudinal</a></li>
             <li><a href="#age-shift-title">Impacto vacunación y cambios en la distribución etaria</a></li>
             <li><a href="#spatial-title">Heterogeneidad espacial</a></li>
             <li><a href="#method-title">Datos y método</a></li>
         </ul>
     </nav>
-    <p class="intro">En todas las gráficas se señalan tres hitos: 2015, introducción de la vacuna contra la varicela;
+    <p class="intro">En las series cronológicas con eje de años se señalan tres hitos: 2015, introducción de la vacuna contra la varicela;
         2019, introducción del refuerzo; y 2020–2021, pandemia. Las líneas discontinuas marcan los dos primeros años
         y la franja sombreada marca el periodo de pandemia.</p>
     <section class="panel" aria-labelledby="year-total">
@@ -900,6 +927,127 @@
     </section>
 
 
+    <section class="panel" aria-labelledby="seasonality-title">
+        <h2 id="seasonality-title">Estacionalidad y Gradiente Latitudinal</h2>
+        <h3 class="component-title">Componente A: Curva Estacional Típica (Semanas 1 a 52)</h3>
+        <p>Para cada semana epidemiológica y cada periodo se calcula la distribución de la tasa semanal de
+            notificación entre los años comprendidos en ese periodo. La curva central es la mediana semanal:</p>
+        <div class="formula">
+            <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"
+                  aria-label="Mediana de la tasa en la semana s igual a la mediana de las tasas de esa semana en los años y del periodo">
+                <msub><mover><mtext>Tasa</mtext><mo>~</mo></mover><mi>s</mi></msub>
+                <mo>=</mo><mi mathvariant="normal">mediana</mi><mo>(</mo>
+                <msub><mtext>Tasa</mtext><mrow><mi>s</mi><mo>,</mo><mi>y</mi></mrow></msub>
+                <mo>)</mo>
+            </math>
+        </div>
+        <p>Se evalúan las semanas <strong>1 a 52</strong>; <em>s</em> identifica la semana y <em>y</em> recorre
+            los años del periodo. La banda sombreada va del percentil 25 al 75 (rango intercuartílico, IQR) y
+            permite ver la dispersión de las tasas alrededor de la mediana.</p>
+        <h3>Justificación de los periodos</h3>
+        <p>Para la caracterización del ciclo estacional promedio (semanas 1 a 52), se excluyeron los años 2015 y
+            2020–2021. El año 2015 correspondió a la fase de despliegue y adopción progresiva de la primera dosis en
+            el esquema regular, mientras que 2020 y 2021 sufrieron la alteración atípica de las medidas no
+            farmacológicas y cierres escolares por la pandemia de COVID-19. Su omisión en las medianas semanales
+            permite contrastar regímenes epidemiológicos consolidados y homogéneos: la línea base prevacunal
+            (2008–2014), el régimen de monodosis afianzado (2016–2019) y el régimen reciente con esquema completo de
+            dos dosis (2022–2025).</p>
+        <p>Se omiten las semanas 53 para mantener una escala común de 1 a 52. Las semanas sin tasa registrada se
+            excluyen del cálculo de esa semana, sin reemplazarlas por cero. Los percentiles se calculan con
+            interpolación lineal entre las tasas anuales ordenadas. Cada tasa semanal usa la población anual del
+            grupo como denominador; las bandas describen variación entre años, no intervalos de confianza. El grupo
+            de 15–49 años también incluye adolescentes de 15–17 años.</p>
+        <h3>Tasa total entre periodos</h3>
+        <p class="intro">Comparación de 2008–2014, 2016–2019 y 2022–2025. Cada línea representa la mediana de
+            las tasas semanales de los años del periodo; su banda muestra los percentiles 25 y 75.</p>
+        <div class="age-chart" id="chart-seasonal-total" role="img"
+             aria-label="Curvas estacionales de la tasa semanal total: mediana y banda intercuartílica para 2008 a 2014, 2016 a 2019 y 2022 a 2025"></div>
+        <p class="scroll-hint">Desplaza el gráfico horizontalmente para ver todas las semanas.</p>
+        <h3>Escolares y adultos dentro de cada periodo</h3>
+        <p class="intro">Comparación de las tasas de 5–14 años (escolares) y 15–49 años (adultos en esta
+            comparación) dentro de cada uno de los tres periodos.</p>
+        <div class="seasonal-grid">
+            <div>
+                <h4>2008–2014</h4>
+                <div class="age-chart" id="chart-seasonal-2008-2014" role="img"
+                     aria-label="Curvas estacionales de escolares y adultos en 2008 a 2014, con mediana y banda intercuartílica"></div>
+            </div>
+            <div>
+                <h4>2016–2019</h4>
+                <div class="age-chart" id="chart-seasonal-2016-2019" role="img"
+                     aria-label="Curvas estacionales de escolares y adultos en 2016 a 2019, con mediana y banda intercuartílica"></div>
+            </div>
+            <div>
+                <h4>2022–2025</h4>
+                <div class="age-chart" id="chart-seasonal-2022-2025" role="img"
+                     aria-label="Curvas estacionales de escolares y adultos en 2022 a 2025, con mediana y banda intercuartílica"></div>
+            </div>
+        </div>
+        <p class="scroll-hint">Desplaza los gráficos horizontalmente para ver todas las semanas.</p>
+        <h3>Conclusiones del componente A</h3>
+        <ul class="notes">
+            <li>La mediana semanal total baja moderadamente en 2016–2019 y mucho más en 2022–2025 frente a 2008–2014; es compatible con un cambio posterior a la vacunación, sin demostrar causalidad.</li>
+            <li>La estacionalidad persiste: el aumento de las semanas 35–46 en 2008–2014 se debilita en 2016–2019 y se atenúa mucho en 2022–2025.</li>
+            <li>En 2008–2014, las tasas de 5–14 años superan ampliamente las de 15–49 y muestran aumentos alrededor de las semanas 10–20 y 35–45.</li>
+            <li>El mayor descenso ocurre en 5–14 años: de tasas semanales frecuentes de 8–12 por 100.000 a cerca de 1–2 en 2022–2025, en paralelo con la caída nacional.</li>
+            <li>En 15–49 años la curva es más estable y la reducción relativa es menor; en 2022–2025 se acerca a la de 5–14 años.</li>
+            <li>Antes de 2015, la tasa escolar era varias veces la de 15–49; la proximidad reciente de ambas curvas sugiere un posible cambio en la distribución etaria.</li>
+            <li>Las bandas intercuartílicas recientes son más estrechas en términos absolutos: hay menos variación entre años junto con tasas más bajas.</li>
+        </ul>
+
+        <h3 class="component-title">Componente B: Anomalía estacional de incidencia por departamento y semana epidemiológica</h3>
+        <p>Las 52 columnas representan semanas epidemiológicas y las 32 filas, departamentos continentales y Bogotá
+            D.C. Las filas se ordenan de sur a norte por la latitud del centroide de sus geometrías: Amazonas queda
+            abajo y La Guajira arriba. Se excluye el archipiélago de San Andrés y Providencia para mantener el
+            gradiente continental.</p>
+        <p>Para cada departamento <em>d</em> y semana <em>s</em>, primero se promedia la tasa semanal de
+            notificación por 100.000 habitantes entre los años del periodo elegido. El color muestra su anomalía
+            estandarizada:</p>
+        <div class="formula">
+            <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"
+                  aria-label="Z del departamento d y semana s igual a tasa semanal promedio menos media departamental, dividido entre desviación estándar departamental">
+                <msub><mi>Z</mi><mrow><mi>d</mi><mo>,</mo><mi>s</mi></mrow></msub><mo>=</mo>
+                <mfrac>
+                    <mrow>
+                        <msub><mover><mi>T</mi><mo>¯</mo></mover><mrow><mi>d</mi><mo>,</mo><mi>s</mi></mrow></msub>
+                        <mo>−</mo><msub><mover><mi>T</mi><mo>¯</mo></mover><mi>d</mi></msub>
+                    </mrow>
+                    <mrow><mtext>SD</mtext><mo>(</mo><msub><mi>T</mi><mi>d</mi></msub><mo>)</mo></mrow>
+                </mfrac>
+            </math>
+        </div>
+        <p><em>T̄<sub>d</sub></em> es la media de las 52 tasas semanales promedio del departamento y
+            <em>SD(T<sub>d</sub>)</em> su desviación estándar entre semanas. Estandarizar por departamento permite
+            comparar las semanas de pico relativo aun cuando los niveles medios difieran entre territorios como
+            Bogotá y Antioquia. Un color cálido indica una semana por encima de la media propia del departamento.</p>
+        <div class="weekly-filter">
+            <label for="latitude-week-period">Periodo</label>
+            <select id="latitude-week-period" disabled>
+                <option value="2008–2014">2008–2014 · prevacunal</option>
+                <option value="2016–2019">2016–2019 · dosis única</option>
+                <option value="2022–2025">2022–2025 · dosis refuerzo</option>
+            </select>
+        </div>
+        <div class="age-chart" id="chart-latitude-week" role="img"
+             aria-label="Mapa de calor de anomalías semanales de notificación por departamento, ordenado de norte arriba a sur abajo"></div>
+        <p class="scroll-hint">Desplaza el gráfico horizontalmente para ver todas las semanas.</p>
+        <p class="age-note">El gráfico permite explorar si los picos relativos ocurren a la vez o presentan
+            desfases norte-sur. Por sí solo no demuestra propagación ni asociación con la lluvia: esas hipótesis
+            requieren un análisis temporal y pluviométrico adicional. Si hay registros nacionales en una semana,
+            un departamento sin filas de notificaciones aporta cero; una semana sin registros nacionales se omite.
+            <a href="data_processed/latitude_week_heatmap.csv" download>Descargar datos del mapa de calor (CSV)</a>.</p>
+        <h4>Conclusiones del componente B</h4>
+        <ul class="notes">
+            <li>La estacionalidad es clara, pero el pico relativo no coincide en todos los departamentos.</li>
+            <li>En 2008–2014, varios departamentos del norte alcanzan máximos antes que buena parte del centro-sur: un posible gradiente norte–sur, con excepciones.</li>
+            <li>En 2016–2019 persiste ese desfase, aunque los picos varían entre departamentos.</li>
+            <li>En 2022–2025 los máximos están más dispersos y el gradiente es menos claro, compatible con un cambio del patrón estacional.</li>
+            <li>Los cambios coinciden con la vacunación, pero Z es relativo a cada departamento: no mide descensos absolutos ni prueba causalidad.</li>
+            <li>La semana 52 presenta anomalías negativas en casi todos los departamentos; debe distinguirse estacionalidad real de efectos de notificación.</li>
+            <li>La relación del patrón espacio-temporal con latitud, clima y vacunación requiere métodos estadísticos específicos.</li>
+        </ul>
+    </section>
+
     <section class="panel" aria-labelledby="age-shift-title">
         <h2 id="age-shift-title">Impacto vacunación y cambios en la distribución etaria</h2>
         <p class="intro">Las comparaciones entre periodos de la razón de incidencias y de la incidencia en menores de
@@ -918,10 +1066,29 @@
             El año 2007 se conserva como referencia diagnóstica por la discrepancia descrita arriba.</p>
 
         <h3>Razón de incidencias por edad (Age-shift)</h3>
-        <p class="intro">Definición principal para el análisis: <code> (Age-Shift Rating) ASR = incidencia 15–49 / incidencia 1–4</code>.
-            Un valor más alto indica mayor incidencia relativa en 15–49 años frente a 1–4 años. La razón inversa
-            <code>incidencia 1–4 / incidencia 15–49</code> se conserva en la tabla y al pasar el cursor, pero no se usa
-            como segunda definición de ASR.</p>
+        <p class="intro">Definición principal para el análisis: <strong>ASR</strong> (Age-Shift Rating).</p>
+        <div class="formula">
+            <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"
+                  aria-label="ASR igual a incidencia de 15 a 49 años dividida entre incidencia de 1 a 4 años">
+                <mi mathvariant="normal">ASR</mi><mo>=</mo>
+                <mfrac>
+                    <msub><mtext>incidencia</mtext><mtext>15–49</mtext></msub>
+                    <msub><mtext>incidencia</mtext><mtext>1–4</mtext></msub>
+                </mfrac>
+            </math>
+        </div>
+        <p>Un valor más alto indica mayor incidencia relativa en 15–49 años frente a 1–4 años. La razón inversa es:</p>
+        <div class="formula">
+            <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"
+                  aria-label="Razón inversa igual a incidencia de 1 a 4 años dividida entre incidencia de 15 a 49 años">
+                <msub><mi>R</mi><mtext>inversa</mtext></msub><mo>=</mo>
+                <mfrac>
+                    <msub><mtext>incidencia</mtext><mtext>1–4</mtext></msub>
+                    <msub><mtext>incidencia</mtext><mtext>15–49</mtext></msub>
+                </mfrac>
+            </math>
+        </div>
+        <p>La razón inversa se conserva en la tabla y al pasar el cursor, pero no se usa como segunda definición de ASR.</p>
         <div class="age-chart" id="chart-age-shift-ratio" role="img"
              aria-label="Serie anual de la razón entre la incidencia de 15 a 49 años y la de 1 a 4 años entre 2007 y 2025; 2007 se muestra solo como diagnóstico"></div>
         <p class="scroll-hint">Desplaza el gráfico horizontalmente para ver todos los años.</p>
@@ -986,7 +1153,7 @@
                     <option value="2008-2014">2008–2014 · prevacunal</option>
                     <option value="2015-2019">2015–2019 · transición / dosis única</option>
                     <option value="2020-2021">2020–2021 · pandemia</option>
-                    <option value="2022-2025">2022–2025 · periodo reciente</option>
+                    <option value="2022-2025">2022–2025 · dosis refuerzo</option>
                 </optgroup>
                 <optgroup label="Años">
                     <option value="2025" selected>2025</option>
