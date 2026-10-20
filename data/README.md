@@ -78,3 +78,15 @@ El mapa usa `docs/data_processed/municipal_boundaries_dane.geojson`, generado de
 python3 scripts/generate_spatial_series.py
 python3 scripts/prepare_spatial_boundaries.py
 ```
+
+## Mapa de calor de latitud y semana
+
+`scripts/generate_latitude_week_heatmap.py` produce `docs/data_processed/latitude_week_heatmap.csv` para 2008–2014, 2016–2019 y 2022–2025. Agrupa las notificaciones semanales del Parquet por prefijo DIVIPOLA departamental y las divide entre la población anual departamental del CSV local. Si una semana tiene registros nacionales pero no filas de un departamento, asigna cero notificaciones a ese departamento; si no hay registros nacionales, omite ese año en la media de esa semana. Excluye las semanas 53.
+
+Para cada periodo, departamento y semana calcula la media de las tasas de los años disponibles. La anomalía Z resta a esa tasa la media de las 52 tasas semanales del departamento y la divide entre su desviación estándar poblacional entre semanas. El CSV incluye ambas magnitudes y el número de años utilizados. La latitud procede del centroide de las geometrías MGN 2025 simplificadas, ponderado por área tras proyectarlas a EPSG:6933. El mapa muestra 31 departamentos continentales y Bogotá D.C.; excluye el archipiélago de San Andrés y Providencia para mantener el gradiente continental de Amazonas a La Guajira.
+
+Desde la raíz, con `shapely`, `pyproj` y DuckDB CLI instalados:
+
+```bash
+python3 scripts/generate_latitude_week_heatmap.py
+```

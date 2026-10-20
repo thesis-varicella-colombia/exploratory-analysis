@@ -43,9 +43,24 @@ La cifra de la base es **43.254 registros menor**, aproximadamente un **62 %** p
 
 Se excluye 2007 del periodo analítico principal para evitar que esa discrepancia distorsione las conclusiones sobre incidencia y tendencia anterior a la vacunación. Sus registros permanecen en el parquet y se muestran en los gráficos para auditar la fuente y el procesamiento. Si se aclara la diferencia, se reevaluará esta decisión.
 
+## Notebook introductorio: I de Moran
+
+El notebook [`notebooks/01_moran_global_knn.ipynb`](notebooks/01_moran_global_knn.ipynb) muestra, paso a paso, el cálculo de la I de Moran global para la tasa municipal de notificaciones de 2025. Construye una matriz de pesos con los ocho municipios más cercanos a un punto interior de cada geometría, explica cada término de la fórmula y compara el resultado con permutaciones aleatorias. Es una primera iteración para entender el procedimiento, no el análisis espacial final.
+
+Desde la raíz del repositorio, con Python 3.12:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+jupyter lab
+```
+
+Abrir `notebooks/01_moran_global_knn.ipynb` y ejecutar las celdas en orden. El notebook usa `docs/data_processed/spatial_series_2008_2025.csv` y `docs/data_processed/municipal_boundaries_dane.geojson`, incluidos en el repositorio; se puede abrir Jupyter desde la raíz o desde `notebooks/`.
+
 ## Gráficos y vista local
 
-La [página estática](docs/index.html) muestra las notificaciones y tasas anuales, semanales y por edad, además de un mapa municipal con años y periodos. El [README de `data/`](data/README.md) documenta las fuentes y los cálculos. Cada CSV publicado tiene su propio script generador.
+La [página estática](docs/index.html) muestra las notificaciones y tasas anuales, semanales y por edad, curvas estacionales, un mapa de calor de anomalías semanales ordenadas por latitud y un mapa municipal con años y periodos. El [README de `data/`](data/README.md) documenta las fuentes y los cálculos. Cada CSV publicado tiene su propio script generador.
 
 Desde la raíz del repositorio, con Python 3 y [DuckDB CLI](https://duckdb.org/docs/stable/clients/cli/overview.html) instalados:
 
@@ -55,6 +70,7 @@ python3 scripts/generate_weekly_series.py
 python3 scripts/generate_age_group_series.py
 python3 scripts/generate_spatial_series.py
 python3 scripts/prepare_spatial_boundaries.py
+python3 scripts/generate_latitude_week_heatmap.py
 python3 -m http.server 8000 --directory docs
 ```
 
