@@ -3,7 +3,7 @@
 const DATA_URL = "data_processed/annual_series_2007_2025.csv";
 const AGE_DATA_URL = "data_processed/age_group_series_2007_2025.csv";
 const WEEKLY_DATA_URL = "data_processed/weekly_series_2007_2025.csv?v=20261017-2";
-const LATITUDE_WEEK_DATA_URL = "data_processed/latitude_week_heatmap.csv?v=20261019-1";
+const LATITUDE_WEEK_DATA_URL = "data_processed/latitude_week_heatmap.csv?v=20261020-2";
 const SEASONAL_PERIODS = [
   { label: "2008–2014", start: 2008, end: 2014 },
   { label: "2016–2019", start: 2016, end: 2019 },
@@ -276,7 +276,8 @@ function parseLatitudeWeekCsv(text) {
     department: row.department,
     latitude: Number(row.latitude),
     week: Number(row.week),
-    mean_rate_per_100k: Number(row.mean_rate_per_100k),
+    mean_rate_per_100k: row.mean_rate_per_100k === "" ? null : Number(row.mean_rate_per_100k),
+    sd_rate: Number(row.sd_rate),
     z_score: row.z_score === "" ? null : Number(row.z_score),
     years_with_data: Number(row.years_with_data),
   }));
@@ -304,12 +305,13 @@ function latitudeWeekSpec(rows, period) {
         },
       },
       y: {
-        field: "department", type: "ordinal", title: "Departamento (norte arriba, sur abajo)",
+        field: "department", type: "ordinal", title: "Departamento (sur abajo, norte arriba)",
         scale: { domain: departmentOrder, paddingInner: 0.08, paddingOuter: 0 },
         axis: { labelLimit: 190, labelColor: "#425c68", titleColor: "#425c68" },
       },
       color: {
         field: "z_score", type: "quantitative", title: "Anomalía Z",
+        condition: { test: "datum.z_score === null", value: "#dfe7e9" },
         scale: { domain: [-2, 0, 2], range: ["#3569b0", "#f7f7f4", "#c6503f"], clamp: true },
         legend: { title: "Anomalía Z", orient: "right", gradientLength: 220 },
       },
@@ -334,9 +336,13 @@ async function loadLatitudeHeatmap() {
     const response = await fetch(LATITUDE_WEEK_DATA_URL);
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const rows = parseLatitudeWeekCsv(await response.text());
-    if (rows.length !== SEASONAL_PERIODS.length * 32 * 52 ||
+    if (rows.length !== selector.options.length * 32 * 52 ||
         rows.some((row) => !Number.isFinite(row.latitude) || !Number.isFinite(row.week) ||
-          !Number.isFinite(row.mean_rate_per_100k) || !Number.isFinite(row.z_score))) {
+          !Number.isFinite(row.sd_rate) ||
+          (row.years_with_data === 0
+            ? row.mean_rate_per_100k !== null || row.z_score !== null
+            : !Number.isFinite(row.mean_rate_per_100k) ||
+              (row.z_score === null ? row.sd_rate !== 0 : !Number.isFinite(row.z_score))))) {
       throw new Error("Los datos departamentales del mapa de calor están incompletos");
     }
     if (typeof vegaEmbed !== "function") throw new Error("Vega-Lite no está disponible");
@@ -347,7 +353,7 @@ async function loadLatitudeHeatmap() {
         chart.previousElementSibling.remove();
       }
       chart.replaceChildren();
-      const title = `Anomalía semanal por departamento · ${selector.value}`;
+      const title = `Anomalía semanal por departamento · ${selector.value}${selector.value === "2007" ? " (solo diagnóstico)" : ""}`;
       chart.setAttribute("aria-label", `${title}; 32 unidades continentales ordenadas de norte arriba a sur abajo`);
       view = await renderChart("#chart-latitude-week", title, latitudeWeekSpec(rows, selector.value),
         { annualContext: false });
@@ -596,7 +602,7 @@ function casesSpec(rows) {
     layer: [
       eventBand,
       {
-        mark: { type: "bar", cornerRadiusTopLeft: 2, cornerRadiusTopRight: 2 },
+        mark: { type: "bar", stroke: "#fff", strokeWidth: 1, cornerRadiusTopLeft: 2, cornerRadiusTopRight: 2 },
         encoding: {
           color: { condition: { test: "datum.year === 2007", value: "#d97736" }, value: "#197f7a" },
           tooltip: [
