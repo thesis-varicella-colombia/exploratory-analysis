@@ -692,6 +692,39 @@
             color: #173042;
             font: inherit;
         }
+        .secondary-age-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .5rem;
+            margin: 1rem 0;
+            padding: .7rem;
+            border: 1px solid #d4e2e7;
+            border-radius: .5rem;
+        }
+        .secondary-age-options legend {
+            padding: 0 .3rem;
+            font-weight: 700;
+        }
+        .secondary-age-options label {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            padding: .35rem .55rem;
+            border-radius: .4rem;
+            background: #f3f7f9;
+            cursor: pointer;
+        }
+        .secondary-age-swatch {
+            display: inline-block;
+            width: .75rem;
+            height: .75rem;
+            border-radius: 50%;
+            flex: none;
+        }
+        .data-specifications {
+            font-style: italic;
+            text-align: right;
+        }
     </style>
     <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
@@ -699,7 +732,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/vega-lite@6.5.0/build/vega-lite.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/vega-embed@7.3.0/build/vega-embed.min.js"></script>
     <script defer src="annual_territories.js?v=20261107-section-folders"></script>
-    <script defer src="charts.js?v=20261107-section-folders"></script>
+    <script defer src="charts.js?v=20261107-age-specifications"></script>
     <script defer src="population_density.js?v=20261107-section-folders"></script>
     <script defer src="spatial.js?v=20261017-5"></script>
 </head>
@@ -727,7 +760,7 @@
         <h2 id="toc-title">Contenido</h2>
         <ul>
             <li><a href="#year-total">Varicela totales por año</a></li>
-            <li><a href="#age-title">Varicela por grupo de edad</a></li>
+            <li><a href="#age-title">2. Varicela por grupo de edad</a></li>
             <li><a href="#weekly-title">Evolución por semana epidemiológica</a></li>
             <li><a href="#seasonality-title">Estacionalidad y Gradiente Latitudinal</a></li>
             <li><a href="#age-shift-title">Impacto vacunación y cambios en la distribución etaria</a></li>
@@ -889,61 +922,63 @@
     </section>
 
     <section class="panel" aria-labelledby="age-title">
-        <h2 id="age-title">Varicela por grupo de edad</h2>
-        <p class="intro">Cada línea representa un grupo de edad a lo largo de 2007–2025. Los valores de 2007 se muestran
-            para inspeccionar la discrepancia documentada arriba.</p>
+        <h2 id="age-title">2. Varicela por grupo de edad</h2>
+        <p class="intro">Las series muestran la población, los casos notificados y la incidencia por grupo de edad
+            entre 2007 y 2025. En las gráficas de notificaciones e incidencia, 2007 se muestra como referencia
+            diagnóstica por la discrepancia documentada arriba.</p>
         <div class="age-grid">
+            <div>
+                <h3>Población anual por grupo de edad y total</h3>
+                <p>Cantidad de habitantes de cada grupo de edad y de todas las edades, año a año entre 2007 y 2025.
+                    La línea «Todas las edades» suma las poblaciones de los cinco grupos. Seleccione las líneas
+                    que desea comparar; el eje vertical se ajusta a sus valores mínimo y máximo.</p>
+                <fieldset id="annual-age-population-options" class="secondary-age-options">
+                    <legend>Grupos de edad visibles</legend>
+                </fieldset>
+                <div class="age-chart" id="chart-annual-age-population" role="img"
+                     aria-label="Líneas de población anual en número de habitantes para cinco grupos de edad y todas las edades, 2007 a 2025"></div>
+                <p class="scroll-hint">Desplaza el gráfico horizontalmente para ver todos los años.</p>
+                <p class="data-specifications"><a href="https://github.com/thesis-varicella-colombia/exploratory-analysis/blob/main/docs/data_processed/varicela_grupo_edad/README.md#poblaci%C3%B3n-anual-por-grupo-de-edad-y-total">Población anual por grupo de edad y total: Especificaciones de los datos</a>.</p>
+            </div>
             <div>
                 <h3>Casos notificados por grupo de edad</h3>
                 <p>Número de notificaciones por año epidemiológico.</p>
+                <fieldset id="age-cases-options" class="secondary-age-options">
+                    <legend>Grupos de edad visibles</legend>
+                </fieldset>
                 <div class="age-chart" id="chart-age-cases" role="img"
                      aria-label="Series anuales de notificaciones de varicela para cinco grupos de edad entre 2007 y 2025; 2007 es diagnóstico"></div>
                 <p class="scroll-hint">Desplaza el gráfico horizontalmente para ver todos los años.</p>
+                <p class="data-specifications"><a href="https://github.com/thesis-varicella-colombia/exploratory-analysis/blob/main/docs/data_processed/varicela_grupo_edad/README.md#casos-notificados-por-grupo-de-edad">Casos notificados por grupo de edad: Especificaciones de los datos</a>.</p>
             </div>
             <div>
                 <h3>Incidencia notificada por grupo de edad</h3>
                 <p>Notificaciones por 100.000 habitantes del mismo grupo y año.</p>
+                <fieldset id="age-rates-options" class="secondary-age-options">
+                    <legend>Grupos de edad visibles</legend>
+                </fieldset>
                 <div class="age-chart" id="chart-age-rates" role="img"
                      aria-label="Series anuales de incidencia notificada por 100.000 habitantes para cinco grupos de edad entre 2007 y 2025; 2007 es diagnóstico"></div>
                 <p class="scroll-hint">Desplaza el gráfico horizontalmente para ver todos los años.</p>
+                <p class="data-specifications"><a href="https://github.com/thesis-varicella-colombia/exploratory-analysis/blob/main/docs/data_processed/varicela_grupo_edad/README.md#incidencia-notificada-por-grupo-de-edad">Incidencia notificada por grupo de edad: Especificaciones de los datos</a>.</p>
             </div>
         </div>
         <p class="note">Los conteos y tasas por edad de 2007 provienen de la misma base integrada cuyo total anual está
             cuestionado. Se incluyen como referencia diagnóstica y no sustentan conclusiones sobre la tendencia.</p>
         <p class="age-note" id="age-unknown-note"></p>
         <p class="age-note">Cada tasa usa la población anual de su grupo de edad como denominador. Las notificaciones
-            sin edad registrada se conservan en el CSV y la tabla, pero no forman una línea porque no constituyen un
+            sin edad registrada se conservan en el CSV, pero no forman una línea porque no constituyen un
             grupo de edad.</p>
-        <p><a href="data_processed/age_group_series_2007_2025.csv">Descargar el CSV por grupo de edad</a>.</p>
-        <details>
-            <summary>Ver tabla anual por grupo de edad</summary>
-            <div class="table-scroll">
-                <table>
-                    <thead>
-                    <tr>
-                        <th scope="col">Año</th>
-                        <th scope="col">Grupo de edad</th>
-                        <th scope="col">Notificaciones</th>
-                        <th scope="col">Población</th>
-                        <th scope="col">Tasa por 100.000</th>
-                    </tr>
-                    </thead>
-                    <tbody id="age-table">
-                    <tr>
-                        <td colspan="5">Cargando datos…</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </details>
+
         <h3>Conclusiones por grupo de edad</h3>
         <ul class="notes">
-            <li>Los grupos de 1–4 años y menores de 1 año registran las tasas más altas; el primero alcanzó 954 por 100.000 en 2011 y 975 en 2014.</li>
-            <li>En números absolutos predominan los grupos de 5–14 y 15–49 años, con 45.729 y 38.841 notificaciones en 2011; sus poblaciones más numerosas contribuyen a esa diferencia.</li>
+            <li>Los grupos de 1–4 años y menores de 1 año registran las tasas más altas; el primero alcanzó 952 por 100.000 en 2011 y 975 en 2014.</li>
+            <li>En números absolutos predominan los grupos de 5–14 y 15–49 años, con 45.650 y 38.732 notificaciones en 2011; sus poblaciones más numerosas contribuyen a esa diferencia.</li>
             <li>En ≥50 años se registran menos de 2.500 casos y 20 por 100.000 cada año. Las tasas muestran un perfil principalmente infantil; la posible inmunidad previa no se mide aquí.</li>
             <li>El aumento de 2011 abarcó todos los grupos; 5–14 años tuvo el mayor conteo.</li>
-            <li>Tras 2021, 15–49 años lidera el repunte en casos: de 5.568 a 14.849 en 2025, con aumentos cada año.</li>
-            <li>En menores de 1 año y de 1–4 años, las tasas repuntaron en 2023 (251 y 286), cayeron en 2024 y volvieron a subir en 2025.</li>
+            <li>En 5–14 años, la población pasa de 7,78 millones en 2017 a 8,35 millones en 2018, una discontinuidad asociada al cambio a estimaciones basadas en el <a href="https://microdatos.dane.gov.co/index.php/catalog/643">Censo Nacional de Población y Vivienda (CNPV) 2018</a>. El mayor denominador contribuye a la caída de la incidencia entre esos años, pero también disminuyen las notificaciones (de 30.484 a 27.660). Las tendencias de tasas y conteos son similares en el período, por lo que los principales cambios temporales no parecen explicarse solo por la variación poblacional.</li>
+            <li>Tras 2021, 15–49 años lidera el repunte en casos: de 5.492 en 2021 a 14.766 en 2025; el cambio entre años no fue uniforme.</li>
+            <li>En menores de 1 año y de 1–4 años, las tasas repuntaron en 2023 (250 y 286), cayeron en 2024 y volvieron a subir en 2025.</li>
             <li>Ningún grupo recuperó en 2025 sus conteos ni sus tasas de 2019.</li>
         </ul>
     </section>

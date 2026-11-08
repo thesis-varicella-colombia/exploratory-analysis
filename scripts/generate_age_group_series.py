@@ -12,9 +12,9 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-PARQUET = ROOT / "data/sivigila_integrado_semanal_municipal.parquet"
+PARQUET = ROOT / "data/sivigila_integrado_notification_semanal_municipal.parquet"
 POPULATION = ROOT / "data/population_municipal_2007_2025.csv"
-OUTPUT = ROOT / "docs/data_processed/age_group_series_2007_2025.csv"
+OUTPUT = ROOT / "docs/data_processed/varicela_grupo_edad/age_group_series_2007_2025.csv"
 YEARS = range(2007, 2026)
 AGE_GROUPS = (
     ("under_1", "casos_menor_1", "poblacion_menor_1"),
