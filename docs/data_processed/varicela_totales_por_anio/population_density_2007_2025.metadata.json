@@ -1,0 +1,142 @@
+{
+  "area_source": "data/MGN_ADM_MPIO_GRAFICO.geojson.xz",
+  "area_field": "mpio_narea",
+  "area_unit": "km²",
+  "area_rule": "use supplied attribute unchanged; fixed MGN 2025 geography across all years",
+  "population_source": "data/population_municipal_2007_2025.csv",
+  "density_formula": "population(year) / area_km2",
+  "incidence_formula": "100000 * cases(year) / population(year)",
+  "years": [
+    2007,
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+  ],
+  "entities": 1122,
+  "entity_kinds": {
+    "MUNICIPIO": 1103,
+    "ÁREA NO MUNICIPALIZADA": 18,
+    "ISLA": 1
+  },
+  "aliases": {
+    "00011": "11001",
+    "27086": "27493",
+    "94663": "94343",
+    "88000": "88001"
+  },
+  "zero_rule": "municipal row absent means zero only in a year with national notifications; raw record presence retained",
+  "unmapped_notification_rows": 0,
+  "unmapped_notifications": 0.0,
+  "annual": [
+    {
+      "year": 2007,
+      "cases": 26294.0,
+      "plotted": 1118
+    },
+    {
+      "year": 2008,
+      "cases": 63592.0,
+      "plotted": 1121
+    },
+    {
+      "year": 2009,
+      "cases": 72603.0,
+      "plotted": 1121
+    },
+    {
+      "year": 2010,
+      "cases": 73979.0,
+      "plotted": 1121
+    },
+    {
+      "year": 2011,
+      "cases": 120495.0,
+      "plotted": 1121
+    },
+    {
+      "year": 2012,
+      "cases": 99548.0,
+      "plotted": 1121
+    },
+    {
+      "year": 2013,
+      "cases": 94017.0,
+      "plotted": 1121
+    },
+    {
+      "year": 2014,
+      "cases": 107763.0,
+      "plotted": 1121
+    },
+    {
+      "year": 2015,
+      "cases": 110565.0,
+      "plotted": 1121
+    },
+    {
+      "year": 2016,
+      "cases": 111930.0,
+      "plotted": 1121
+    },
+    {
+      "year": 2017,
+      "cases": 86752.0,
+      "plotted": 1121
+    },
+    {
+      "year": 2018,
+      "cases": 74860.0,
+      "plotted": 1121
+    },
+    {
+      "year": 2019,
+      "cases": 67239.0,
+      "plotted": 1121
+    },
+    {
+      "year": 2020,
+      "cases": 18645.0,
+      "plotted": 1121
+    },
+    {
+      "year": 2021,
+      "cases": 14079.0,
+      "plotted": 1121
+    },
+    {
+      "year": 2022,
+      "cases": 22685.0,
+      "plotted": 1121
+    },
+    {
+      "year": 2023,
+      "cases": 31699.0,
+      "plotted": 1121
+    },
+    {
+      "year": 2024,
+      "cases": 24894.0,
+      "plotted": 1122
+    },
+    {
+      "year": 2025,
+      "cases": 29431.0,
+      "plotted": 1122
+    }
+  ]
+}

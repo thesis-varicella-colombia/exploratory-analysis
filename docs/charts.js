@@ -1,9 +1,9 @@
 "use strict";
 
-const DATA_URL = "data_processed/annual_series_2007_2025.csv";
+const DATA_URL = "data_processed/varicela_totales_por_anio/annual_series_2007_2025.csv?v=20261023-notification";
 const AGE_DATA_URL = "data_processed/age_group_series_2007_2025.csv";
 const WEEKLY_DATA_URL = "data_processed/weekly_series_2007_2025.csv?v=20261017-2";
-const LATITUDE_WEEK_DATA_URL = "data_processed/latitude_week_heatmap.csv?v=20261019-1";
+const LATITUDE_WEEK_DATA_URL = "data_processed/latitude_week_heatmap.csv?v=20261020-2";
 const SEASONAL_PERIODS = [
   { label: "2008–2014", start: 2008, end: 2014 },
   { label: "2016–2019", start: 2016, end: 2019 },
@@ -212,7 +212,7 @@ async function openChartModal(title, description, spec) {
   }
 }
 
-async function renderChart(selector, title, spec, { annualContext = true } = {}) {
+async function renderChart(selector, title, spec, { annualContext = true, modalSpec = () => spec, modalTitle = () => title } = {}) {
   const chart = document.querySelector(selector);
   if (annualContext && !chart.getAttribute("aria-label").includes("Marcas de contexto")) {
     chart.setAttribute("aria-label", `${chart.getAttribute("aria-label")}. Marcas de contexto: vacuna introducida en 2015, refuerzo introducido en 2019 y pandemia en 2020–2021.`);
@@ -221,7 +221,7 @@ async function renderChart(selector, title, spec, { annualContext = true } = {})
   const controls = document.createElement("div");
   controls.className = "chart-controls";
   chart.before(controls);
-  addChartControls(controls, chart, result.view, () => openChartModal(title, chart.getAttribute("aria-label"), spec));
+  addChartControls(controls, chart, result.view, () => openChartModal(modalTitle(), chart.getAttribute("aria-label"), modalSpec()));
   return result.view;
 }
 
@@ -276,7 +276,8 @@ function parseLatitudeWeekCsv(text) {
     department: row.department,
     latitude: Number(row.latitude),
     week: Number(row.week),
-    mean_rate_per_100k: Number(row.mean_rate_per_100k),
+    mean_rate_per_100k: row.mean_rate_per_100k === "" ? null : Number(row.mean_rate_per_100k),
+    sd_rate: Number(row.sd_rate),
     z_score: row.z_score === "" ? null : Number(row.z_score),
     years_with_data: Number(row.years_with_data),
   }));
@@ -304,12 +305,13 @@ function latitudeWeekSpec(rows, period) {
         },
       },
       y: {
-        field: "department", type: "ordinal", title: "Departamento (norte arriba, sur abajo)",
+        field: "department", type: "ordinal", title: "Departamento (sur abajo, norte arriba)",
         scale: { domain: departmentOrder, paddingInner: 0.08, paddingOuter: 0 },
         axis: { labelLimit: 190, labelColor: "#425c68", titleColor: "#425c68" },
       },
       color: {
         field: "z_score", type: "quantitative", title: "Anomalía Z",
+        condition: { test: "datum.z_score === null", value: "#dfe7e9" },
         scale: { domain: [-2, 0, 2], range: ["#3569b0", "#f7f7f4", "#c6503f"], clamp: true },
         legend: { title: "Anomalía Z", orient: "right", gradientLength: 220 },
       },
@@ -334,9 +336,13 @@ async function loadLatitudeHeatmap() {
     const response = await fetch(LATITUDE_WEEK_DATA_URL);
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const rows = parseLatitudeWeekCsv(await response.text());
-    if (rows.length !== SEASONAL_PERIODS.length * 32 * 52 ||
+    if (rows.length !== selector.options.length * 32 * 52 ||
         rows.some((row) => !Number.isFinite(row.latitude) || !Number.isFinite(row.week) ||
-          !Number.isFinite(row.mean_rate_per_100k) || !Number.isFinite(row.z_score))) {
+          !Number.isFinite(row.sd_rate) ||
+          (row.years_with_data === 0
+            ? row.mean_rate_per_100k !== null || row.z_score !== null
+            : !Number.isFinite(row.mean_rate_per_100k) ||
+              (row.z_score === null ? row.sd_rate !== 0 : !Number.isFinite(row.z_score))))) {
       throw new Error("Los datos departamentales del mapa de calor están incompletos");
     }
     if (typeof vegaEmbed !== "function") throw new Error("Vega-Lite no está disponible");
@@ -347,7 +353,7 @@ async function loadLatitudeHeatmap() {
         chart.previousElementSibling.remove();
       }
       chart.replaceChildren();
-      const title = `Anomalía semanal por departamento · ${selector.value}`;
+      const title = `Anomalía semanal por departamento · ${selector.value}${selector.value === "2007" ? " (solo diagnóstico)" : ""}`;
       chart.setAttribute("aria-label", `${title}; 32 unidades continentales ordenadas de norte arriba a sur abajo`);
       view = await renderChart("#chart-latitude-week", title, latitudeWeekSpec(rows, selector.value),
         { annualContext: false });
@@ -487,27 +493,6 @@ async function loadSeasonalCharts(rows) {
   }
 }
 
-function fillTable(rows) {
-  const body = document.querySelector("#annual-table");
-  body.replaceChildren();
-  for (const row of rows) {
-    const tr = document.createElement("tr");
-    if (row.year === 2007) tr.className = "questioned";
-    for (const value of [
-      row.year,
-      NUMBER.format(row.notifications),
-      NUMBER.format(row.population),
-      RATE.format(row.notification_rate_per_100k),
-      NUMBER.format(row.reporting_entities),
-    ]) {
-      const td = document.createElement("td");
-      td.textContent = value;
-      tr.append(td);
-    }
-    body.append(tr);
-  }
-}
-
 function sharedSpec(rows, yField, yTitle) {
   return {
     $schema: SCHEMA,
@@ -593,25 +578,29 @@ function casesSpec(rows) {
   const [eventBand, ...eventMarks] = annualEventLayers();
   return {
     ...sharedSpec(rows, "notifications", "Notificaciones"),
+    data: {name:"annual_territory",values:rows},
     layer: [
       eventBand,
       {
-        mark: { type: "bar", cornerRadiusTopLeft: 2, cornerRadiusTopRight: 2 },
+        mark: { type: "bar", stroke: "#fff", strokeWidth: 1, cornerRadiusTopLeft: 2, cornerRadiusTopRight: 2 },
         encoding: {
           color: { condition: { test: "datum.year === 2007", value: "#d97736" }, value: "#197f7a" },
           tooltip: [
+            {field:"territory_label",title:"Territorio"},
             { field: "year", title: "Año" },
             { field: "notifications", title: "Notificaciones", format: ",d" },
             { field: "reporting_entities", title: "Entidades con registros" },
+            {field:"population",title:"Población disponible",format:",d"},
           ],
         },
       },
       {
-        transform: [{ filter: "datum.year === 2007" }],
+        transform: [{ filter: "datum.year === 2007 && isValid(datum.official_2007_cases)" }],
         mark: { type: "point", shape: "diamond", filled: true, size: 240, color: "#7541a4" },
         encoding: {
           y: { field: "official_2007_cases", type: "quantitative" },
           tooltip: [
+            {field:"territory_label",title:"Territorio"},
             { field: "year", title: "Año" },
             { field: "official_2007_cases", title: "Documento oficial: casos", format: ",d" },
           ],
@@ -626,6 +615,7 @@ function ratesSpec(rows) {
   const [eventBand, ...eventMarks] = annualEventLayers();
   return {
     ...sharedSpec(rows, "notification_rate_per_100k", "Notificaciones por 100.000 habitantes"),
+    data: {name:"annual_territory",values:rows},
     layer: [
       eventBand,
       {
@@ -633,8 +623,12 @@ function ratesSpec(rows) {
         mark: { type: "line", color: "#197f7a", strokeWidth: 3, point: { filled: true, fill: "#197f7a", size: 65 } },
         encoding: {
           tooltip: [
+            {field:"territory_label",title:"Territorio"},
             { field: "year", title: "Año" },
             { field: "notification_rate_per_100k", title: "Tasa por 100.000", format: ".2f" },
+            {field:"population",title:"Población disponible",format:",d"},
+            {field:"missing_population_entities",title:"Entidades sin población"},
+            {field:"zero_population_entities",title:"Entidades con población cero"},
             { field: "notifications", title: "Notificaciones", format: ",d" },
           ],
         },
@@ -644,6 +638,7 @@ function ratesSpec(rows) {
         mark: { type: "point", filled: true, size: 170, color: "#d97736" },
         encoding: {
           tooltip: [
+            {field:"territory_label",title:"Territorio"},
             { field: "year", title: "Año cuestionado" },
             { field: "notification_rate_per_100k", title: "Tasa observada", format: ".2f" },
           ],
@@ -1137,19 +1132,20 @@ async function main() {
     if (rows.length !== 19 || rows[0].year !== 2007 || rows.at(-1).year !== 2025) {
       throw new Error("The annual series does not contain all expected years");
     }
-    fillTable(rows);
+    annualTerritoryState.rows = rows.map(row=>({...row,territory_label:annualTerritoryState.label}));
     if (typeof vegaEmbed !== "function") throw new Error("Vega-Lite could not be loaded");
-    await Promise.all([
-      renderChart("#chart-cases", "Notificaciones por año", casesSpec(rows)),
-      renderChart("#chart-rates", "Tasa anual de notificación", ratesSpec(rows)),
+    const views = await Promise.all([
+      renderChart("#chart-cases", "Notificaciones por año", casesSpec(annualTerritoryState.rows), {
+        modalSpec:()=>casesSpec(annualTerritoryState.rows),modalTitle:()=>`Notificaciones por año · ${annualTerritoryState.label}`}),
+      renderChart("#chart-rates", "Tasa anual de notificación", ratesSpec(annualTerritoryState.rows), {
+        modalSpec:()=>ratesSpec(annualTerritoryState.rows),modalTitle:()=>`Tasa anual de notificación · ${annualTerritoryState.label}`}),
     ]);
+    await initAnnualTerritoryFilter(views);
   } catch (error) {
     for (const id of ["#chart-cases", "#chart-rates"]) {
       const chart = document.querySelector(id);
       if (!chart.querySelector("svg")) chart.textContent = `No se pudieron cargar los gráficos: ${error.message}`;
     }
-    const body = document.querySelector("#annual-table");
-    if (body.textContent.includes("Cargando")) body.textContent = "No se pudo cargar la tabla de datos.";
     console.error(error);
   }
 }

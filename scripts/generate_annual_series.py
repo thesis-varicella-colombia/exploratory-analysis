@@ -12,9 +12,9 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-PARQUET = ROOT / "data/sivigila_integrado_semanal_municipal.parquet"
+PARQUET = ROOT / "data/sivigila_integrado_notification_semanal_municipal.parquet"
 POPULATION = ROOT / "data/population_municipal_2007_2025.csv"
-OUTPUT = ROOT / "docs/data_processed/annual_series_2007_2025.csv"
+OUTPUT = ROOT / "docs/data_processed/varicela_totales_por_anio/annual_series_2007_2025.csv"
 YEARS = range(2007, 2026)
 OFFICIAL_2007 = 69695  # Varicella protocol, section 5.1.2, p. 4; source in data/README.md.
 

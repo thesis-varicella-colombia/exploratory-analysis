@@ -174,7 +174,7 @@
             margin: .4rem 0 .35rem;
         }
 
-        .chart-toolbar button, .dialog-close {
+        .chart-toolbar button, .dialog-close, .phase-map-play {
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -188,16 +188,16 @@
             cursor: pointer;
         }
 
-        .chart-toolbar button:hover, .dialog-close:hover {
+        .chart-toolbar button:hover, .dialog-close:hover, .phase-map-play:hover {
             background: #eaf4f2;
         }
 
-        .chart-toolbar button:focus-visible, .dialog-close:focus-visible {
+        .chart-toolbar button:focus-visible, .dialog-close:focus-visible, .phase-map-play:focus-visible {
             outline: 3px solid #176b68;
             outline-offset: 2px;
         }
 
-        .chart-toolbar button:disabled {
+        .chart-toolbar button:disabled, .phase-map-play:disabled {
             opacity: .45;
             cursor: default;
         }
@@ -664,13 +664,43 @@
                 height: 440px;
             }
         }
+        .climate-map-player button {
+            padding: .45rem .7rem;
+            border: 1px solid #a9c5ca;
+            border-radius: .5rem;
+            background: white;
+            color: #173042;
+            font: inherit;
+            cursor: pointer;
+        }
+        .climate-map-player {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: .65rem;
+        }
+        .climate-map-player input[type="range"] {
+            flex: 1 1 14rem;
+            accent-color: #176b68;
+        }
+        .climate-map-player select {
+            width: auto;
+            padding: .45rem .7rem;
+            border: 1px solid #a9c5ca;
+            border-radius: .5rem;
+            background: white;
+            color: #173042;
+            font: inherit;
+        }
     </style>
     <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script defer src="https://cdn.jsdelivr.net/npm/vega@6.4.0/build/vega.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/vega-lite@6.5.0/build/vega-lite.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/vega-embed@7.3.0/build/vega-embed.min.js"></script>
-    <script defer src="charts.js?v=20261019-2"></script>
+    <script defer src="annual_territories.js?v=20261107-section-folders"></script>
+    <script defer src="charts.js?v=20261107-section-folders"></script>
+    <script defer src="population_density.js?v=20261107-section-folders"></script>
     <script defer src="spatial.js?v=20261017-5"></script>
 </head>
 <body>
@@ -709,32 +739,54 @@
         2019, introducción del refuerzo; y 2020–2021, pandemia. Las líneas discontinuas marcan los dos primeros años
         y la franja sombreada marca el periodo de pandemia.</p>
     <section class="panel" aria-labelledby="year-total">
-        <h2 id="year-total">Varicela totales por año</h2>
-        <br>
+        <h2 id="year-total">1. Varicela totales por año</h2>
+        <fieldset id="annual-territory-controls" disabled>
+            <legend>Filtro compartido de notificaciones y tasa anual</legend>
+            <div class="spatial-controls">
+                <label for="annual-territory-search">Todos los municipios, departamento o municipio/entidad</label>
+                <div class="spatial-combobox">
+                    <input id="annual-territory-search" type="search" list="annual-territory-options"
+                           placeholder="Buscar departamento, municipio o código" autocomplete="off">
+                    <datalist id="annual-territory-options"></datalist>
+                </div>
+                        <p class="age-note">
+            Los departamentos están ordenados de norte a sur; los municipios se agrupan con ese mismo orden territorial. <br>
+            Este filtro aplica a las dos gráficas siguientes.</p>
+            </div>
+        </fieldset>
+
+        <p id="annual-territory-status" class="age-note" role="status">Cargando filtros territoriales…</p>
         <div class="age-grid">
             <div>
 
                 <h3 id="cases-title">Notificaciones por año</h3>
-                <p class="intro">Suma anual de <code>casos_total</code> en la base integrada. El rombo morado marca los
-                    69.695 casos de 2007 informados en el <a
+                <p class="intro">Suma anual de <code>casos_total</code> en la base integrada. El conteo nacional de 2007
+                    es atípicamente bajo respecto de los años siguientes: 26.294 notificaciones. Esta anomalía se agrava
+                    por la discrepancia con la cifra significativamente mayor reportada por el Instituto Nacional de Salud
+                    (INS): 69.695 casos, según el <a
                             href="https://www.minsalud.gov.co/Documentos%20y%20Publicaciones/PROTOCOLO%20VARICELA.pdf">documento
-                        oficial de vigilancia de varicela (PDF)</a>.</p>
+                        oficial de vigilancia de varicela (PDF)</a>. El rombo morado marca esa cifra de 2007 únicamente cuando
+                    se selecciona el conjunto nacional.</p>
                 <div class="chart" id="chart-cases" role="img"
                      aria-label="Gráfico de barras de notificaciones anuales de varicela, con 2007 destacado y la cifra del documento oficial marcada"></div>
                 <p class="scroll-hint">Desplaza el gráfico horizontalmente para ver todos los años.</p>
                 <ul class="legend" aria-label="Leyenda del gráfico de notificaciones">
                     <li><span class="swatch"></span> Base integrada, 2008–2025</li>
                     <li><span class="swatch warning"></span> Base integrada, 2007</li>
-                    <li><span class="swatch reference"></span> Documento oficial, 2007</li>
+                    <li id="annual-official-legend"><span class="swatch reference"></span> Documento oficial nacional, 2007</li>
                 </ul>
+                <p class="note"><strong>Decisión:</strong> 2007 queda fuera de la serie descriptiva y del periodo
+                    analítico principal por su conteo atípicamente bajo y la discrepancia con la cifra nacional del INS.
+                    Se conserva como referencia diagnóstica.</p>
                 <!--      </section>-->
 
             </div>
             <div>
                 <!--      <section class="panel" aria-labelledby="rate-title">-->
                 <h3 id="rate-title">Tasa anual de notificación</h3>
-                <p class="intro">Notificaciones por 100.000 habitantes. El punto de 2007 aparece separado de la serie
-                    descriptiva de 2008–2025 porque su total es cuestionado.</p>
+                <p class="intro">Notificaciones por 100.000 habitantes. La tasa divide las notificaciones de la selección
+                    entre la suma de población disponible; no promedia tasas municipales. El punto de 2007 se conserva
+                    como referencia diagnóstica, separado de la serie descriptiva de 2008–2025.</p>
                 <div class="chart" id="chart-rates" role="img"
                      aria-label="Gráfico de tasas anuales de notificación por 100.000 habitantes; 2007 aparece separado de la serie 2008 a 2025"></div>
                 <p class="scroll-hint">Desplaza el gráfico horizontalmente para ver todos los años.</p>
@@ -745,55 +797,95 @@
                 <br>
                 <p>Esta tasa usa las notificaciones de varicela del evento 831 de Sivigila (INS) contenidas en la base
                     integrada y la población anual. Describe lo registrado en esta fuente.</p>
-                <br>
-                <p class="note"><strong>Decisión:</strong> 2007 queda fuera de la serie descriptiva y del periodo
-                    analítico principal por la discrepancia documentada en el gráfico anterior. Su punto se conserva
-                    como referencia diagnóstica.</p>
                 <!--      </section>-->
 
             </div>
-            <div>
-                <!--      <section class="panel" aria-labelledby="annual-findings-title">-->
-                <h3 id="annual-findings-title">Conclusiones de las series anuales</h3>
-                <ul class="notes">
-                    <li>Conteos y tasas siguen el mismo patrón: el crecimiento poblacional no explica los grandes
-                        cambios.
-                    </li>
-                    <li>2011 fue el máximo: 120.772 notificaciones y 271 por 100.000 habitantes. En 2014–2016 se
-                        mantuvieron cerca de 110.000 y 235–239, respectivamente.
-                    </li>
-                    <li>Entre 2017 y 2019 hubo un descenso continuo, hasta 67.236 notificaciones y 136 por 100.000.</li>
-                    <li>En 2020–2021 ocurrió la mayor caída, hasta el mínimo de 2021: 14.348 notificaciones y 28 por
-                        100.000. Coincide con la pandemia.
-                    </li>
-                    <li>En 2022–2025 las cifras siguieron por debajo de 2019, pese al repunte de 2023.</li>
-                    <li>En 2007, la base registra 26.441 notificaciones frente a 69.695 casos del documento oficial; la
-                        causa de la discrepancia sigue sin conocerse.
-                    </li>
-                </ul>
 
+        </div>
+        <p><a href="https://github.com/thesis-varicella-colombia/exploratory-analysis/blob/main/docs/data_processed/varicela_totales_por_anio/README_annual_series.md">Serie anual de notificaciones: Especificaciones de los datos</a>.</p>
+        <h3 class="component-title" id="population-density-title">Casos e incidencia según la densidad poblacional</h3>
+        <p>Cada punto representa una entidad municipal en el año seleccionado. La densidad usa la población total
+            de ese año y el área del municipio, expresada en km² y registrada en el campo <code>mpio_narea</code>
+            del <a href="https://github.com/thesis-varicella-colombia/data-processing/tree/main/data/raw/municipios#geometr%C3%ADas-geojson-del-mgn-2025">GeoJSON DANE</a>.</p>
+        <div class="formula">Densidad = población municipal del año / área municipal en km².<br>
+            Incidencia notificada = 100.000 × casos notificados del año / población municipal del año.</div>
+        <fieldset id="population-density-controls" disabled>
+            <legend>Año y animación de ambas gráficas</legend>
+            <div class="weekly-filter">
+                <label for="population-density-year">Año</label>
+                <select id="population-density-year" disabled></select>
+            </div>
+            <div class="climate-map-player">
+                <label for="population-density-timeline">Recorrer años</label>
+                <input id="population-density-timeline" type="range" min="2007" max="2025" step="1" value="2025">
+                <output id="population-density-frame" for="population-density-timeline">Año: 2025</output>
+                <label for="population-density-speed">Velocidad</label>
+                <select id="population-density-speed">
+                    <option value="0.5">0,5×</option>
+                    <option value="1" selected>1×</option>
+                    <option value="2">2×</option>
+                </select>
+                <button id="population-density-play" class="phase-map-play" type="button" aria-pressed="false">▶ Reproducir</button>
+            </div>
+        </fieldset>
+        <p class="age-note">La animación recorre 2008–2025 en orden y vuelve al inicio. El año 2007 puede elegirse
+            manualmente como diagnóstico; queda fuera del recorrido automático. Cambiar el año manualmente pausa la reproducción.</p>
+        <p class="age-note">El eje horizontal es logarítmico y el vertical usa raíz cuadrada para distinguir
+            entidades con magnitudes muy diferentes y conservar los ceros. Los límites de los ejes son fijos entre años.
+            Las etiquetas y los detalles muestran los valores originales.
+            Pasa el cursor sobre un punto para consultar municipio, población, área, densidad, casos e incidencia.</p>
+        <div class="age-grid">
+            <div>
+                <h4>Casos notificados frente a densidad poblacional</h4>
+                <div id="chart-density-cases" class="age-chart" role="img"
+                     aria-label="Dispersión municipal de casos notificados frente a densidad poblacional"></div>
+            </div>
+            <div>
+                <h4>Incidencia notificada frente a densidad poblacional</h4>
+                <div id="chart-density-incidence" class="age-chart" role="img"
+                     aria-label="Dispersión municipal de incidencia por 100.000 habitantes frente a densidad poblacional"></div>
             </div>
         </div>
-        <p><a href="data_processed/annual_series_2007_2025.csv" download>Descargar el CSV anual</a>.</p>
-        <details>
-            <summary>Ver tabla anual de notificaciones y tasas</summary>
-            <div class="table-scroll">
-                <table>
-                    <thead>
-                    <tr>
-                        <th scope="col">Año</th>
-                        <th scope="col">Notificaciones</th>
-                        <th scope="col">Población</th>
-                        <th scope="col">Tasa por 100.000</th>
-                        <th scope="col">Entidades con registros</th>
-                    </tr>
-                    </thead>
-                    <tbody id="annual-table">
-                    <tr><td colspan="5">Cargando datos…</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </details>
+        <p id="population-density-status" class="age-note" role="status">Cargando gráficas municipales de densidad…</p>
+        <p class="age-note">Se incluyen municipios, áreas no municipalizadas y San Andrés. Se usa la misma área del
+            <a href="https://github.com/thesis-varicella-colombia/data-processing/tree/main/data/raw/municipios#geometr%C3%ADas-geojson-del-mgn-2025">GeoJSON DANE</a>
+            para todos los años, con códigos históricos homologados a esa geografía; estas gráficas no reconstruyen límites históricos.
+            La densidad es un promedio territorial, no una medida de hacinamiento. Ambas razones usan la población como parte del cálculo:
+            su asociación descriptiva no demuestra un efecto causal de la densidad sobre la incidencia.</p>
+        <p><a href="https://github.com/thesis-varicella-colombia/exploratory-analysis/blob/main/docs/data_processed/varicela_totales_por_anio/README.md">Datos municipales de densidad: Especificaciones de los datos</a>.</p>
+        <div>
+            <!--      <section class="panel" aria-labelledby="annual-findings-title">-->
+            <h3 id="annual-findings-title">Conclusiones de las series anuales · Colombia</h3>
+            <ul class="notes">
+                <li>Entre 2008 y 2025, las notificaciones y la incidencia anual cambian en el mismo sentido.
+                    El máximo ocurrió en 2011: 120.495 notificaciones y aproximadamente 270 por 100.000 habitantes.
+                    En 2014–2016 también hubo niveles altos: 107.763–111.930 notificaciones anuales y tasas de
+                    235–239 por 100.000.</li>
+                <li>Las notificaciones y la incidencia disminuyeron cada año entre 2017 y 2019, hasta llegar a
+                    67.239 notificaciones y aproximadamente 136 por 100.000 habitantes. El descenso posterior a
+                    la introducción de la vacuna no puede atribuirse exclusivamente a la vacunación con esta
+                    comparación descriptiva.</li>
+                <li>La caída más pronunciada ocurrió en 2020–2021; el mínimo fue de 14.079 notificaciones y
+                    aproximadamente 28 por 100.000 habitantes en 2021. Su coincidencia con la pandemia no permite
+                    separar una menor transmisión de cambios en la consulta, el acceso a la atención o el registro.
+                    En 2022–2025 hubo aumentos, incluido un repunte en 2023, pero sin recuperación continua y siempre
+                    por debajo de 2019 en conteos y tasas. Estas cifras describen notificaciones, no todas las infecciones.</li>
+                <li>El número de notificaciones presenta una asociación positiva con la densidad municipal, pero
+                    esta relación puede reflejar principalmente el tamaño poblacional: los municipios con más
+                    habitantes pueden acumular más notificaciones. Al comparar la densidad con la incidencia
+                    por 100.000 habitantes, la asociación positiva es muy débil.
+                    También hay incidencias altas en municipios con 10–100 habitantes/km². La densidad queda como
+                    candidata secundaria, cuya utilidad adicional deberá evaluarse junto con las demás variables del modelo.</li>
+                <li>La densidad municipal no mide hacinamiento: una población concentrada en la cabecera puede
+                    coexistir con una densidad territorial baja. Ese promedio no permite inferir la exposición individual
+                    ni concluir que la densidad cause cambios en la transmisión o la incidencia.</li>
+                <li>2007 se conserva solo como referencia diagnóstica por su conteo atípicamente bajo: 26.294
+                    notificaciones frente a los 69.695 casos informados por el INS. La causa de esta discrepancia
+                    no está establecida; el análisis principal comienza en 2008.</li>
+            </ul>
+
+        </div>
+
     </section>
 
     <section class="panel" aria-labelledby="age-title">
@@ -1000,8 +1092,8 @@
             D.C. Las filas se ordenan de sur a norte por la latitud del centroide de sus geometrías: Amazonas queda
             abajo y La Guajira arriba. Se excluye el archipiélago de San Andrés y Providencia para mantener el
             gradiente continental.</p>
-        <p>Para cada departamento <em>d</em> y semana <em>s</em>, primero se promedia la tasa semanal de
-            notificación por 100.000 habitantes entre los años del periodo elegido. El color muestra su anomalía
+        <p>Para cada departamento <em>d</em> y semana <em>s</em>, se usa la tasa semanal de
+            notificación por 100.000 habitantes del año elegido o el promedio entre los años del periodo elegido. El color muestra su anomalía
             estandarizada:</p>
         <div class="formula">
             <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"
@@ -1016,16 +1108,39 @@
                 </mfrac>
             </math>
         </div>
-        <p><em>T̄<sub>d</sub></em> es la media de las 52 tasas semanales promedio del departamento y
+        <p><em>T̄<sub>d</sub></em> es la media de las tasas semanales del departamento para la selección y
             <em>SD(T<sub>d</sub>)</em> su desviación estándar entre semanas. Estandarizar por departamento permite
             comparar las semanas de pico relativo aun cuando los niveles medios difieran entre territorios como
             Bogotá y Antioquia. Un color cálido indica una semana por encima de la media propia del departamento.</p>
         <div class="weekly-filter">
-            <label for="latitude-week-period">Periodo</label>
+            <label for="latitude-week-period">Año o periodo</label>
             <select id="latitude-week-period" disabled>
-                <option value="2008–2014">2008–2014 · prevacunal</option>
-                <option value="2016–2019">2016–2019 · dosis única</option>
-                <option value="2022–2025">2022–2025 · dosis refuerzo</option>
+                <optgroup label="Periodos">
+                    <option value="2008–2014">2008–2014 · prevacunal</option>
+                    <option value="2016–2019">2016–2019 · dosis única</option>
+                    <option value="2022–2025">2022–2025 · dosis refuerzo</option>
+                </optgroup>
+                <optgroup label="Años">
+                    <option value="2025">2025</option>
+                    <option value="2024">2024</option>
+                    <option value="2023">2023</option>
+                    <option value="2022">2022</option>
+                    <option value="2021">2021</option>
+                    <option value="2020">2020</option>
+                    <option value="2019">2019</option>
+                    <option value="2018">2018</option>
+                    <option value="2017">2017</option>
+                    <option value="2016">2016</option>
+                    <option value="2015">2015</option>
+                    <option value="2014">2014</option>
+                    <option value="2013">2013</option>
+                    <option value="2012">2012</option>
+                    <option value="2011">2011</option>
+                    <option value="2010">2010</option>
+                    <option value="2009">2009</option>
+                    <option value="2008">2008</option>
+                    <option value="2007">2007 · solo diagnóstico</option>
+                </optgroup>
             </select>
         </div>
         <div class="age-chart" id="chart-latitude-week" role="img"
@@ -1034,17 +1149,17 @@
         <p class="age-note">El gráfico permite explorar si los picos relativos ocurren a la vez o presentan
             desfases norte-sur. Por sí solo no demuestra propagación ni asociación con la lluvia: esas hipótesis
             requieren un análisis temporal y pluviométrico adicional. Si hay registros nacionales en una semana,
-            un departamento sin filas de notificaciones aporta cero; una semana sin registros nacionales se omite.
+            un departamento sin filas de notificaciones aporta cero. Las celdas grises indican que Z no se puede calcular:
+            falta la semana a escala nacional (semana 51 de 2008) o no hay variación semanal (siete departamentos en 2007).
+            El año 2007 se muestra solo como referencia diagnóstica por la discrepancia entre la base integrada y el documento oficial descrita arriba.
             <a href="data_processed/latitude_week_heatmap.csv" download>Descargar datos del mapa de calor (CSV)</a>.</p>
         <h4>Conclusiones del componente B</h4>
         <ul class="notes">
-            <li>La estacionalidad es clara, pero el pico relativo no coincide en todos los departamentos.</li>
-            <li>En 2008–2014, varios departamentos del norte alcanzan máximos antes que buena parte del centro-sur: un posible gradiente norte–sur, con excepciones.</li>
-            <li>En 2016–2019 persiste ese desfase, aunque los picos varían entre departamentos.</li>
-            <li>En 2022–2025 los máximos están más dispersos y el gradiente es menos claro, compatible con un cambio del patrón estacional.</li>
-            <li>Los cambios coinciden con la vacunación, pero Z es relativo a cada departamento: no mide descensos absolutos ni prueba causalidad.</li>
-            <li>La semana 52 presenta anomalías negativas en casi todos los departamentos; debe distinguirse estacionalidad real de efectos de notificación.</li>
-            <li>La relación del patrón espacio-temporal con latitud, clima y vacunación requiere métodos estadísticos específicos.</li>
+            <li>En varios años prevacunales, los picos relativos aparecen antes en el norte que en el centro-sur; 2010 es una excepción notable.</li>
+            <li>Desde 2015 el patrón varía más entre años y departamentos, aunque en 2017 reaparece uno similar al prevacunal. El mapa no permite atribuir los cambios solo a la vacunación.</li>
+            <li>En 2020, las anomalías positivas iniciales dan paso a una reducción prolongada; 2021 muestra un patrón casi inverso. Ambos años requieren una lectura aparte por los posibles efectos de la pandemia.</li>
+            <li>En 2022–2025 el gradiente norte-sur no es constante. Se debe medir si cambió la relación entre latitud y semana del pico.</li>
+            <li>Las anomalías negativas de la semana 52 podrían reflejar cambios en la notificación, además de estacionalidad.</li>
         </ul>
     </section>
 

@@ -34,7 +34,7 @@ La [documentación de población del repositorio de origen](https://github.com/t
 
 `scripts/generate_annual_series.py` suma `casos_total` por año epidemiológico. Estas son **notificaciones**, no personas enfermas deduplicadas. El script divide ese total entre la suma de `poblacion_total` de **todos** los municipios del CSV anual y multiplica por 100.000. No suma la población integrada del Parquet: esta se repite en cada semana y solo está presente donde hubo notificaciones. La salida se llama *tasa anual de notificación por 100.000 habitantes* y describe lo registrado en la fuente procesada. El CSV de población contiene algunas filas con valor cero: se conservan en la suma y su cantidad se informa por año en `zero_population_entities`.
 
-Para 2007, el [protocolo de vigilancia de varicela, sección 5.1.2, página 4](https://www.minsalud.gov.co/Documentos%20y%20Publicaciones/PROTOCOLO%20VARICELA.pdf) informa **69.695 casos**. Ese valor se conserva como referencia en el script y en el CSV derivado. La base local suma **26.441 notificaciones** y solo registra **106 entidades de residencia** ese año. La diferencia señala una discrepancia de cobertura o definición aún no resuelta; por eso 2007 se muestra como diagnóstico y se excluye de la línea de tasas 2008–2025. El periodo actualizado de trabajo es 2008–2025, aunque la propuesta original terminaba en 2023. Véase también el [README principal](../README.md).
+Para 2007, el [protocolo de vigilancia de varicela, sección 5.1.2, página 4](https://www.minsalud.gov.co/Documentos%20y%20Publicaciones/PROTOCOLO%20VARICELA.pdf) informa **69.695 casos**. Ese valor se conserva como referencia en el script y en el CSV derivado. La variante `notification` suma **26.294 notificaciones** y registra **92 entidades de residencia** ese año. La diferencia señala una discrepancia de cobertura o definición aún no resuelta; por eso 2007 se muestra como diagnóstico y se excluye de la línea de tasas 2008–2025. El periodo actualizado de trabajo es 2008–2025, aunque la propuesta original terminaba en 2023. Véase también el [README principal](../README.md).
 
 Para regenerar el CSV desde la raíz de este repositorio, con Python 3 y DuckDB CLI instalado:
 
@@ -42,7 +42,43 @@ Para regenerar el CSV desde la raíz de este repositorio, con Python 3 y DuckDB 
 python3 scripts/generate_annual_series.py
 ```
 
-El script produce `docs/data_processed/annual_series_2007_2025.csv` sin leer archivos externos al repositorio.
+El script produce `docs/data_processed/varicela_totales_por_anio/annual_series_2007_2025.csv` sin leer archivos externos al repositorio.
+
+### Filtros nacionales, departamentales y municipales
+
+Las gráficas «Notificaciones por año» y «Tasa anual de notificación» comparten
+un buscador con la opción predeterminada «Todos los municipios y departamentos»,
+los 32 departamentos y Bogotá D.C., y las 1.122 entidades de la cartografía.
+Los departamentos se ordenan de norte a sur y los municipios se agrupan en ese
+mismo orden. La búsqueda acepta nombre, código o la opción completa de la lista.
+
+[`generate_annual_territorial.py`](../scripts/generate_annual_territorial.py)
+publica un JSON por selección y un [catálogo](../docs/data_processed/varicela_totales_por_anio/manifest.json)
+en `varicela_totales_por_anio/`. Reutiliza las notificaciones, poblaciones y banderas de
+registro de `population_density_2007_2025.csv`; no usa el área ni la densidad para
+estas gráficas. La homologación histórica ya incluye Mapiripana en Barrancominas.
+La opción nacional conserva exactamente los valores del CSV anual original,
+que permanece sin modificar.
+
+Por departamento se suman notificaciones y población anual disponible y luego
+se calcula `100000 × suma de notificaciones / suma de población`. No se promedian
+tasas municipales. El detalle conserva cuántas entidades tienen población ausente
+o cero; una población total ausente o no positiva deja la tasa sin dato. Se conserva la convención
+de asignar cero cuando no hay fila municipal de notificaciones, con su límite:
+no demuestra ausencia de enfermedad o vigilancia completa.
+
+El filtro modifica los datos de las mismas dos gráficas, sin recrearlas; descarga
+solo la selección solicitada y conserva una caché de hasta 16 series. La vista
+ampliada utiliza la selección actual. El marcador oficial de 69.695 casos de 2007
+se muestra únicamente para el conjunto nacional, y 2007 continúa como diagnóstico
+para todos los territorios. Las conclusiones de las series anuales siguen
+identificadas como nacionales. El [README de la serie anual](../docs/data_processed/varicela_totales_por_anio/README_annual_series.md),
+enlazado antes de las gráficas de densidad, reúne las fuentes, el diccionario y las
+descargas del CSV nacional y del catálogo territorial.
+
+```bash
+.venv/bin/python scripts/generate_annual_territorial.py
+```
 
 ## Serie semanal nacional
 
@@ -89,4 +125,82 @@ Desde la raíz, con `shapely`, `pyproj` y DuckDB CLI instalados:
 
 ```bash
 python3 scripts/generate_latitude_week_heatmap.py
+```
+
+## Casos e incidencia frente a densidad poblacional
+
+[`generate_population_density.py`](../scripts/generate_population_density.py)
+produce el panel y sus metadatos en `docs/data_processed/varicela_totales_por_anio/`.
+El [README del conjunto](../docs/data_processed/varicela_totales_por_anio/README.md)
+reúne las descargas, fuentes, esquema, diccionario y reglas de cálculo.
+Extrae directamente `mpio_narea`, en km², del GeoJSON original comprimido en
+`data/MGN_ADM_MPIO_GRAFICO.geojson.xz`; no calcula áreas desde las coordenadas
+ni usa `shape_Area`. La estructura del atributo está descrita en el
+[manual del MGN del DANE](https://geoportal.dane.gov.co/descargas/mgn_2023/MGN2023_ManualDeUso.pdf).
+Para cada entidad y año calcula:
+
+- Densidad: población total de ese año / área en km².
+- Incidencia notificada: 100.000 × casos de ese año / población total de ese año.
+
+La población procede de `population_municipal_2007_2025.csv` y los casos del
+Parquet por fecha de notificación. Se usan los 1.122 códigos de la geografía MGN
+2025, incluyendo áreas no municipalizadas y San Andrés. Los códigos históricos
+se homologan y sus poblaciones se suman antes de calcular las razones. El área
+es fija en todos los años; no se reconstruyen límites históricos. Una entidad
+sin fila de notificaciones se considera cero solo si existe información nacional
+en ese año; el CSV retiene si había registro. Una población o área ausente o no
+positiva impide representar la entidad. Los casos anuales agregados coinciden
+con los totales publicados en la sección anual.
+
+Las dos dispersiones aparecen antes de las conclusiones anuales. Comparten
+selector, barra de año y animación 0,5×, 1× y 2×, actualizando solo los datos de
+las vistas existentes. La animación recorre 2008–2025; 2007 se puede seleccionar
+manualmente como diagnóstico. Se pausa al cambiar manualmente el año y al
+ocultar la pestaña. El eje horizontal es logarítmico y el vertical usa raíz
+cuadrada para conservar ceros y distinguir magnitudes. Los dominios de ambos
+ejes permanecen fijos entre años, calculados sobre el panel completo; los valores mostrados
+siguen siendo densidades, casos e incidencias originales. No hay agregación o
+muestreo de puntos: cada entidad válida aparece una vez por año. La relación
+es descriptiva, con población compartida entre los cálculos de densidad e
+incidencia, y no estima un efecto causal ni hacinamiento.
+
+```bash
+.venv/bin/python scripts/generate_population_density.py
+```
+
+
+### Resúmenes auxiliares de densidad conservados fuera del tablero
+
+[`analyze_population_density.py`](../scripts/analyze_population_density.py)
+produce [`population_density_summary_2008_2025.csv`](../docs/data_processed/varicela_totales_por_anio/population_density_summary_2008_2025.csv)
+y sus [metadatos](../docs/data_processed/varicela_totales_por_anio/population_density_summary_2008_2025.metadata.json).
+Se conservan como análisis auxiliar reproducible; el 2 de noviembre de 2026 se
+retiró el bloque «Respaldo numérico y comparación entre grupos» del tablero para
+limitar la profundización de una variable con aporte descriptivo adicional limitado.
+La página mantiene las dos gráficas animadas y sus conclusiones para 2008–2025,
+con la advertencia sobre falacia ecológica. Ya no carga el CSV de resúmenes ni
+presenta sus tablas. Los resúmenes auxiliares contienen 810 filas con los mismos
+puntos válidos y ceros de las dispersiones y distinguen la mediana municipal de
+la incidencia agrupada.
+
+Los grupos predefinidos son departamento (norte a sur), población total
+(<10.000, 10.000–<50.000, 50.000–<100.000, ≥100.000), proporción de menores de 15
+(<20 %, 20–<30 %, ≥30 %) y densidad (<10, 10–<100, 100–<1.000, ≥1.000 hab/km²).
+La proporción de menores de 15 suma los grupos <1, 1–4 y 5–14 de la población
+anual, tras la misma homologación de códigos. Si falta alguna edad, la entidad
+queda fuera del estrato etario, pero permanece en las otras comparaciones;
+la tabla documenta cuántas tienen composición etaria disponible.
+
+La mediana da el mismo peso a cada entidad y la tasa agrupada se calcula como
+`100000 × suma(casos) / suma(población)` del grupo. Q1–Q3 es dispersión municipal,
+no un intervalo de confianza. Spearman no se calcula con menos de cinco entidades
+ni si falta variación; el mínimo de cinco es operativo y no garantiza precisión.
+La estratificación no estandariza por edad ni estima efectos ajustados. No se
+publican valores p ni se tratan años o territorios como réplicas independientes.
+El año 2007 sigue disponible en las gráficas como diagnóstico, pero no entra
+en estos resúmenes. Los CSV incluyen conteos, denominadores, disponibilidad del
+registro de notificación y motivos de correlación no estimable.
+
+```bash
+.venv/bin/python scripts/analyze_population_density.py
 ```

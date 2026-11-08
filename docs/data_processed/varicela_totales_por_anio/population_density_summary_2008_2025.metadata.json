@@ -1,0 +1,51 @@
+{
+  "panel_source": "docs/data_processed/varicela_totales_por_anio/population_density_2007_2025.csv",
+  "population_source": "data/population_municipal_2007_2025.csv",
+  "years": [
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+  ],
+  "minimum_entities_for_rho": 5,
+  "correlation": "Spearman ranks, unweighted entities, ties use average ranks; no p-values or independence assumption for inference",
+  "rho_rule": "blank if fewer than five entities or no variation; five is a computational minimum, not a quality or precision guarantee",
+  "incidence_median": "median of municipal rates; each entity counts once",
+  "incidence_pooled": "100000 * sum(cases) / sum(population) of the same valid group",
+  "age_composition": "share of total population under 15: (<1 + 1-4 + 5-14) / total; both sexes, same year, same code aliases",
+  "population_size_labels": [
+    "Menos de 10.000",
+    "10.000 a <50.000",
+    "50.000 a <100.000",
+    "100.000 o más"
+  ],
+  "age_composition_labels": [
+    "Menos de 20 %",
+    "20 a <30 %",
+    "30 % o más"
+  ],
+  "density_band_labels": [
+    "Menos de 10",
+    "10 a <100",
+    "100 a <1.000",
+    "1.000 o más"
+  ],
+  "department_order": "north to south, same order as Rt department filters",
+  "missing_age_rule": "excluded from age strata only; retained in other summaries",
+  "scope": "same valid entities as scatter plots; includes zero notifications, non-municipalized areas and San Andres; fixed MGN 2025 area",
+  "interpretation": "descriptive stratification, not age standardization, adjusted effects, or causal estimates"
+}
