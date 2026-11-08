@@ -82,11 +82,14 @@ descargas del CSV nacional y del catálogo territorial.
 
 ## Serie semanal nacional
 
-`scripts/generate_weekly_series.py` produce `docs/data_processed/weekly_series_2007_2025.csv`. Suma `casos_total` y los cinco conteos por grupo de edad del Parquet para cada año y semana epidemiológicos reportados, entre 2007 y 2025. Cada fila identifica el grupo mediante `age_group`; `all` representa todas las edades e incluye las notificaciones sin edad registrada. No se ofrece `unknown` como grupo seleccionable porque carece de denominador de población.
+Las dos gráficas semanales enlazan a las [Especificaciones de los datos](../docs/data_processed/evolucion_semanal/README.md),
+con descripción, fuentes, diccionario y descarga del CSV compartido.
+
+`scripts/generate_weekly_series.py` produce `docs/data_processed/evolucion_semanal/weekly_series_2007_2025.csv`. Suma `casos_total` y los cinco conteos por grupo de edad del Parquet para cada año y semana epidemiológicos de la fecha de notificación, entre 2007 y 2025. Cada fila identifica el grupo mediante `age_group`; `all` representa todas las edades e incluye las notificaciones sin edad registrada. No se ofrece `unknown` como grupo seleccionable porque carece de denominador de población.
 
 Cada tasa semanal divide las notificaciones de la semana entre la población anual nacional del grupo correspondiente, tomada del mismo CSV de población utilizado en los gráficos anuales, y multiplica por 100.000. Por tanto, representa notificaciones **de esa semana** por 100.000 habitantes, no una tasa anual ni una tasa anualizada. Las tasas semanales redondeadas no se suman para obtener la tasa anual. El script comprueba que, en cada semana registrada, los cinco grupos y la categoría sin edad sumen el total nacional.
 
-`week_position` ordena las semanas consecutivamente y permite mostrar los años epidemiológicos en el eje horizontal, incluso cuando la fecha de inicio de una semana cae en el año calendario anterior. Si no existe registro nacional para una semana intermedia, el CSV deja vacíos el conteo y la tasa de todos los grupos, y la línea se interrumpe: no se imputa cero. Esto ocurre en la semana 51 de 2008. Si hay registros en una semana pero un grupo de edad no registra casos, su conteo es cero. El tramo de 2007 se presenta como referencia diagnóstica por la discrepancia descrita arriba.
+`week_position` ordena las semanas consecutivamente y permite mostrar los años epidemiológicos en el eje horizontal, incluso cuando la fecha de inicio de una semana cae en el año calendario anterior. Si no existe registro nacional para una semana intermedia, el CSV deja vacíos el conteo y la tasa de todos los grupos, y la línea se interrumpe: no se imputa cero. Esto ocurre en la semana 52 de 2008. Si hay registros en una semana pero un grupo de edad no registra casos, su conteo es cero. El tramo de 2007 se presenta como referencia diagnóstica por la discrepancia descrita arriba.
 
 ```bash
 python3 scripts/generate_weekly_series.py

@@ -732,7 +732,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/vega-lite@6.5.0/build/vega-lite.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/vega-embed@7.3.0/build/vega-embed.min.js"></script>
     <script defer src="annual_territories.js?v=20261107-section-folders"></script>
-    <script defer src="charts.js?v=20261107-age-specifications"></script>
+    <script defer src="charts.js?v=20261108-weekly-specifications"></script>
     <script defer src="population_density.js?v=20261107-section-folders"></script>
     <script defer src="spatial.js?v=20261017-5"></script>
 </head>
@@ -761,7 +761,7 @@
         <ul>
             <li><a href="#year-total">Varicela totales por año</a></li>
             <li><a href="#age-title">2. Varicela por grupo de edad</a></li>
-            <li><a href="#weekly-title">Evolución por semana epidemiológica</a></li>
+            <li><a href="#weekly-title">3. Evolución por semana epidemiológica</a></li>
             <li><a href="#seasonality-title">Estacionalidad y Gradiente Latitudinal</a></li>
             <li><a href="#age-shift-title">Impacto vacunación y cambios en la distribución etaria</a></li>
             <li><a href="#spatial-title">Heterogeneidad espacial</a></li>
@@ -984,21 +984,14 @@
     </section>
 
     <section class="panel" aria-labelledby="weekly-title">
-        <h2 id="weekly-title">Evolución por semana epidemiológica</h2>
-        <p class="intro">Cada observación corresponde a una semana reportada. El eje horizontal muestra los años
+        <h2 id="weekly-title">3. Evolución por semana epidemiológica</h2>
+        <p class="intro">Cada observación corresponde a una semana de la <a href="https://github.com/thesis-varicella-colombia/data-processing/tree/main/data/raw/sivigila#esquema-y-diccionario-de-datos">fecha de notificación (<code>FEC_NOT</code>)</a>. El eje horizontal muestra los años
             epidemiológicos; al pasar sobre la línea aparecen el año y la semana exactos. El tramo naranja de 2007 se
             conserva solo como referencia diagnóstica.</p>
-        <div class="weekly-filter">
-            <label for="weekly-age-group">Grupo de edad</label>
-            <select id="weekly-age-group" disabled>
-                <option value="all">Todas las edades</option>
-                <option value="under_1">Menor de 1 año</option>
-                <option value="1_4">1–4 años</option>
-                <option value="5_14">5–14 años</option>
-                <option value="15_49">15–49 años</option>
-                <option value="50_plus">50 años o más</option>
-            </select>
-        </div>
+        <fieldset id="weekly-age-options" class="secondary-age-options" disabled>
+            <legend>Grupos de edad en ambas gráficas</legend>
+        </fieldset>
+        <p class="age-note">Marca uno o varios grupos para compararlos. «Todas las edades» muestra el total nacional.</p>
         <div class="age-grid">
             <div>
                 <h3>Notificaciones por semana</h3>
@@ -1006,53 +999,34 @@
                 <div class="age-chart" id="chart-weekly-cases" role="img"
                      aria-label="Serie semanal de notificaciones de varicela entre 2007 y 2025; 2007 es diagnóstico"></div>
                 <p class="scroll-hint">Desplaza el gráfico horizontalmente para ver todos los años.</p>
+                <p class="data-specifications"><a href="https://github.com/thesis-varicella-colombia/exploratory-analysis/blob/main/docs/data_processed/evolucion_semanal/README.md#notificaciones-por-semana">Notificaciones por semana: Especificaciones de los datos</a>.</p>
             </div>
             <div>
                 <h3>Incidencia notificada por semana</h3>
-                <p>Notificaciones de la semana por 100.000 habitantes de la población anual del grupo seleccionado.</p>
+                <p>Notificaciones de la semana por 100.000 habitantes de la población anual de cada grupo seleccionado.</p>
                 <div class="age-chart" id="chart-weekly-rates" role="img"
                      aria-label="Serie semanal de tasas de notificación por 100.000 habitantes entre 2007 y 2025; 2007 es diagnóstico"></div>
                 <p class="scroll-hint">Desplaza el gráfico horizontalmente para ver todos los años.</p>
+                <p class="data-specifications"><a href="https://github.com/thesis-varicella-colombia/exploratory-analysis/blob/main/docs/data_processed/evolucion_semanal/README.md#incidencia-notificada-por-semana">Incidencia notificada por semana: Especificaciones de los datos</a>.</p>
             </div>
         </div>
         <p class="age-note">Una interrupción indica una semana sin registros en la base; no se interpreta como cero
             notificaciones. La opción «Todas las edades» incluye las notificaciones sin edad registrada; estas no forman
             un grupo seleccionable porque no tienen denominador propio. La tasa semanal usa la población anual como
             denominador y no se debe sumar para obtener la tasa anual.</p>
-        <p><a href="data_processed/weekly_series_2007_2025.csv">Descargar el CSV semanal</a>.</p>
-        <details id="weekly-table-details">
-            <summary>Ver tabla semanal del grupo seleccionado</summary>
-            <div class="table-scroll">
-                <table>
-                    <caption id="weekly-table-caption">Todas las edades</caption>
-                    <thead>
-                    <tr>
-                        <th scope="col">Año</th>
-                        <th scope="col">Semana</th>
-                        <th scope="col">Notificaciones</th>
-                        <th scope="col">Población</th>
-                        <th scope="col">Tasa semanal por 100.000</th>
-                    </tr>
-                    </thead>
-                    <tbody id="weekly-table">
-                    <tr><td colspan="5">Cargando datos semanales…</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </details>
-        <h3>Conclusiones de las series semanales</h3>
+
+        <h3>Conclusiones de la evolución semanal</h3>
         <ul class="notes">
             <li>Hay crestas y valles intraanuales, más claros en el total y en la infancia; clima y calendario escolar son posibles explicaciones aún no evaluadas.</li>
-            <li>Las tasas más altas son en menores de 5 años: picos de 178 casos y 23,84 por 100.000 en menores de 1 año, y 860 y 28,63 en 1–4 años; el total llega a 7,49 y ≥50 años a 0,54.</li>
-            <li>Tras 2021 reaparecen picos infantiles: en las semanas 32–34 de 2023 se alcanzan 9,81 por 100.000 en menores de 1 año y 12,50 en 1–4; en 2024 bajan.</li>
-            <li>En 15–49 años el promedio semanal sube de 107 casos en 2021 a 280 en 2025, con oscilaciones menos marcadas que en la infancia.</li>
-            <li>En 5–14 años, el máximo semanal de 2022–2025 es 223 casos y 2,72 por 100.000, frente a 1.379 casos antes de 2020.</li>
+            <li>Las tasas más altas son en menores de 5 años: picos de 175 casos y 23,44 por 100.000 en menores de 1 año, y 867 y 28,44 en 1–4 años; el total llega a 7,53 y ≥50 años a 0,57.</li>
+            <li>Tras 2021 reaparecen picos infantiles: en las semanas 32–34 de 2023 se alcanzan 11,04 por 100.000 en menores de 1 año y 12,53 en 1–4; en 2024 bajan.</li>
+            <li>En 15–49 años el promedio semanal sube de 106 casos en 2021 a 279 en 2025, con oscilaciones menos marcadas que en la infancia.</li>
+            <li>En 5–14 años, el máximo semanal de 2022–2025 es 263 casos y 3,21 por 100.000, frente a 1.368 casos antes de 2020.</li>
             <li>La caída empieza en la semana 12 de 2020 y afecta a todas las edades; coincide con la pandemia, pero estos datos no distinguen cambios de transmisión, atención o notificación.</li>
-            <li>El tramo naranja de 2007 registra 52 semanas, pero suma 26.441 notificaciones frente a 69.695 casos del <a href="https://www.minsalud.gov.co/Documentos%20y%20Publicaciones/PROTOCOLO%20VARICELA.pdf">documento oficial</a>. La discrepancia podría relacionarse con una fase de implementación y calibración de los reportes.</li>
-            <li>Al cierre de 2008 hay una caída abrupta y falta la semana 51; los registros repuntan en 2009. El vacío no equivale a cero casos ni prueba una falla de carga.</li>
+            <li>El tramo naranja de 2007 registra 52 semanas, pero suma 26.294 notificaciones frente a 69.695 casos del <a href="https://www.minsalud.gov.co/Documentos%20y%20Publicaciones/PROTOCOLO%20VARICELA.pdf">documento oficial</a>. La discrepancia podría relacionarse con una fase de implementación y calibración de los reportes.</li>
+            <li>Al cierre de 2008 hay una caída abrupta y falta la semana 52; los registros repuntan en 2009. El vacío no equivale a cero casos ni prueba una falla de carga.</li>
         </ul>
     </section>
-
 
     <section class="panel" aria-labelledby="seasonality-title">
         <h2 id="seasonality-title">Estacionalidad y Gradiente Latitudinal</h2>
