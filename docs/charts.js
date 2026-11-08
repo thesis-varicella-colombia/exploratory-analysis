@@ -1,7 +1,7 @@
 "use strict";
 
 const DATA_URL = "data_processed/varicela_totales_por_anio/annual_series_2007_2025.csv?v=20261023-notification";
-const AGE_DATA_URL = "data_processed/age_group_series_2007_2025.csv";
+const AGE_DATA_URL = "data_processed/varicela_grupo_edad/age_group_series_2007_2025.csv?v=20261023-notification";
 const WEEKLY_DATA_URL = "data_processed/weekly_series_2007_2025.csv?v=20261017-2";
 const LATITUDE_WEEK_DATA_URL = "data_processed/latitude_week_heatmap.csv?v=20261020-2";
 const SEASONAL_PERIODS = [
@@ -705,9 +705,28 @@ function weeklySpec(rows, field) {
   };
 }
 
-function ageSpec(rows, field) {
+function annualAgePopulationRows(rows) {
+  const totals = new Map();
+  for (const row of rows.filter((item) => item.age_group !== "unknown")) {
+    const total = totals.get(row.year) ?? { year: row.year, age_group: "all",
+      age_label: "Todas las edades", population: 0 };
+    total.population += row.population;
+    totals.set(row.year, total);
+  }
+  return [...rows.filter((row) => row.age_group !== "unknown")
+    .map(({ year, age_group, age_label, population }) => ({ year, age_group, age_label, population })),
+  ...totals.values()];
+}
+
+function ageSpec(rows, field, { includeAll = false, visibleGroups = null, yDomain = null } = {}) {
   const isRate = field === "notification_rate_per_100k";
-  const [eventBand, ...eventMarks] = annualEventLayers();
+  const isPopulation = field === "population";
+  const eventLayers = isPopulation ? [] : annualEventLayers();
+  const ageColors = includeAll
+    ? [["Todas las edades", "#173042"], ...AGE_ORDER.slice(0, 5).map((name, index) => [name, AGE_COLORS[index]])]
+    : AGE_ORDER.slice(0, 5).map((name, index) => [name, AGE_COLORS[index]]);
+  const visibleColors = visibleGroups === null ? ageColors
+    : ageColors.filter(([name]) => visibleGroups.has(name));
   return {
     $schema: SCHEMA,
     width: CHART_WIDTH,
@@ -721,22 +740,30 @@ function ageSpec(rows, field) {
       },
       y: {
         field, type: "quantitative",
-        title: isRate ? "Notificaciones por 100.000" : "Notificaciones",
-        scale: { zero: true },
-        axis: { gridColor: "#e4ecee", labelColor: "#425c68", titleColor: "#425c68" },
+        title: isPopulation ? "Población (habitantes)" : isRate ? "Notificaciones por 100.000" : "Notificaciones",
+        scale: yDomain === null ? { zero: true } : { domain: yDomain, zero: false, nice: false },
+        axis: { gridColor: "#e4ecee", labelColor: "#425c68", titleColor: "#425c68",
+          ...(isPopulation ? { format: "~s" } : {}) },
       },
     },
     layer: [
-      eventBand,
+      ...(isPopulation ? [] : [eventLayers[0]]),
       {
         mark: { type: "line", strokeWidth: 2.5, point: { filled: true, size: 55 } },
         encoding: {
           color: {
             field: "age_label", type: "nominal",
-            scale: { domain: AGE_ORDER.slice(0, 5), range: AGE_COLORS },
+            scale: { domain: visibleColors.map(([name]) => name),
+              range: visibleColors.map(([, color]) => color) },
             legend: { title: null, orient: "bottom", direction: "horizontal", columns: 3 },
           },
-          tooltip: isRate
+          tooltip: isPopulation
+            ? [
+                { field: "year", title: "Año" },
+                { field: "age_label", title: "Grupo de edad" },
+                { field: "population", title: "Habitantes", format: ",d" },
+              ]
+            : isRate
             ? [
                 { field: "year", title: "Año" },
                 { field: "age_label", title: "Grupo de edad" },
@@ -751,10 +778,74 @@ function ageSpec(rows, field) {
               ],
         },
       },
-      ...eventMarks,
+      ...eventLayers.slice(1),
     ],
     config: { view: { stroke: null }, font: "system-ui, sans-serif" },
   };
+}
+
+function ageChartDomain(rows, field) {
+  const values = rows.map((row) => row[field]);
+  const minimum = Math.min(...values);
+  const maximum = Math.max(...values);
+  const padding = Math.max((maximum - minimum) * 0.05, 1);
+  return [Math.max(0, minimum - padding), maximum + padding];
+}
+
+function initSelectableAgeChart(rows, { selector, optionsSelector, field, title, includeAll = false }) {
+  const chart = document.querySelector(selector);
+  const options = document.querySelector(optionsSelector);
+  const plottedRows = includeAll ? annualAgePopulationRows(rows)
+    : rows.filter((row) => row.age_group !== "unknown");
+  const ageGroups = Object.entries(AGE_LABELS).filter(([key]) => key !== "unknown")
+    .map(([key, name], index) => [key, name, AGE_COLORS[index]]);
+  const groups = includeAll ? [["all", "Todas las edades", "#173042"], ...ageGroups] : ageGroups;
+  for (const [key, name, color] of groups) {
+    const label = document.createElement("label");
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.value = key;
+    checkbox.checked = true;
+    const swatch = document.createElement("span");
+    swatch.className = "secondary-age-swatch";
+    swatch.style.backgroundColor = color;
+    swatch.setAttribute("aria-hidden", "true");
+    label.append(checkbox, swatch, document.createTextNode(name));
+    options.append(label);
+  }
+  let view = null;
+  let renderQueue = Promise.resolve();
+  let latestRender = 0;
+  function render() {
+    const version = ++latestRender;
+    const selected = new Set([...options.querySelectorAll("input:checked")]
+      .map((input) => input.value));
+    renderQueue = renderQueue.then(async () => {
+      if (version !== latestRender) return;
+      view?.finalize();
+      view = null;
+      if (chart.previousElementSibling?.classList.contains("chart-controls")) {
+        chart.previousElementSibling.remove();
+      }
+      chart.replaceChildren();
+      const visibleRows = plottedRows.filter((row) => selected.has(row.age_group));
+      if (visibleRows.length === 0) {
+        chart.textContent = "Seleccione al menos un grupo de edad.";
+        return;
+      }
+      const visibleGroups = new Set(groups.filter(([key]) => selected.has(key)).map(([, name]) => name));
+      view = await renderChart(selector, title,
+        ageSpec(visibleRows, field, { includeAll,
+          visibleGroups, yDomain: ageChartDomain(visibleRows, field) }),
+        { annualContext: field !== "population" });
+    }).catch((error) => {
+      chart.textContent = `No se pudo mostrar el gráfico por edad: ${error.message}`;
+      console.error(error);
+    });
+    return renderQueue;
+  }
+  options.addEventListener("change", render);
+  return render();
 }
 
 function ageShiftSpec(rows) {
@@ -972,26 +1063,6 @@ function fillInfantProtectionSummary(rows) {
     "La mediana no disminuyó en los primeros años tras 2015. La caída posterior coincide con la pandemia y otros cambios posibles en transmisión o notificación; estos datos no permiten atribuirla a protección indirecta.";
 }
 
-function fillAgeTable(rows) {
-  const body = document.querySelector("#age-table");
-  body.replaceChildren();
-  for (const row of rows) {
-    const tr = document.createElement("tr");
-    for (const value of [
-      row.year,
-      row.age_label,
-      NUMBER.format(row.notifications),
-      row.population === null ? "—" : NUMBER.format(row.population),
-      row.notification_rate_per_100k === null ? "—" : RATE.format(row.notification_rate_per_100k),
-    ]) {
-      const td = document.createElement("td");
-      td.textContent = value;
-      tr.append(td);
-    }
-    body.append(tr);
-  }
-}
-
 function fillWeeklyTable(rows) {
   const body = document.querySelector("#weekly-table");
   const fragment = document.createDocumentFragment();
@@ -1016,7 +1087,7 @@ function fillWeeklyTable(rows) {
 }
 
 async function loadAgeCharts() {
-  const chartIds = ["#chart-age-cases", "#chart-age-rates", "#chart-age-shift", "#chart-age-shift-ratio", "#chart-infant-protection"];
+  const chartIds = ["#chart-annual-age-population", "#chart-age-cases", "#chart-age-rates", "#chart-age-shift", "#chart-age-shift-ratio", "#chart-infant-protection"];
   try {
     const response = await fetch(AGE_DATA_URL);
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -1024,7 +1095,6 @@ async function loadAgeCharts() {
     if (rows.length !== 114 || rows.some((row) => !row.age_label) || rows[0].year !== 2007 || rows.at(-1).year !== 2025) {
       throw new Error("The age-group series is incomplete");
     }
-    fillAgeTable(rows);
     const ratioRows = ageShiftRatioRows(rows);
     fillAgeShiftRatio(ratioRows);
     fillInfantProtectionSummary(rows);
@@ -1034,11 +1104,15 @@ async function loadAgeCharts() {
       `Entre 2007 y 2025 hay ${NUMBER.format(unknown)} notificaciones sin edad registrada.`;
     if (typeof vegaEmbed !== "function") throw new Error("Vega-Lite could not be loaded");
     await Promise.all([
-      renderChart(chartIds[0], "Casos notificados por grupo de edad", ageSpec(rows, "notifications")),
-      renderChart(chartIds[1], "Incidencia notificada por grupo de edad", ageSpec(rows, "notification_rate_per_100k")),
-      renderChart(chartIds[2], "Composición etaria de las notificaciones", ageShiftSpec(rows)),
-      renderChart(chartIds[3], "Razón de incidencias 15–49 / 1–4", ageShiftRatioSpec(ratioRows)),
-      renderChart(chartIds[4], "Incidencia en menores de 1 año y de 1–4 años", infantProtectionSpec(rows)),
+      initSelectableAgeChart(rows, { selector: chartIds[0], optionsSelector: "#annual-age-population-options",
+        field: "population", title: "Población anual por grupo de edad y total", includeAll: true }),
+      initSelectableAgeChart(rows, { selector: chartIds[1], optionsSelector: "#age-cases-options",
+        field: "notifications", title: "Casos notificados por grupo de edad" }),
+      initSelectableAgeChart(rows, { selector: chartIds[2], optionsSelector: "#age-rates-options",
+        field: "notification_rate_per_100k", title: "Incidencia notificada por grupo de edad" }),
+      renderChart(chartIds[3], "Composición etaria de las notificaciones", ageShiftSpec(rows)),
+      renderChart(chartIds[4], "Razón de incidencias 15–49 / 1–4", ageShiftRatioSpec(ratioRows)),
+      renderChart(chartIds[5], "Incidencia en menores de 1 año y de 1–4 años", infantProtectionSpec(rows)),
     ]);
   } catch (error) {
     showError(error);

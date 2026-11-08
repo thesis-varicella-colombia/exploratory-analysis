@@ -94,7 +94,10 @@ python3 scripts/generate_weekly_series.py
 
 ## Serie por grupo de edad
 
-`scripts/generate_age_group_series.py` produce `docs/data_processed/age_group_series_2007_2025.csv`. Para cada año suma las notificaciones de los cinco grupos de edad disponibles en el Parquet: menor de 1, 1–4, 5–14, 15–49 y 50 años o más. Las notificaciones con edad desconocida se incluyen en el CSV y la tabla como `unknown`, pero no forman una línea; no se les calcula una tasa porque no existe un denominador de población para esa categoría. En 2008 hay 1.183 notificaciones sin edad registrada; el script comprueba que los cinco grupos y esa categoría sumen el total anual.
+Las tres gráficas enlazan a las [Especificaciones de los datos](../docs/data_processed/varicela_grupo_edad/README.md),
+que reúnen descripción, fuentes, diccionario y descarga del CSV compartido.
+
+`scripts/generate_age_group_series.py` produce `docs/data_processed/varicela_grupo_edad/age_group_series_2007_2025.csv`. Para cada año suma las notificaciones de los cinco grupos de edad disponibles en el Parquet: menor de 1, 1–4, 5–14, 15–49 y 50 años o más. Las notificaciones con edad desconocida se incluyen en el CSV como `unknown`, pero no forman una línea; no se les calcula una tasa porque no existe un denominador de población para esa categoría. En 2008 hay 1.183 notificaciones sin edad registrada; el script comprueba que los cinco grupos y esa categoría sumen el total anual.
 
 La tasa de cada grupo divide sus notificaciones anuales entre la suma de la población municipal anual de ese mismo grupo y multiplica por 100.000. La fuente y la convención son las mismas que para la serie nacional. Los gráficos por edad incluyen 2007 como referencia diagnóstica, aunque el total de ese año en la base integrada está cuestionado; el periodo analítico principal sigue siendo 2008–2025.
 
