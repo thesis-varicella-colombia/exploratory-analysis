@@ -82,11 +82,14 @@ descargas del CSV nacional y del catálogo territorial.
 
 ## Serie semanal nacional
 
-`scripts/generate_weekly_series.py` produce `docs/data_processed/weekly_series_2007_2025.csv`. Suma `casos_total` y los cinco conteos por grupo de edad del Parquet para cada año y semana epidemiológicos reportados, entre 2007 y 2025. Cada fila identifica el grupo mediante `age_group`; `all` representa todas las edades e incluye las notificaciones sin edad registrada. No se ofrece `unknown` como grupo seleccionable porque carece de denominador de población.
+Las dos gráficas semanales enlazan a las [Especificaciones de los datos](../docs/data_processed/evolucion_semanal/README.md),
+con descripción, fuentes, diccionario y descarga del CSV compartido.
+
+`scripts/generate_weekly_series.py` produce `docs/data_processed/evolucion_semanal/weekly_series_2007_2025.csv`. Suma `casos_total` y los cinco conteos por grupo de edad del Parquet para cada año y semana epidemiológicos de la fecha de notificación, entre 2007 y 2025. Cada fila identifica el grupo mediante `age_group`; `all` representa todas las edades e incluye las notificaciones sin edad registrada. No se ofrece `unknown` como grupo seleccionable porque carece de denominador de población.
 
 Cada tasa semanal divide las notificaciones de la semana entre la población anual nacional del grupo correspondiente, tomada del mismo CSV de población utilizado en los gráficos anuales, y multiplica por 100.000. Por tanto, representa notificaciones **de esa semana** por 100.000 habitantes, no una tasa anual ni una tasa anualizada. Las tasas semanales redondeadas no se suman para obtener la tasa anual. El script comprueba que, en cada semana registrada, los cinco grupos y la categoría sin edad sumen el total nacional.
 
-`week_position` ordena las semanas consecutivamente y permite mostrar los años epidemiológicos en el eje horizontal, incluso cuando la fecha de inicio de una semana cae en el año calendario anterior. Si no existe registro nacional para una semana intermedia, el CSV deja vacíos el conteo y la tasa de todos los grupos, y la línea se interrumpe: no se imputa cero. Esto ocurre en la semana 51 de 2008. Si hay registros en una semana pero un grupo de edad no registra casos, su conteo es cero. El tramo de 2007 se presenta como referencia diagnóstica por la discrepancia descrita arriba.
+`week_position` ordena las semanas consecutivamente y permite mostrar los años epidemiológicos en el eje horizontal, incluso cuando la fecha de inicio de una semana cae en el año calendario anterior. Si no existe registro nacional para una semana intermedia, el CSV deja vacíos el conteo y la tasa de todos los grupos, y la línea se interrumpe: no se imputa cero. Esto ocurre en la semana 52 de 2008. Si hay registros en una semana pero un grupo de edad no registra casos, su conteo es cero. El tramo de 2007 se presenta como referencia diagnóstica por la discrepancia descrita arriba.
 
 ```bash
 python3 scripts/generate_weekly_series.py
@@ -207,3 +210,84 @@ registro de notificación y motivos de correlación no estimable.
 ```bash
 .venv/bin/python scripts/analyze_population_density.py
 ```
+
+## Serie diaria nacional de varicela
+
+[`sivigila/csv/`](sivigila/csv/) contiene una copia local de los 19 CSV individuales
+`Datos_2007_831.csv`–`Datos_2025_831.csv` de `data-processing/data/raw/sivigila/csv/`.
+También se copiaron su [README](sivigila/README.md), [diccionario](sivigila/dic_datos.md)
+y la [tabla DIVIPOLA](sivigila/DIVIPOLA-_Códigos_municipios_20261007.csv) usada para
+reproducir los filtros de residencia. Los 19 CSV se compararon con las fuentes
+mediante SHA-256 después de copiarlos. Por su tamaño (568 MB), el directorio
+`sivigila/csv/` está excluido de Git: quien clone el repositorio debe copiarlo
+desde el origen a esa ruta antes de ejecutar el análisis.
+
+`python scripts/rt_daily_sivigila.py` genera
+[`docs/data_processed/numero_reproductivo/rt_national_daily.csv`](../docs/data_processed/numero_reproductivo/rt_national_daily.csv)
+desde la fecha individual `FEC_NOT`, sin reconstruir conteos diarios desde totales
+semanales. Reproduce los filtros y la asignación de semanas de la serie agregada:
+cada suma semanal observada debe coincidir, y los siete días de 2008-S52 quedan
+sin dato. El método, las comprobaciones y la interpretación se presentan en
+[`notebooks/05_rt_nacional_diario.ipynb`](../notebooks/05_rt_nacional_diario.ipynb).
+Esta es la primera de las dos series de Rₜ que carga la página web. El estimador reinicia la infectividad
+después de 2008-S52 y publica una ventana diaria solo cuando todos sus días tienen
+disponible al menos el 99 % de la masa del intervalo serial supuesto; con los parámetros
+principales, las primeras fechas con Rₜ son 2008-02-01 y 2009-01-30.
+
+### Serie diaria por inicio de síntomas
+
+[`notebooks/06_rt_nacional_inicio_sintomas.ipynb`](../notebooks/06_rt_nacional_inicio_sintomas.ipynb)
+repite el análisis con la fecha individual `INI_SIN`. El script
+[`scripts/rt_symptom_sivigila.py`](../scripts/rt_symptom_sivigila.py) aplica los mismos filtros de
+residencia y ajuste, interpreta `INI_SIN` del archivo de 2013 como mes/día/año y contrasta cada
+suma semanal con el [Parquet `symptom`](sivigila_integrado_symptom_semanal_municipal.parquet/).
+Produce [`rt_national_symptom_daily.csv`](../docs/data_processed/numero_reproductivo/rt_national_symptom_daily.csv)
+y la [referencia semanal auditada](../docs/data_processed/numero_reproductivo/weekly_series_symptom_2008_2025.csv).
+La página muestra esta serie inmediatamente después del Rₜ por notificación, con una vista
+adicional de 2013–inicios de 2014 en escala completa.
+Hay 20 semanas sin total por inicio de síntomas, 18 de ellas en 2013. En ese archivo fuente,
+solo 37.920 de 93.606 registros elegibles (40,5 %) tienen `INI_SIN` interpretable. Las semanas
+faltantes permanecen sin dato y las estimaciones alrededor de 2013 requieren especial cautela.
+
+## Precisión diaria y tramos de Rₜ
+
+[`analyze_rt_information.py`](../scripts/analyze_rt_information.py) lee los
+archivos diarios completos de `rt_stratified`, no los promedios adaptativos de
+`rt_visualization`. Procesa 1.156 selecciones nacionales y territoriales, para
+notificación y síntomas, y conserva las curvas originales. Publica un JSON por
+selección en [`rt_information/`](../docs/data_processed/numero_reproductivo/rt_information/),
+[`all_periods.csv`](../docs/data_processed/numero_reproductivo/rt_information/all_periods.csv) y
+[metadatos](../docs/data_processed/numero_reproductivo/rt_information/metadata.json).
+
+Los criterios operativos combinan intervalo válido, anchura relativa
+`(superior95-inferior95)/Rt` ≤0,5, ≤1 o ≤2, y aportes formales de la previa ≤10 %
+a ambos parámetros de la posterior Gamma. Con posterior `(a+C,b+Lambda)`, son
+`a/(a+C)` y `b/(b+Lambda)`. La segunda se reconstruye como `b*Rt/(a+C)` a partir
+de la media publicada; hereda el redondeo de seis decimales de las series.
+No se afirma que sean umbrales universales de suficiencia o calidad.
+
+El resumen por período distingue días nacionales observados, días con estimación,
+días que cumplen los criterios, dirección del intervalo respecto de 1 y tramo
+consecutivo más largo. Los días se cuentan en el calendario original sin unir
+huecos, y las ventanas solapadas no se consideran réplicas independientes.
+El diagnóstico sigue los mismos filtros territoriales de la sección Rₜ, sin
+reactivar filtros por edad. Las bandas siguen siendo condicionales a la previa,
+ventana e intervalo serial; no se ha evaluado aquí su variación conjunta ni la
+incertidumbre de fechas faltantes o vigilancia. Referencia del estimador:
+[Cori et al.](https://pmc.ncbi.nlm.nih.gov/articles/PMC3816335/).
+
+**Alcance adoptado en el tablero:** Rₜ es un resultado complementario, no un
+criterio para excluir municipios del análisis de conteos o incidencia. Al filtrar
+`all_periods.csv` por `dimension=municipality`, `method=notification`,
+`period=2022-2025` y `width_limit=1`, hay 1.122 entidades: 1.001 tienen
+`information_days=0` y solo siete tienen `information_pct_observed>=50`.
+El denominador común es `observed_days=1463`, definido por el calendario
+nacional del diagnóstico; no acredita notificación diaria en cada municipio.
+La conclusión municipal se limita a tramos que cumplen el criterio y distingue
+si el intervalo queda por encima, por debajo o incluye 1. El incumplimiento
+no demuestra ausencia de transmisión ni vigilancia deficiente. Estos resultados
+se explican junto a las gráficas y en el cierre ejecutivo, como balance fijo
+independiente del territorio o límite seleccionado en la tabla interactiva.
+Si Rₜ pasa a ser un resultado principal, queda pendiente comprobar estabilidad
+ante cambios de previa, ventana e intervalo serial: variar únicamente el umbral
+de anchura del diagnóstico no realiza esa sensibilidad.

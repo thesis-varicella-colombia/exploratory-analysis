@@ -725,6 +725,103 @@
             font-style: italic;
             text-align: right;
         }
+        .rt-priority-scroll {
+            max-height: 25rem;
+            overflow: auto;
+            border: 1px solid #d4e2e7;
+            border-radius: .5rem;
+        }
+
+        .rt-priority-scroll table {
+            min-width: 70rem;
+        }
+
+        .rt-priority-scroll thead th {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            background: #ecf4f4;
+        }
+
+        .rt-priority-scroll:focus-visible {
+            outline: 3px solid #176b68;
+            outline-offset: 2px;
+        }
+
+        .rt-priority-sort {
+            display: inline-flex;
+            align-items: center;
+            gap: .45rem;
+            border: 0;
+            border-radius: .25rem;
+            padding: .2rem;
+            background: transparent;
+            color: inherit;
+            font: inherit;
+            text-align: inherit;
+            cursor: pointer;
+        }
+
+        .rt-priority-sort:hover {
+            background: #dcebe8;
+        }
+
+        .rt-priority-sort:focus-visible {
+            outline: 3px solid #176b68;
+            outline-offset: 2px;
+        }
+
+        .rt-priority-sort .sort-arrow {
+            flex-shrink: 0;
+            color: #176b68;
+        }
+
+        #rt-filters {
+            min-width: 0;
+            margin: 1.2rem 0;
+            padding: 1rem;
+            border: 1px solid #d4e2e7;
+            border-radius: .65rem;
+        }
+
+        #rt-filters legend, .rt-filter-control label {
+            font-weight: 600;
+        }
+
+        .rt-filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+            gap: 1rem;
+            margin-bottom: .8rem;
+        }
+
+        .rt-filter-control:not([hidden]) {
+            display: flex;
+            flex-direction: column;
+            gap: .35rem;
+            min-width: 0;
+        }
+
+        #rt-territory-control:not([hidden]) {
+            display: contents;
+        }
+
+        .rt-filter-control select {
+            width: 100%;
+            min-width: 0;
+            padding: .5rem .7rem;
+            border: 1px solid #a9c5ca;
+            border-radius: .5rem;
+            background: white;
+            color: #173042;
+            font: inherit;
+        }
+
+        .rt-filter-control select:focus-visible {
+            outline: 3px solid #176b68;
+            outline-offset: 2px;
+        }
+
     </style>
     <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
@@ -732,7 +829,10 @@
     <script defer src="https://cdn.jsdelivr.net/npm/vega-lite@6.5.0/build/vega-lite.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/vega-embed@7.3.0/build/vega-embed.min.js"></script>
     <script defer src="annual_territories.js?v=20261107-section-folders"></script>
-    <script defer src="charts.js?v=20261107-age-specifications"></script>
+    <script defer src="charts.js?v=20261109-rt-section"></script>
+    <script defer src="comparability.js?v=20261107-section-folders"></script>
+    <script defer src="rt_filters.js?v=20261107-section-folders"></script>
+    <script defer src="rt_municipal_priorities.js?v=20261109-decline-note"></script>
     <script defer src="population_density.js?v=20261107-section-folders"></script>
     <script defer src="spatial.js?v=20261017-5"></script>
 </head>
@@ -761,7 +861,8 @@
         <ul>
             <li><a href="#year-total">Varicela totales por año</a></li>
             <li><a href="#age-title">2. Varicela por grupo de edad</a></li>
-            <li><a href="#weekly-title">Evolución por semana epidemiológica</a></li>
+            <li><a href="#weekly-title">3. Evolución por semana epidemiológica</a></li>
+            <li><a href="#rt-title">4. Número reproductivo instantáneo (Rₜ)</a></li>
             <li><a href="#seasonality-title">Estacionalidad y Gradiente Latitudinal</a></li>
             <li><a href="#age-shift-title">Impacto vacunación y cambios en la distribución etaria</a></li>
             <li><a href="#spatial-title">Heterogeneidad espacial</a></li>
@@ -984,21 +1085,14 @@
     </section>
 
     <section class="panel" aria-labelledby="weekly-title">
-        <h2 id="weekly-title">Evolución por semana epidemiológica</h2>
-        <p class="intro">Cada observación corresponde a una semana reportada. El eje horizontal muestra los años
+        <h2 id="weekly-title">3. Evolución por semana epidemiológica</h2>
+        <p class="intro">Cada observación corresponde a una semana de la <a href="https://github.com/thesis-varicella-colombia/data-processing/tree/main/data/raw/sivigila#esquema-y-diccionario-de-datos">fecha de notificación (<code>FEC_NOT</code>)</a>. El eje horizontal muestra los años
             epidemiológicos; al pasar sobre la línea aparecen el año y la semana exactos. El tramo naranja de 2007 se
             conserva solo como referencia diagnóstica.</p>
-        <div class="weekly-filter">
-            <label for="weekly-age-group">Grupo de edad</label>
-            <select id="weekly-age-group" disabled>
-                <option value="all">Todas las edades</option>
-                <option value="under_1">Menor de 1 año</option>
-                <option value="1_4">1–4 años</option>
-                <option value="5_14">5–14 años</option>
-                <option value="15_49">15–49 años</option>
-                <option value="50_plus">50 años o más</option>
-            </select>
-        </div>
+        <fieldset id="weekly-age-options" class="secondary-age-options" disabled>
+            <legend>Grupos de edad en ambas gráficas</legend>
+        </fieldset>
+        <p class="age-note">Marca uno o varios grupos para compararlos. «Todas las edades» muestra el total nacional.</p>
         <div class="age-grid">
             <div>
                 <h3>Notificaciones por semana</h3>
@@ -1006,53 +1100,245 @@
                 <div class="age-chart" id="chart-weekly-cases" role="img"
                      aria-label="Serie semanal de notificaciones de varicela entre 2007 y 2025; 2007 es diagnóstico"></div>
                 <p class="scroll-hint">Desplaza el gráfico horizontalmente para ver todos los años.</p>
+                <p class="data-specifications"><a href="https://github.com/thesis-varicella-colombia/exploratory-analysis/blob/main/docs/data_processed/evolucion_semanal/README.md#notificaciones-por-semana">Notificaciones por semana: Especificaciones de los datos</a>.</p>
             </div>
             <div>
                 <h3>Incidencia notificada por semana</h3>
-                <p>Notificaciones de la semana por 100.000 habitantes de la población anual del grupo seleccionado.</p>
+                <p>Notificaciones de la semana por 100.000 habitantes de la población anual de cada grupo seleccionado.</p>
                 <div class="age-chart" id="chart-weekly-rates" role="img"
                      aria-label="Serie semanal de tasas de notificación por 100.000 habitantes entre 2007 y 2025; 2007 es diagnóstico"></div>
                 <p class="scroll-hint">Desplaza el gráfico horizontalmente para ver todos los años.</p>
+                <p class="data-specifications"><a href="https://github.com/thesis-varicella-colombia/exploratory-analysis/blob/main/docs/data_processed/evolucion_semanal/README.md#incidencia-notificada-por-semana">Incidencia notificada por semana: Especificaciones de los datos</a>.</p>
             </div>
         </div>
         <p class="age-note">Una interrupción indica una semana sin registros en la base; no se interpreta como cero
             notificaciones. La opción «Todas las edades» incluye las notificaciones sin edad registrada; estas no forman
             un grupo seleccionable porque no tienen denominador propio. La tasa semanal usa la población anual como
             denominador y no se debe sumar para obtener la tasa anual.</p>
-        <p><a href="data_processed/weekly_series_2007_2025.csv">Descargar el CSV semanal</a>.</p>
-        <details id="weekly-table-details">
-            <summary>Ver tabla semanal del grupo seleccionado</summary>
-            <div class="table-scroll">
-                <table>
-                    <caption id="weekly-table-caption">Todas las edades</caption>
-                    <thead>
-                    <tr>
-                        <th scope="col">Año</th>
-                        <th scope="col">Semana</th>
-                        <th scope="col">Notificaciones</th>
-                        <th scope="col">Población</th>
-                        <th scope="col">Tasa semanal por 100.000</th>
-                    </tr>
-                    </thead>
-                    <tbody id="weekly-table">
-                    <tr><td colspan="5">Cargando datos semanales…</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </details>
-        <h3>Conclusiones de las series semanales</h3>
+
+        <h3>Conclusiones de la evolución semanal</h3>
         <ul class="notes">
             <li>Hay crestas y valles intraanuales, más claros en el total y en la infancia; clima y calendario escolar son posibles explicaciones aún no evaluadas.</li>
-            <li>Las tasas más altas son en menores de 5 años: picos de 178 casos y 23,84 por 100.000 en menores de 1 año, y 860 y 28,63 en 1–4 años; el total llega a 7,49 y ≥50 años a 0,54.</li>
-            <li>Tras 2021 reaparecen picos infantiles: en las semanas 32–34 de 2023 se alcanzan 9,81 por 100.000 en menores de 1 año y 12,50 en 1–4; en 2024 bajan.</li>
-            <li>En 15–49 años el promedio semanal sube de 107 casos en 2021 a 280 en 2025, con oscilaciones menos marcadas que en la infancia.</li>
-            <li>En 5–14 años, el máximo semanal de 2022–2025 es 223 casos y 2,72 por 100.000, frente a 1.379 casos antes de 2020.</li>
+            <li>Las tasas más altas son en menores de 5 años: picos de 175 casos y 23,44 por 100.000 en menores de 1 año, y 867 y 28,44 en 1–4 años; el total llega a 7,53 y ≥50 años a 0,57.</li>
+            <li>Tras 2021 reaparecen picos infantiles: en las semanas 32–34 de 2023 se alcanzan 11,04 por 100.000 en menores de 1 año y 12,53 en 1–4; en 2024 bajan.</li>
+            <li>En 15–49 años el promedio semanal sube de 106 casos en 2021 a 279 en 2025, con oscilaciones menos marcadas que en la infancia.</li>
+            <li>En 5–14 años, el máximo semanal de 2022–2025 es 263 casos y 3,21 por 100.000, frente a 1.368 casos antes de 2020.</li>
             <li>La caída empieza en la semana 12 de 2020 y afecta a todas las edades; coincide con la pandemia, pero estos datos no distinguen cambios de transmisión, atención o notificación.</li>
-            <li>El tramo naranja de 2007 registra 52 semanas, pero suma 26.441 notificaciones frente a 69.695 casos del <a href="https://www.minsalud.gov.co/Documentos%20y%20Publicaciones/PROTOCOLO%20VARICELA.pdf">documento oficial</a>. La discrepancia podría relacionarse con una fase de implementación y calibración de los reportes.</li>
-            <li>Al cierre de 2008 hay una caída abrupta y falta la semana 51; los registros repuntan en 2009. El vacío no equivale a cero casos ni prueba una falla de carga.</li>
+            <li>El tramo naranja de 2007 registra 52 semanas, pero suma 26.294 notificaciones frente a 69.695 casos del <a href="https://www.minsalud.gov.co/Documentos%20y%20Publicaciones/PROTOCOLO%20VARICELA.pdf">documento oficial</a>. La discrepancia podría relacionarse con una fase de implementación y calibración de los reportes.</li>
+            <li>Al cierre de 2008 hay una caída abrupta y falta la semana 52; los registros repuntan en 2009. El vacío no equivale a cero casos ni prueba una falla de carga.</li>
         </ul>
     </section>
 
+    <section class="panel" aria-labelledby="rt-title">
+        <h2 id="rt-title">4. Número reproductivo instantáneo (Rₜ)</h2>
+        <p class="intro">Rₜ es el número reproductivo efectivo en el momento t: cuántas personas contagia,
+            en promedio, una persona infectada bajo las condiciones de ese momento.</p>
+        <ul>
+            <li>Rₜ &gt; 1: la transmisión tiende a crecer.</li>
+            <li>Rₜ &lt; 1: tiende a disminuir.</li>
+            <li>Rₜ ≈ 1: tiende a mantenerse estable.</li>
+        </ul>
+        <p class="data-specifications"><a href="https://github.com/thesis-varicella-colombia/exploratory-analysis/blob/main/docs/data_processed/numero_reproductivo/README.md">Rₜ: Metodología para la estimación</a>.</p>
+        <p class="intro">Estimaciones por fecha de notificación e inicio de síntomas.
+            Los filtros siguientes cambian ambas gráficas y el detalle de 2013–2014.</p>
+        <fieldset id="rt-filters" disabled>
+            <legend>Filtros compartidos de Rₜ</legend>
+            <p class="age-note">Los departamentos están ordenados de norte a sur según la latitud de su centroide geográfico.</p>
+            <div class="rt-filter-grid">
+                <div class="rt-filter-control">
+                    <label for="rt-dimension">Dimensión</label>
+                    <select id="rt-dimension">
+                        <option value="national">Nacional</option>
+                        <option value="territory">Departamento o municipio</option>
+                    </select>
+                </div>
+                <div id="rt-territory-control" hidden>
+                    <div class="rt-filter-control">
+                        <label for="rt-department">Departamento (norte a sur)</label>
+                        <select id="rt-department"></select>
+                    </div>
+                    <div class="rt-filter-control">
+                        <label for="rt-municipality">Municipio o entidad</label>
+                        <div class="spatial-combobox">
+                            <input id="rt-municipality" type="search" role="combobox" aria-autocomplete="list"
+                                   aria-expanded="false" aria-controls="rt-municipality-options"
+                                   placeholder="Buscar municipio o código" autocomplete="off">
+                            <div id="rt-municipality-options" class="spatial-options" role="listbox" hidden></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <label for="rt-full-scale"><input id="rt-full-scale" type="checkbox"> Mostrar escala completa de Rₜ por inicio de síntomas</label>
+        </fieldset>
+        <p id="rt-filter-status" class="age-note" role="status">Cargando estimaciones nacionales y territoriales…</p>
+        <h3 id="rt-notification-title">Rₜ nacional por fecha de notificación</h3>
+        <div class="age-chart" id="chart-rt-national" role="img"
+             aria-label="R_t nacional diario estimado de 2008 a 2025, con banda creíble condicional del 95 por ciento y umbral igual a uno"></div>
+        <p class="data-specifications"><a href="https://github.com/thesis-varicella-colombia/exploratory-analysis/blob/main/docs/data_processed/numero_reproductivo/README_notification.md">Rₜ nacional por fecha de notificación: Especificaciones de los datos</a>.</p>
+        <p class="scroll-hint">Desplaza el gráfico horizontalmente para ver todos los años.</p>
+        <h3 id="rt-symptom-title">Rₜ nacional por inicio de síntomas</h3>
+        <p class="age-note">Se muestra la misma selección de la gráfica por notificación.
+            <a href="#rt-filters">Cambiar los filtros compartidos de Rₜ</a>.</p>
+        <div class="age-chart" id="chart-rt-onset" role="img"
+             aria-label="R_t nacional por inicio de síntomas, 2008 a 2025. Vista principal con eje vertical de cero a dos; los valores mayores se muestran en el detalle siguiente."></div>
+        <p class="data-specifications"><a href="https://github.com/thesis-varicella-colombia/exploratory-analysis/blob/main/docs/data_processed/numero_reproductivo/README_symptom.md">Rₜ nacional por inicio de síntomas: Especificaciones de los datos</a>.</p>
+        <p class="scroll-hint">Desplaza el gráfico horizontalmente para ver todos los años.</p>
+        <h4>2013–marzo de 2014: escala completa</h4>
+        <p class="age-note">Este detalle muestra Rₜ estimado a partir de casos por fecha de inicio de síntomas
+            para examinar un período con problemas de calidad de datos: en los datos del año 2013, solo el 40,5 %
+            de los registros elegibles tiene esa fecha interpretable. Su propósito es diagnóstico: mostrar
+            estimaciones que pueden estar afectadas por los vacíos y cambios en el registro.</p>
+        <div class="age-chart" id="chart-rt-onset-detail" role="img"
+             aria-label="Detalle de R_t por inicio de síntomas entre 2013 y marzo de 2014, con escala vertical completa y picos de hasta 17,01"></div>
+        <p class="data-specifications"><a href="https://github.com/thesis-varicella-colombia/exploratory-analysis/blob/main/docs/data_processed/numero_reproductivo/README_symptom_detail.md">Rₜ por síntomas, 2013–marzo de 2014: Especificaciones de los datos</a>.</p>
+
+
+        <h3 id="rt-information-title">Precisión y tramos interpretables de Rₜ</h3>
+        <p>Esta tabla resume cuántos días tienen estimaciones de Rₜ con menor incertidumbre y poca dependencia
+            de la previa. Usa los datos diarios originales del territorio seleccionado en los filtros.</p>
+        <h4>Criterios de precisión y resultados Rₜ</h4>
+        <p>Para cada día con una estimación válida, se revisan dos condiciones. Primero, que el intervalo
+            creíble del 95 % no sea demasiado ancho respecto a la media estimada de Rₜ:</p>
+        <div class="formula">
+            <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"
+                  aria-label="Límite superior menos límite inferior, dividido entre la media posterior de R sub t, menor o igual que el límite elegido">
+                <mfrac>
+                    <mrow>
+                        <msubsup><mi>R</mi><mi>t</mi><mtext>sup</mtext></msubsup>
+                        <mo>−</mo>
+                        <msubsup><mi>R</mi><mi>t</mi><mtext>inf</mtext></msubsup>
+                    </mrow>
+                    <msub><mover><mi>R</mi><mo>^</mo></mover><mi>t</mi></msub>
+                </mfrac>
+                <mo>≤</mo><mi>ℓ</mi>
+            </math>
+        </div>
+        <p>La fracción compara la anchura del intervalo con la media posterior.
+            <math xmlns="http://www.w3.org/1998/Math/MathML"><mi>ℓ</mi></math> es el máximo que eliges en el selector:
+            un valor menor exige más precisión. Con un límite de 1, el intervalo no puede ser más ancho que la media estimada.</p>
+        <p>Segundo, que la previa aporte como máximo un 10 % a cada parámetro de la posterior Gamma
+            (forma y tasa). Por ejemplo, su aporte a la forma se calcula así:</p>
+        <div class="formula">
+            <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"
+                  aria-label="Uno dividido entre uno más C sub t, menor o igual que diez por ciento">
+                <mfrac><mn>1</mn><mrow><mn>1</mn><mo>+</mo><msub><mi>C</mi><mi>t</mi></msub></mrow></mfrac>
+                <mo>≤</mo><mn>0,10</mn>
+            </math>
+        </div>
+        <p><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>C</mi><mi>t</mi></msub></math>
+            es el número de casos de la ventana de 14 días. Cuantos más casos hay, menor es ese aporte.
+            Se comprueba también el aporte a la tasa; cumplir solo una de las dos condiciones no basta.</p>
+        <div class="weekly-filter"><label for="rt-information-width">Límite de anchura relativa
+            <math xmlns="http://www.w3.org/1998/Math/MathML"><mi>ℓ</mi></math></label>
+            <select id="rt-information-width"><option value="0.5">0,5 · más exigente</option><option value="1" selected>1 · intermedio</option><option value="2">2 · menos exigente</option></select></div>
+        <div class="table-scroll"><table>
+            <caption>Precisión condicional por período. Las ventanas móviles de 14 días se solapan y no son observaciones independientes.</caption>
+            <thead><tr><th scope="col">Fecha de referencia</th><th scope="col">Período</th><th scope="col">Días observados con Rₜ (%)</th>
+                <th scope="col">Días que cumplen / observados</th><th scope="col">Cumplen (%)</th><th scope="col">Mediana de anchura relativa, todos los estimables</th>
+                <th scope="col">Días que cumplen: intervalo &gt;1 / &lt;1 / incluye 1</th><th scope="col">Tramo consecutivo más largo que cumple</th></tr></thead>
+            <tbody id="rt-information-table"></tbody></table></div>
+        <p class="data-specifications"><a href="https://github.com/thesis-varicella-colombia/exploratory-analysis/blob/main/docs/data_processed/numero_reproductivo/rt_information/README.md">Diagnóstico de precisión de Rₜ: Especificaciones de los datos</a>.</p>
+        <p>Cumplir estos criterios no garantiza que la vigilancia sea completa. El intervalo puede incluir
+            <math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>R</mi><mi>t</mi></msub><mo>=</mo><mn>1</mn></math>
+            y no distinguir crecimiento de descenso. La incertidumbre mostrada no incluye subregistro ni fechas faltantes;
+            tampoco se evalúan aquí otras previas, ventanas o distribuciones del intervalo serial.
+            El modelo sigue a <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3816335/">Cori et al.</a></p>
+        <p>Para Colombia por fecha de notificación, con límite de anchura relativa igual a 1, los cuatro períodos
+            presentan días con señales de crecimiento y de descenso. Entre los días que cumplen los criterios,
+            el intervalo incluye 1 en aproximadamente el 23 % de 2008–2014, el 22 % de 2015–2019,
+            el 49 % de 2020–2021 y el 35 % de 2022–2025. La proporción sin una dirección claramente distinguible
+            aumenta durante la pandemia y luego disminuye, aunque permanece por encima de los períodos anteriores.
+            La serie por síntomas muestra un patrón similar. Incluir 1 no demuestra estabilidad, y las ventanas solapadas no son independientes.</p>
+
+        <p id="rt-information-status" class="age-note" role="status">Cargando diagnóstico de Rₜ…</p>
+        <h3 id="rt-municipal-priorities-title">Municipios prioritarios para analizar Rₜ · 2022–2025</h3>
+        <p>Estas listas reúnen los municipios con señales altas que merecen revisión. Comparan las fechas de
+            notificación e inicio de síntomas y usan el criterio intermedio de precisión, independientemente
+            de los filtros de las gráficas. Inicialmente se ordenan de mayor a menor por el pico de Rₜ por síntomas.
+            Haz clic en las flechas de los encabezados para ordenar por otra columna o invertir el orden.
+            Son prioridades de análisis, no confirmaciones de brotes.</p>
+        <p id="rt-municipal-priorities-status" class="age-note" role="status">Cargando prioridades municipales…</p>
+        <h4>Señales altas sostenidas en 2022–2025</h4>
+        <p>Al menos siete días consecutivos con
+            <math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>R</mi><mi>t</mi></msub><mo>≥</mo><mn>2</mn></math>
+            en ambas fechas. Los tramos comparados se solapan o están separados por un máximo de 14 días.
+            El pico corresponde al tramo seleccionado, no necesariamente al máximo de todo el período.</p>
+        <div class="table-scroll rt-priority-scroll" tabindex="0" role="region" aria-label="Municipios con señales sostenidas de Rₜ; tabla desplazable">
+            <table>
+                <caption id="rt-priority-sustained-caption">Señales altas sostenidas en ambas fechas</caption>
+                <thead><tr>
+                    <th scope="col">Código</th><th scope="col">Municipio</th><th scope="col">Departamento</th>
+                    <th scope="col">Tramo por notificación</th><th scope="col">Días</th><th scope="col">Pico Rₜ por notificación</th>
+                    <th scope="col">Tramo por síntomas</th><th scope="col">Días</th><th scope="col">Pico Rₜ por síntomas</th>
+                </tr></thead>
+                <tbody id="rt-priority-sustained-table"></tbody>
+            </table>
+        </div>
+        <p class="data-specifications"><a href="https://github.com/thesis-varicella-colombia/exploratory-analysis/blob/main/docs/data_processed/numero_reproductivo/municipal_priorities/README_data.md">Municipios prioritarios por Rₜ: Especificaciones de los datos</a>.</p>
+        <h4>Picos muy altos recientes: auditar antes de interpretar su magnitud</h4>
+        <p>Picos de la media posterior con
+            <math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>R</mi><mi>t</mi></msub><mo>≥</mo><mn>5</mn></math>
+            en ambas fechas y una diferencia máxima de 14 días entre sus máximos.
+            Un valor alto puede reflejar un aumento desde muy pocos casos previos; no implica por sí solo
+            muchos casos ni transmisión local de esa magnitud.</p>
+        <div class="table-scroll rt-priority-scroll" tabindex="0" role="region" aria-label="Municipios con picos muy altos de Rₜ; tabla desplazable">
+            <table>
+                <caption id="rt-priority-peaks-caption">Picos de Rₜ de al menos cinco en ambas fechas</caption>
+                <thead><tr>
+                    <th scope="col">Código</th><th scope="col">Municipio</th><th scope="col">Departamento</th>
+                    <th scope="col">Fecha del pico por notificación</th><th scope="col">Pico Rₜ por notificación</th>
+                    <th scope="col">Fecha del pico por síntomas</th><th scope="col">Pico Rₜ por síntomas</th>
+                </tr></thead>
+                <tbody id="rt-priority-peaks-table"></tbody>
+            </table>
+        </div>
+        <p class="age-note">Desplázate dentro de las tablas para ver todos los municipios y columnas.
+            Las dos fechas comparten registros y las ventanas se solapan; no son confirmaciones independientes.</p>
+        <p class="data-specifications"><a href="https://github.com/thesis-varicella-colombia/exploratory-analysis/blob/main/docs/data_processed/numero_reproductivo/municipal_priorities/README_data.md">Municipios prioritarios por Rₜ: Especificaciones de los datos</a>.</p>
+        <h3>Conclusiones de Rₜ</h3>
+        <ul class="notes">
+            <li>Las notificaciones nacionales bajaron de un promedio aproximado de 248 casos diarios en 2008–2014
+                a 74 en 2022–2025, pero ambos Rₜ siguieron oscilando a ambos lados de 1, sin mantenerse por debajo
+                del umbral después de 2019. La reducción de las notificaciones no estuvo acompañada de un Rₜ
+                persistentemente inferior a 1.</li>
+            <li>La serie nacional por inicio de síntomas presenta un patrón estacional: Rₜ tiende a ser mayor
+                al comienzo del año y menor al final. Fuera del tramo enero de 2013–marzo de 2014, la mediana
+                de enero–marzo supera la de octubre–diciembre en los 16 años con estimaciones para ambos trimestres.
+                Al resumir las medianas de cada año, se obtienen aproximadamente 1,08 y 0,94, respectivamente, lo que sugiere
+                una tendencia de crecimiento al inicio del año y de descenso al cierre.</li>
+            <li>El descenso de Rₜ durante 2020 fue transitorio: en los años posteriores reaparecieron períodos
+                por encima de 1 en ambas series. El cambio coincidió con la pandemia y no permite separar
+                sus efectos sobre la transmisión, la consulta y la notificación.</li>
+            <li>El máximo de Rₜ por síntomas, 17,01 en diciembre de 2013, aparece en un período con fuertes
+                vacíos de información: solo el 40,5 % de los registros elegibles del archivo de ese año tiene
+                inicio de síntomas interpretable. Ese extremo requiere revisión de la calidad del registro
+                antes de atribuirlo a un aumento de la transmisión.</li>
+        </ul>
+        <h4>Municipios</h4>
+        <ul class="notes">
+            <li id="rt-scope-conclusion">En 2022–2025, 1.001 de las 1.122 entidades no tienen ningún día de Rₜ
+                por notificación que cumpla el criterio intermedio de precisión, y solo siete lo cumplen
+                durante al menos la mitad de los días observados. El diagnóstico muestra, por tanto,
+                un alcance municipal limitado y muy desigual.</li>
+            <li>Medellín y Barranquilla presentan señales altas sostenidas con picos cercanos a 2,4–3,0,
+                mientras que Patía, Calarcá y Valle del Guamuez alcanzan 29,0, 15,0 y 13,7 por notificación.
+                Estos contrastes no demuestran un efecto del tamaño poblacional sobre la varianza de Rₜ.
+                Los extremos pueden reflejar aumentos desde pocos casos previos, brotes concentrados o
+                acumulación de reportes; no necesariamente un crecimiento generalizado en el municipio.</li>
+            <li>Bogotá y Cali son los únicos municipios seleccionados con descensos sostenidos en ambas
+                fechas: entre finales de marzo y mediados de abril de 2020, Rₜ por notificación alcanzó
+                mínimos de 0,26 y 0,22, con tramos de 18 y 15 días, respectivamente. Coinciden con el
+                confinamiento inicial a causa del COVID-19, sin permitir separar cambios de transmisión, consulta y registro.</li>
+            <li>Las señales altas aparecen en distintos municipios a lo largo de 2022–2025, sin concentrarse
+                en un único episodio nacional. Esto sugiere dinámicas locales con calendarios diferentes,
+                aunque la selección no demuestra que los brotes sean independientes ni establece por sí
+                sola una etapa endémica.</li>
+            <li>Calarcá, El Carmen de Bolívar, Valle del Guamuez y Tuluá reúnen picos muy altos y señales
+                sostenidas de 7–13 días en ambas fechas. La coincidencia permite priorizar episodios que
+                se prolongan más allá de un pico aislado, pero las series comparten registros y ventanas
+                solapadas: no confirma brotes ni descarta acumulación de reportes.</li>
+        </ul>
+    </section>
 
     <section class="panel" aria-labelledby="seasonality-title">
         <h2 id="seasonality-title">Estacionalidad y Gradiente Latitudinal</h2>

@@ -1,0 +1,93 @@
+{
+  "source": "docs/data_processed/numero_reproductivo/rt_stratified",
+  "manifest_sha256": "37821b74661db3f1d3e04b0935270a227f86058e1d175634d96240b7b6e62019",
+  "script_sha256": "0e81f571a00f2bf6e3a24235ecec2d9791cf9276e782ac93c38145f785cfa55c",
+  "municipalities": 1122,
+  "date_methods": [
+    "notification",
+    "symptom"
+  ],
+  "periods": {
+    "2008-2025": [
+      2008,
+      2025
+    ],
+    "2008-2014": [
+      2008,
+      2014
+    ],
+    "2015-2019": [
+      2015,
+      2019
+    ],
+    "2020-2021": [
+      2020,
+      2021
+    ],
+    "2022-2025": [
+      2022,
+      2025
+    ]
+  },
+  "precise_screen": {
+    "relative_width_max": 1,
+    "prior_shape_fraction_max": 0.1,
+    "prior_rate_fraction_max": 0.1
+  },
+  "width_sensitivity": [
+    0.5,
+    1,
+    2
+  ],
+  "extremes": {
+    "high_min": 2,
+    "low_max": 0.5,
+    "credible_interval_excludes_one": true
+  },
+  "paired_runs": {
+    "min_days_each_high": 7,
+    "min_days_each_low": 14,
+    "max_calendar_gap_days": 14,
+    "independent_confirmation": false
+  },
+  "very_high": {
+    "minimum_peak_each_method": 5,
+    "max_peak_date_difference_days": 14
+  },
+  "web_tables": {
+    "version": 1,
+    "period": "2022-2025",
+    "width_limit": 1,
+    "prior_fraction_max": 0.1,
+    "sustained_min_rt": 2,
+    "sustained_min_days": 7,
+    "peak_min_rt": 5,
+    "matching_tolerance_days": 14,
+    "sustained_count": 44,
+    "peak_count": 44,
+    "overlap_count": 15,
+    "unique_municipalities": 73,
+    "sort_field": "symptom_peak",
+    "sort_direction": "descending",
+    "sort_tie_breaker": "code"
+  },
+  "quality_flags": {
+    "symptom_data_gap_window": [
+      "2013-01-01",
+      "2014-03-31"
+    ],
+    "notification_gap_context": [
+      "2008-12-01",
+      "2009-02-28"
+    ]
+  },
+  "reconciliation_rows": 8976,
+  "summary_rows": 11220,
+  "episode_rows": 5676,
+  "paired_episode_rows": 506,
+  "candidate_rows": 90,
+  "candidate_municipalities": 75,
+  "additional_review_municipalities": 5,
+  "raw_clusters_audited": 3,
+  "interpretation": "descriptive, retrospective screening; thresholds are exploratory; overlapping windows and both date series are dependent; no Rt re-estimation; raw-date audit restricted to the listed three clusters"
+}

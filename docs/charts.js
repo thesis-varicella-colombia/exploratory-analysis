@@ -2,7 +2,9 @@
 
 const DATA_URL = "data_processed/varicela_totales_por_anio/annual_series_2007_2025.csv?v=20261023-notification";
 const AGE_DATA_URL = "data_processed/varicela_grupo_edad/age_group_series_2007_2025.csv?v=20261023-notification";
-const WEEKLY_DATA_URL = "data_processed/weekly_series_2007_2025.csv?v=20261017-2";
+const WEEKLY_DATA_URL = "data_processed/evolucion_semanal/weekly_series_2007_2025.csv?v=20261023-notification";
+const RT_DATA_URL = "data_processed/numero_reproductivo/rt_national_daily.csv?v=20261025-daily";
+const RT_ONSET_DATA_URL = "data_processed/numero_reproductivo/rt_national_symptom_daily.csv?v=20261025-onset";
 const LATITUDE_WEEK_DATA_URL = "data_processed/latitude_week_heatmap.csv?v=20261020-2";
 const SEASONAL_PERIODS = [
   { label: "2008–2014", start: 2008, end: 2014 },
@@ -652,7 +654,12 @@ function ratesSpec(rows) {
 function weeklySpec(rows, field) {
   const isRate = field === "notification_rate_per_100k";
   const [eventBand, ...eventMarks] = weeklyEventLayers(rows);
-  const yearTicks = rows.filter((row) => row.week === 1).map((row) => row.week_position);
+  const yearTicks = [...new Set(rows.filter((row) => row.week === 1).map((row) => row.week_position))].sort((a, b) => a - b);
+  const groups = ["Todas las edades", ...AGE_ORDER.slice(0, 5)];
+  const colors = ["#173042", ...AGE_COLORS];
+  const selectedLabels = [...new Set(rows.map((row) => row.age_label))];
+  const groupColor = { field: "age_label", type: "nominal", title: "Grupo de edad",
+    scale: { domain: groups, range: colors }, legend: { orient: "bottom" } };
   const tooltip = [
     { field: "age_label", title: "Grupo de edad" },
     { field: "year", title: "Año epidemiológico" },
@@ -662,7 +669,7 @@ function weeklySpec(rows, field) {
   if (isRate) tooltip.push({ field, title: "Tasa semanal por 100.000", format: ".2f" });
   return {
     $schema: SCHEMA,
-    title: `${isRate ? "Incidencia notificada" : "Notificaciones"} por semana · ${rows[0].age_label}`,
+    title: `${isRate ? "Incidencia notificada" : "Notificaciones"} por semana · ${selectedLabels.join(", ")}`,
     width: CHART_WIDTH,
     height: 300,
     background: "transparent",
@@ -670,7 +677,7 @@ function weeklySpec(rows, field) {
     encoding: {
       x: {
         field: "week_position", type: "quantitative", title: "Año epidemiológico",
-        scale: { domain: [1, rows.at(-1).week_position], nice: false, zero: false },
+        scale: { domain: [1, Math.max(...rows.map((row) => row.week_position))], nice: false, zero: false },
         axis: {
           values: yearTicks,
           labelExpr: `2007 + indexof(${JSON.stringify(yearTicks)}, datum.value)`,
@@ -688,11 +695,13 @@ function weeklySpec(rows, field) {
       eventBand,
       {
         transform: [{ filter: "datum.year >= 2008" }],
-        mark: { type: "line", color: "#197f7a", strokeWidth: 1.7 },
+        mark: { type: "line", strokeWidth: 1.7 },
+        encoding: { color: groupColor, detail: { field: "age_group" } },
       },
       {
         transform: [{ filter: "datum.year === 2007" }],
-        mark: { type: "line", color: "#d97736", strokeWidth: 1.7 },
+        mark: { type: "line", color: "#d97736", strokeWidth: 1.7, strokeDash: [4, 2] },
+        encoding: { detail: { field: "age_group" } },
       },
       {
         transform: [{ filter: `datum.${field} != null` }],
@@ -703,6 +712,158 @@ function weeklySpec(rows, field) {
     ],
     config: { view: { stroke: null }, font: "system-ui, sans-serif" },
   };
+}
+
+function rtSpec(rows, { onset = false, detail = false, label = null, fullScale = false } = {}) {
+  const weekStart = (year, week) => {
+    const first = new Date(Date.UTC(year, 0, 4));
+    first.setUTCDate(first.getUTCDate() - first.getUTCDay() + 7 * (week - 1));
+    return first.toISOString().slice(0, 10);
+  };
+  const afterWeek = (year, week) => {
+    const start = new Date(`${weekStart(year, week)}T00:00:00Z`);
+    start.setUTCDate(start.getUTCDate() + 7);
+    return start.toISOString().slice(0, 10);
+  };
+  const gapStart = weekStart(2008, 52);
+  const gapEnd = afterWeek(2008, 52);
+  const plottedRows = detail
+    ? (rows.detailRows || rows.filter((row) => row.date >= "2013-01-01" && row.date <= "2014-03-31")) : rows;
+  const caseField = onset ? "cases" : "notifications";
+  const dateTitle = onset ? "Fecha de inicio de síntomas" : "Fecha de notificación";
+  const summarized = !detail && rows.some((row) => row.days > 1);
+  const tooltip = [
+    { field: "date", type: "temporal", title: dateTitle, format: "%d/%m/%Y" },
+    ...(summarized ? [
+      { field: "period_start", type: "temporal", title: "Desde", format: "%d/%m/%Y" },
+      { field: "period_end", type: "temporal", title: "Hasta", format: "%d/%m/%Y" },
+      { field: "days", title: "Días resumidos" },
+    ] : []),
+    { field: "year", title: "Año epidemiológico" },
+    { field: "week", title: "Semana" },
+    { field: caseField, title: summarized ? "Promedio diario de casos" : onset ? "Inicios de síntomas del día" : "Notificaciones del día", format: summarized ? ".2f" : ",d" },
+    { field: "window_cases", title: summarized ? "Media de casos en ventanas de 14 días" : "Casos en ventana de 14 días", format: summarized ? ".2f" : ",d" },
+    { field: "rt", title: summarized ? "Rₜ (promedio de medias diarias)" : "Rₜ (media posterior)", format: ".3f" },
+    { field: "rt_lower_95", title: summarized ? "Media del límite inferior diario" : "Límite inferior 95%", format: ".3f" },
+    { field: "rt_upper_95", title: summarized ? "Media del límite superior diario" : "Límite superior 95%", format: ".3f" },
+  ];
+  const background = detail ? [
+    { data: { values: [{ start: "2013-01-01", end: "2014-01-01" }] },
+      mark: { type: "rect", color: "#e9d5b5", opacity: .45 },
+      encoding: { x: { field: "start", type: "temporal" }, x2: { field: "end" },
+        y: { value: 0 }, y2: { value: 230 } } },
+  ] : [
+    { data: { values: [{ start: weekStart(2020, 12), end: afterWeek(2021, 52) }] },
+      mark: { type: "rect", color: PANDEMIC_COLOR, opacity: .7 },
+      encoding: { x: { field: "start", type: "temporal" }, x2: { field: "end" },
+        y: { value: 0 }, y2: { value: 300 } } },
+    { data: { values: [{ start: gapStart, end: gapEnd }] },
+      mark: { type: "rect", color: "#f5e4d3", opacity: .7 },
+      encoding: { x: { field: "start", type: "temporal" }, x2: { field: "end" },
+        y: { value: 0 }, y2: { value: 300 } } },
+    ...(onset ? [{ data: { values: [{ start: "2013-01-01", end: "2014-01-01" }] },
+      mark: { type: "rect", color: "#e9d5b5", opacity: .45 },
+      encoding: { x: { field: "start", type: "temporal" }, x2: { field: "end" },
+        y: { value: 0 }, y2: { value: 300 } } }] : []),
+  ];
+  return {
+    $schema: SCHEMA,
+    title: (detail ? "Inicio de síntomas · 2013–marzo de 2014 · escala completa"
+      : onset ? "Rₜ por inicio de síntomas · 2008–2025"
+        : "Rₜ por fecha de notificación · 2008–2025") + ` · ${label || "Colombia · todas las edades"}`,
+    width: CHART_WIDTH, height: detail ? 230 : 300,
+    background: "transparent", data: { values: plottedRows },
+    encoding: {
+      x: { field: "date", type: "temporal", title: dateTitle,
+        scale: { domain: detail ? ["2013-01-01", "2014-03-31"]
+          : [rows[0].date, rows.at(-1).date], nice: false },
+        axis: { format: detail ? "%b %Y" : "%Y", tickCount: detail ? 6 : 18, labelAngle: -45,
+          labelColor: "#425c68", titleColor: "#425c68" } },
+      y: { field: "rt", type: "quantitative",
+        title: onset && !detail && !fullScale ? "Rₜ estimado (vista 0–2)" : "Rₜ estimado",
+        scale: onset && !detail && !fullScale ? { domain: [0, 2], nice: false } : { zero: true },
+        axis: { gridColor: "#e4ecee", labelColor: "#425c68", titleColor: "#425c68" } },
+    },
+    layer: [
+      ...background,
+      { data: { values: [{ level: 1 }] }, mark: { type: "rule", color: "#334b5c", strokeDash: [5, 4] },
+        encoding: { y: { field: "level" } } },
+      { mark: { type: "area", color: "#197f7a", opacity: .2, clip: onset && !detail && !fullScale },
+        encoding: { y: { field: "rt_lower_95" }, y2: { field: "rt_upper_95" },
+          detail: { field: "segment" } } },
+      { mark: { type: "line", color: "#197f7a", strokeWidth: 1.8, clip: onset && !detail && !fullScale },
+        encoding: { y: { field: "rt" }, detail: { field: "segment" } } },
+      ...(!detail ? [{ data: { values: [{ position: weekStart(2015, 27) }, { position: weekStart(2019, 27) }] },
+        mark: { type: "rule", color: EVENT_COLOR, strokeDash: [4, 3], strokeWidth: 1.5 },
+        encoding: { x: { field: "position", type: "temporal" },
+          y: { value: 0 }, y2: { value: 300 } } }] : []),
+      { transform: [{ filter: "datum.rt != null" }],
+        mark: { type: "point", filled: true, opacity: .01, size: 110, clip: onset && !detail && !fullScale },
+        encoding: { y: { field: "rt" }, tooltip } },
+    ],
+  };
+}
+
+function parseRtDailyRows(csv, caseField) {
+  const rows = csvObjects(csv).map((row) => ({
+    date: row.date, year: Number(row.year), week: Number(row.week),
+    [caseField]: row[caseField] === "" ? null : Number(row[caseField]),
+    rt: row.rt === "" ? null : Number(row.rt),
+    rt_lower_95: row.rt_lower_95 === "" ? null : Number(row.rt_lower_95),
+    rt_upper_95: row.rt_upper_95 === "" ? null : Number(row.rt_upper_95),
+  }));
+  let segment = 0;
+  let previousFinite = false;
+  for (const row of rows) {
+    if (row.rt === null) {
+      row.segment = null;
+      previousFinite = false;
+    } else {
+      if (!previousFinite) segment += 1;
+      row.segment = segment;
+      previousFinite = true;
+    }
+  }
+  return rows;
+}
+
+async function loadRtChart() {
+  const chart = document.querySelector("#chart-rt-national");
+  try {
+    const response = await fetch(RT_DATA_URL, { cache: "no-store" });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const rows = parseRtDailyRows(await response.text(), "notifications");
+    if (rows.length !== 6580 || rows[0].date !== "2007-12-30" ||
+        rows.at(-1).date !== "2026-01-03" || rows.filter((row) => row.notifications === null).length !== 7)
+      throw new Error("La serie diaria de Rₜ está incompleta");
+    if (typeof vegaEmbed !== "function") throw new Error("Vega-Lite no está disponible");
+    await renderChart("#chart-rt-national", "Rₜ nacional diario", rtSpec(rows));
+  } catch (error) {
+    chart.textContent = `No se pudo cargar el gráfico de Rₜ: ${error.message}`;
+    console.error(error);
+  }
+}
+
+async function loadOnsetRtChart() {
+  const chart = document.querySelector("#chart-rt-onset");
+  const detail = document.querySelector("#chart-rt-onset-detail");
+  try {
+    const response = await fetch(RT_ONSET_DATA_URL, { cache: "no-store" });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const rows = parseRtDailyRows(await response.text(), "cases");
+    if (rows.length !== 6580 || rows[0].date !== "2007-12-30" ||
+        rows.at(-1).date !== "2026-01-03" || rows.filter((row) => row.cases === null).length !== 140 ||
+        rows.filter((row) => row.rt !== null).length !== 6180)
+      throw new Error("La serie diaria por inicio de síntomas está incompleta");
+    if (typeof vegaEmbed !== "function") throw new Error("Vega-Lite no está disponible");
+    await renderChart("#chart-rt-onset", "Rₜ nacional por inicio de síntomas", rtSpec(rows, { onset: true }));
+    await renderChart("#chart-rt-onset-detail", "Rₜ por inicio de síntomas en 2013–2014",
+                      rtSpec(rows, { onset: true, detail: true }), { annualContext: false });
+  } catch (error) {
+    chart.textContent = `No se pudo cargar el Rₜ por inicio de síntomas: ${error.message}`;
+    detail.textContent = `No se pudo cargar el detalle 2013–2014: ${error.message}`;
+    console.error(error);
+  }
 }
 
 function annualAgePopulationRows(rows) {
@@ -1063,29 +1224,6 @@ function fillInfantProtectionSummary(rows) {
     "La mediana no disminuyó en los primeros años tras 2015. La caída posterior coincide con la pandemia y otros cambios posibles en transmisión o notificación; estos datos no permiten atribuirla a protección indirecta.";
 }
 
-function fillWeeklyTable(rows) {
-  const body = document.querySelector("#weekly-table");
-  const fragment = document.createDocumentFragment();
-  document.querySelector("#weekly-table-caption").textContent = rows[0].age_label;
-  for (const row of rows) {
-    const tr = document.createElement("tr");
-    if (row.year === 2007) tr.className = "questioned";
-    for (const value of [
-      row.year,
-      row.week,
-      row.notifications === null ? "—" : NUMBER.format(row.notifications),
-      NUMBER.format(row.population),
-      row.notification_rate_per_100k === null ? "—" : RATE.format(row.notification_rate_per_100k),
-    ]) {
-      const td = document.createElement("td");
-      td.textContent = value;
-      tr.append(td);
-    }
-    fragment.append(tr);
-  }
-  body.replaceChildren(fragment);
-}
-
 async function loadAgeCharts() {
   const chartIds = ["#chart-annual-age-population", "#chart-age-cases", "#chart-age-rates", "#chart-age-shift", "#chart-age-shift-ratio", "#chart-infant-protection"];
   try {
@@ -1129,19 +1267,24 @@ async function loadAgeCharts() {
 
 async function loadWeeklyCharts() {
   const chartIds = ["#chart-weekly-cases", "#chart-weekly-rates"];
-  const selector = document.querySelector("#weekly-age-group");
+  const options = document.querySelector("#weekly-age-options");
   let views = [];
 
   async function renderSelected(rows) {
     for (const [index, id] of chartIds.entries()) {
       views[index]?.finalize();
+      views[index] = null;
       const chart = document.querySelector(id);
       if (chart.previousElementSibling?.classList.contains("chart-controls")) {
         chart.previousElementSibling.remove();
       }
       chart.replaceChildren();
+      if (!rows.length) {
+        chart.textContent = "Selecciona al menos un grupo de edad.";
+        continue;
+      }
       const field = index === 0 ? "notifications" : "notification_rate_per_100k";
-      const title = `${index === 0 ? "Notificaciones por semana" : "Incidencia notificada por semana"} · ${rows[0].age_label}`;
+      const title = `${index === 0 ? "Notificaciones por semana" : "Incidencia notificada por semana"} · ${[...new Set(rows.map((row) => row.age_label))].join(", ")}`;
       chart.setAttribute("aria-label", `${title}, 2007–2025; 2007 es diagnóstico`);
       views[index] = await renderChart(id, title, weeklySpec(rows, field));
     }
@@ -1157,39 +1300,44 @@ async function loadWeeklyCharts() {
         rows.some((row) => !row.age_label)) {
       throw new Error("The weekly series is incomplete");
     }
-    let selectedRows = rows.filter((row) => row.age_group === selector.value);
-    fillWeeklyTable(selectedRows);
-    selector.addEventListener("change", async () => {
-      selector.disabled = true;
-      try {
-        selectedRows = rows.filter((row) => row.age_group === selector.value);
-        fillWeeklyTable(selectedRows);
-        if (typeof vegaEmbed !== "function") return;
+    const groups = [["all", "Todas las edades", "#173042"],
+      ...Object.entries(AGE_LABELS).filter(([key]) => key !== "unknown")
+        .map(([key, label], index) => [key, label, AGE_COLORS[index]])];
+    for (const [key, name, color] of groups) {
+      const label = document.createElement("label");
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.value = key;
+      checkbox.checked = key === "all";
+      const swatch = document.createElement("span");
+      swatch.className = "secondary-age-swatch";
+      swatch.style.backgroundColor = color;
+      swatch.setAttribute("aria-hidden", "true");
+      label.append(checkbox, swatch, document.createTextNode(name));
+      options.append(label);
+    }
+    let renderQueue = Promise.resolve();
+    let latestRender = 0;
+    function update() {
+      const version = ++latestRender;
+      const selected = new Set([...options.querySelectorAll("input:checked")].map((input) => input.value));
+      renderQueue = renderQueue.then(async () => {
+        if (version !== latestRender) return;
+        const selectedRows = rows.filter((row) => selected.has(row.age_group));
         await renderSelected(selectedRows);
-      } catch (error) {
-        for (const id of chartIds) {
-          const chart = document.querySelector(id);
-          if (!chart.querySelector("svg")) chart.textContent = `No se pudo actualizar el gráfico semanal: ${error.message}`;
-        }
-        console.error(error);
-      } finally {
-        selector.disabled = false;
-      }
-    });
+      }).catch((error) => console.error(error));
+      return renderQueue;
+    }
+    options.addEventListener("change", update);
     if (typeof vegaEmbed !== "function") throw new Error("Vega-Lite could not be loaded");
-    await Promise.all([renderSelected(selectedRows), loadSeasonalCharts(rows)]);
-    selector.disabled = false;
+    await Promise.all([update(), loadSeasonalCharts(rows)]);
+    options.disabled = false;
   } catch (error) {
     for (const id of chartIds) {
       const chart = document.querySelector(id);
       if (!chart.querySelector("svg")) chart.textContent = `No se pudieron cargar los gráficos semanales: ${error.message}`;
     }
-    const body = document.querySelector("#weekly-table");
-    if (body.textContent.includes("Cargando datos semanales")) {
-      body.innerHTML = `<tr><td colspan="5">No se pudo cargar la tabla semanal.</td></tr>`;
-    }
-    if (body.textContent.includes("No se pudo cargar")) selector.disabled = true;
-    else selector.disabled = false;
+    options.disabled = true;
     for (const id of SEASONAL_CHART_IDS) {
       const chart = document.querySelector(id);
       if (!chart.querySelector("svg")) chart.textContent = `No se pudieron cargar las curvas estacionales: ${error.message}`;
