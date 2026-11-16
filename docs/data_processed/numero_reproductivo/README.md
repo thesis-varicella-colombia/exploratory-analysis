@@ -38,8 +38,10 @@ $$
 w_s=P(S=s).
 $$
 
-Es decir, $w_s$ indica la probabilidad de que transcurran $s$ días entre los
-inicios de síntomas. No es la probabilidad de que una persona contagie a otra.
+Cada $w_s$ es un valor conocido una vez fijada la distribución del intervalo
+serial; no se estima con los conteos diarios. Indica la probabilidad de que
+transcurran $s$ días entre los inicios de síntomas, no la probabilidad de que
+una persona contagie a otra.
 
 La siguiente gráfica usa la misma distribución discretizada que el estimador:
 Gamma desplazada con media 14,1 días y desviación estándar 2,4 días.
@@ -66,15 +68,18 @@ no una frecuencia estimada con los registros de Sivigila.
 La figura muestra los días 1–35 sin renormalizar los pesos; el soporte del modelo
 continúa más allá.
 
-Los pesos cumplen $w_s\geq 0$ y $\sum_{s\geq 1}w_s=1$. Por eso, la suma
+Los pesos cumplen $w_s\geq 0$ y $\sum_{s\geq 1}w_s=1$. Con los valores
+observados $i_{t-s}$ y esos pesos fijados, se calcula
 
 $$
 \Lambda_t=\sum_{s=1}^{t-1}i_{t-s}w_s
 $$
 
-pondera los conteos anteriores según cuántos días han pasado. Es una cantidad
-calculada, no un conteo de personas infecciosas observadas: por ejemplo,
-10 casos de un día anterior con un peso hipotético de 0,2 aportan 2 unidades a $\Lambda_t$.
+Esta suma pondera los conteos anteriores según cuántos días han pasado.
+$\Lambda_t$ queda determinada por los datos ya observados; no es una variable
+aleatoria adicional del modelo ni un conteo de personas infecciosas observadas.
+Por ejemplo, 10 casos de un día anterior con un peso hipotético de 0,2 aportan
+2 unidades a $\Lambda_t$.
 
 El intervalo serial corresponde a fechas de **inicio de síntomas**, pero esa
 fecha está incompleta en Sivigila. En la auditoría de los archivos 2007–2025,
@@ -100,6 +105,10 @@ $N$ y demora $D=N-O$:
 $$
 N_j-N_i=(O_j-O_i)+(D_j-D_i).
 $$
+
+Aquí $O$, $N$ y $D$ representan fechas y demoras de cada persona; esta
+identidad sirve para explicar la aproximación y no añade variables aleatorias
+al modelo Poisson–Gamma.
 
 Si las demoras son parecidas, $D_j-D_i$ es pequeño y el intervalo entre
 notificaciones aproxima el intervalo serial. En la práctica se necesita que
@@ -129,12 +138,11 @@ el conteo medio esperado del día: $R_t\Lambda_t$.
 
 La **historia observada**, representada por $\mathcal H_{t-1}$, es el conjunto de
 conteos diarios que ya conocemos antes del día $t$. Por ejemplo, para analizar
-el día 4, incluye los conteos de los días 1, 2 y 3. No se refiere a las historias
-clínicas de las personas. Con esos conteos y los pesos fijados, $\Lambda_t$ se
+el día 4, incluye los conteos de los días 1, 2 y 3. Con esos conteos y los pesos fijados, $\Lambda_t$ se
 calcula directamente. El modelo para el conteo del día $t$ es:
 
 $$
-I_t\mid R_t,\mathcal H_{t-1}\sim\operatorname{Poisson}(R_t\Lambda_t).
+I_t\mid R_t,\mathcal H_{t-1}\sim\mathrm{Poisson}(R_t\Lambda_t).
 $$
 
 La **media de la Poisson es $R_t\Lambda_t$**. Su media y
@@ -144,25 +152,28 @@ reproducción positivo que se quiere estimar, no un conteo ni una probabilidad.
 ### Distribución previa Gamma para Rₜ
 
 En el enfoque bayesiano, la incertidumbre sobre ese parámetro se representa con
-una distribución previa:
+una distribución previa. Así, $R_t$ se trata como una **variable aleatoria**
+positiva cuya distribución se actualiza al observar los conteos:
 
 $$
-R_t\sim\operatorname{Gamma}(\alpha,\beta),
+R_t\sim\mathrm{Gamma}(\alpha,\beta),
 \qquad\alpha>0,\quad\beta>0.
 $$
 
-Aquí $\alpha$ es la **forma** y $\beta$ la **tasa**; la escala sería $1/\beta$.
-Con esta parametrización:
+Aquí $\alpha$ es la **forma** y $\beta$ la **tasa** de la Gamma; la escala es
+$1/\beta$. Son **hiperparámetros conocidos y fijados antes del análisis**,
+sin una distribución previa propia en este modelo. Los scripts usan $\alpha=1$
+y $\beta=0{,}2$; por tanto, la escala previa es 5. Con esta parametrización:
 
 $$
 \mathbb E[R_t]=\frac{\alpha}{\beta},
 \qquad
-\operatorname{Var}(R_t)=\frac{\alpha}{\beta^2}.
+\mathrm{Var}(R_t)=\frac{\alpha}{\beta^2}.
 $$
 
 La previa expresa incertidumbre sobre Rₜ antes de incorporar los conteos de la
-ventana. No describe diferencias de contagios entre personas. Los scripts fijan
-$\alpha=1$ y $\beta=0{,}2$: media 5, varianza 25 y desviación estándar 5.
+ventana. No describe diferencias de contagios entre personas. Con los valores
+fijados, su media es 5, su varianza es 25 y su desviación estándar es 5.
 Es una previa relativamente vaga, elegida siguiendo la
 [configuración predeterminada de EpiEstim](https://github.com/mrc-ide/EpiEstim/blob/master/R/make_config.R#L291-L292).
 Su amplitud busca limitar su influencia y permitir que la verosimilitud Poisson,
@@ -173,7 +184,9 @@ la previa: en ventanas con poca información puede seguir siendo importante.
 ### Verosimilitud y posterior conjugada
 
 Para estimar el valor asociado al día $t$, se supone un mismo parámetro
-$R_{t,\tau}$ durante la ventana $W_t=\{t-\tau+1,\ldots,t\}$, con $\tau=14$ días.
+$R_{t,\tau}$ durante la ventana $W_t=\{t-\tau+1,\ldots,t\}$.
+$R_{t,\tau}$ es el parámetro aleatorio cuya posterior se estima para esa ventana;
+$W_t$ reúne días conocidos y su longitud $\tau=14$ días está fijada de antemano.
 En las gráficas de Rₜ por fecha de notificación y por inicio de síntomas,
 este parámetro se representa como Rₜ. Se definen:
 
@@ -183,8 +196,12 @@ C_t=\sum_{u\in W_t}i_u,
 L_t=\sum_{u\in W_t}\Lambda_u.
 $$
 
+$C_t$ es el total de conteos observados y $L_t$ la infectividad total calculada
+en la ventana. Ambos quedan determinados por los datos y los pesos fijados.
+
 El producto de las probabilidades Poisson **condicionales a la historia** da
-la verosimilitud del parámetro. Omitiendo los factores que no dependen de $r$:
+la verosimilitud del parámetro. Aquí $r$ representa un valor posible de
+$R_{t,\tau}$, no un conteo observado. Omitiendo los factores que no dependen de $r$:
 
 $$
 \mathcal L_t(r)
@@ -207,11 +224,13 @@ Esta expresión es el núcleo de otra Gamma. Por eso se dice que la Gamma es
 
 $$
 R_{t,\tau}\mid\text{datos}
-\sim\operatorname{Gamma}(\alpha+C_t,\ \beta+L_t).
+\sim\mathrm{Gamma}(\alpha+C_t,\ \beta+L_t).
 $$
 
 La actualización suma los casos a la forma y la infectividad a la tasa.
-La línea de las gráficas de Rₜ representa la media posterior:
+La línea de las gráficas de Rₜ representa $\widehat R_t$, la **estimación puntual**
+obtenida como media posterior para cada ventana. El «sombrero» indica que se
+calcula con los datos observados:
 
 $$
 \widehat R_t=\frac{\alpha+C_t}{\beta+L_t}
