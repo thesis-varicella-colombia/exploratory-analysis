@@ -43,8 +43,9 @@ const context = vm.createContext({
     arrayBuffer: async () => Buffer.from(JSON.stringify(payload(url.match(/(national|municipality_00001)\.json/)[1]))) }),
   renderChart: async (_id, _title, spec) => {
     assert.equal(spec.data.name, "seasonal_data");
-    return { change(name, changes) { assert.equal(name, "seasonal_data"); updates.push(changes.rows);
-      return this; }, runAsync: async () => {} };
+    return { change(name, changes) { assert.equal(name, "seasonal_data");
+      if (changes.rows !== undefined) updates.push(changes.rows);
+      return this; }, run() { return this; }, runAsync: async () => {} };
   },
   vega: { changeset: () => ({ remove() { return this; }, insert(rows) { this.rows = rows; return this; } }) },
 });

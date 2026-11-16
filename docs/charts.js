@@ -647,8 +647,10 @@ async function loadSeasonalCharts(rows) {
         if (!nextSummary.length) throw new Error("No hay tasas disponibles para esta selección");
         queue = queue.then(async () => {
           if (current !== version) return;
+          views.forEach((view) => view.change("seasonal_data",
+            vega.changeset().remove(() => true)).run());
           await Promise.all(views.map((view, index) => view.change("seasonal_data",
-            vega.changeset().remove(() => true).insert(nextSummary.filter((row) =>
+            vega.changeset().insert(nextSummary.filter((row) =>
               index === 0 ? row.age_group === "all" :
                 row.period === SEASONAL_PERIODS[index - 1].label && row.age_group !== "all"))).runAsync()));
           if (current !== version) return;
