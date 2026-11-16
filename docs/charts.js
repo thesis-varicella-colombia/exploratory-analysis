@@ -5,7 +5,8 @@ const AGE_DATA_URL = "data_processed/varicela_grupo_edad/age_group_series_2007_2
 const WEEKLY_DATA_URL = "data_processed/evolucion_semanal/weekly_series_2007_2025.csv?v=20261023-notification";
 const RT_DATA_URL = "data_processed/numero_reproductivo/rt_national_daily.csv?v=20261025-daily";
 const RT_ONSET_DATA_URL = "data_processed/numero_reproductivo/rt_national_symptom_daily.csv?v=20261025-onset";
-const LATITUDE_WEEK_DATA_URL = "data_processed/latitude_week_heatmap.csv?v=20261020-2";
+const LATITUDE_WEEK_DATA_URL = "data_processed/estacionalidad/latitude_week_heatmap.csv?v=20261023-notification";
+const SEASONAL_TERRITORY_ROOT = "data_processed/estacionalidad/seasonal_territories";
 const SEASONAL_PERIODS = [
   { label: "2008–2014", start: 2008, end: 2014 },
   { label: "2016–2019", start: 2016, end: 2019 },
@@ -330,6 +331,79 @@ function latitudeWeekSpec(rows, period) {
   };
 }
 
+function initLatitudeWeekPlayer(selector, renderFrame) {
+  const play = document.querySelector("#latitude-week-play");
+  const timeline = document.querySelector("#latitude-week-timeline");
+  const output = document.querySelector("#latitude-week-frame");
+  const speed = document.querySelector("#latitude-week-speed");
+  let running = false;
+  let timer = null;
+  let generation = 0;
+
+  function frames() {
+    const annual = /^\d{4}$/.test(selector.value);
+    return [...selector.options].map((option) => option.value)
+      .filter((value) => /^\d{4}$/.test(value) === annual)
+      .sort((a, b) => a.localeCompare(b));
+  }
+  function sync() {
+    const sequence = frames();
+    timeline.max = String(sequence.length - 1);
+    timeline.value = String(sequence.indexOf(selector.value));
+    output.textContent = selector.value + (selector.value === "2007" ? " · solo diagnóstico" : "");
+    timeline.setAttribute("aria-valuetext", output.textContent);
+  }
+  function stop() {
+    running = false;
+    generation += 1;
+    clearTimeout(timer);
+    timer = null;
+    play.textContent = "▶ Reproducir";
+    play.setAttribute("aria-label", "Reproducir mapa de calor");
+  }
+  async function update() {
+    for (const control of [selector, timeline, play, speed]) control.disabled = true;
+    sync();
+    try {
+      await renderFrame();
+    } catch (error) {
+      stop();
+      console.error(error);
+    } finally {
+      for (const control of [selector, timeline, play, speed]) control.disabled = false;
+    }
+  }
+  function schedule() {
+    const version = generation;
+    timer = setTimeout(async () => {
+      const sequence = frames();
+      selector.value = sequence[(sequence.indexOf(selector.value) + 1) % sequence.length];
+      await update();
+      if (running && version === generation) schedule();
+    }, 1200 / Number(speed.value));
+  }
+  function start() {
+    running = true;
+    play.textContent = "⏸ Pausar";
+    play.setAttribute("aria-label", "Pausar mapa de calor");
+    schedule();
+  }
+  play.addEventListener("click", () => running ? stop() : start());
+  selector.addEventListener("change", () => { stop(); return update(); });
+  timeline.addEventListener("input", () => {
+    stop();
+    selector.value = frames()[Number(timeline.value)];
+    return update();
+  });
+  speed.addEventListener("change", () => {
+    if (running) { stop(); start(); }
+  });
+  document.addEventListener("visibilitychange", () => { if (document.hidden) stop(); });
+  window.addEventListener("pagehide", stop);
+  sync();
+  for (const control of [selector, timeline, play, speed]) control.disabled = false;
+}
+
 async function loadLatitudeHeatmap() {
   const chart = document.querySelector("#chart-latitude-week");
   const selector = document.querySelector("#latitude-week-period");
@@ -361,19 +435,15 @@ async function loadLatitudeHeatmap() {
         { annualContext: false });
     }
 
-    selector.addEventListener("change", async () => {
-      selector.disabled = true;
+    await renderSelected();
+    initLatitudeWeekPlayer(selector, async () => {
       try {
         await renderSelected();
       } catch (error) {
         chart.textContent = `No se pudo actualizar el mapa de calor: ${error.message}`;
-        console.error(error);
-      } finally {
-        selector.disabled = false;
+        throw error;
       }
     });
-    await renderSelected();
-    selector.disabled = false;
   } catch (error) {
     chart.textContent = `No se pudo cargar el mapa de calor: ${error.message}`;
     console.error(error);
@@ -426,7 +496,7 @@ function seasonalSpec(rows, mode) {
     width: CHART_WIDTH,
     height: 300,
     background: "transparent",
-    data: { values },
+    data: { name: "seasonal_data", values },
     encoding: {
       x: {
         field: "week", type: "quantitative", title: "Semana epidemiológica",
@@ -473,20 +543,143 @@ function seasonalSpec(rows, mode) {
 }
 
 async function loadSeasonalCharts(rows) {
+  const controls = document.querySelector("#seasonal-filters");
+  const date = document.querySelector("#seasonal-date");
+  const territory = document.querySelector("#seasonal-territory");
+  const status = document.querySelector("#seasonal-filter-status");
+  const titles = ["Curva estacional típica: tasa total", ...SEASONAL_PERIODS.map((period) =>
+    `Curva estacional: escolares y adultos · ${period.label}`)];
+  let views = [];
+  let currentSpecs = [];
   try {
-    const summary = seasonalSummaryRows(rows);
+    const response = await fetch(`${SEASONAL_TERRITORY_ROOT}/manifest.json?v=20261115`);
+    if (!response.ok) throw new Error(`HTTP ${response.status} al cargar el catálogo`);
+    const manifest = await response.json();
+    if (manifest.version !== 1 || !Array.isArray(manifest.weeks) || !Array.isArray(manifest.entities) ||
+        manifest.weeks.length < 900 || manifest.entities.length !== 1156) {
+      throw new Error("Catálogo de estacionalidad incompleto");
+    }
+    const entities = new Map(manifest.entities.map((entity) => [entity.id, entity]));
+    const departments = new Map(manifest.entities.filter((entity) => entity.dimension === "department")
+      .map((entity) => [entity.code, entity.name]));
+    const labels = new Map();
+    const options = document.querySelector("#seasonal-territory-options");
+    for (const entity of manifest.entities) {
+      const label = entity.dimension === "national" ? "Colombia" : entity.dimension === "department"
+        ? `Departamento · ${entity.name} (${entity.code})`
+        : `${entity.name} · ${departments.get(entity.department)} (${entity.code})`;
+      if (labels.has(label)) throw new Error("Territorios duplicados en el catálogo");
+      labels.set(label, entity.id);
+      const option = document.createElement("option");
+      option.value = label;
+      options.append(option);
+    }
+    const cache = new Map();
+    async function load(entityId) {
+      if (!entities.has(entityId)) throw new Error("Territorio desconocido");
+      if (!cache.has(entityId)) {
+        const pending = fetch(`${SEASONAL_TERRITORY_ROOT}/${entityId}.json.gz?v=20261115`)
+          .then(async (result) => {
+            if (!result.ok) throw new Error(`HTTP ${result.status} al cargar el territorio`);
+            const bytes = await result.arrayBuffer();
+            const header = new Uint8Array(bytes, 0, Math.min(2, bytes.byteLength));
+            const content = header[0] === 0x1f && header[1] === 0x8b
+              ? await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream("gzip"))).text()
+              : new TextDecoder().decode(bytes);
+            const payload = JSON.parse(content);
+            if (payload.id !== entityId || !payload.series) throw new Error("Serie territorial inválida");
+            for (const method of ["notification", "symptom"]) {
+              for (const group of ["all", "5_14", "15_49"]) {
+                const values = payload.series[method]?.[group];
+                if (!Array.isArray(values) || values.length !== manifest.weeks.length ||
+                    values.some((value) => value !== null && (!Number.isFinite(value) || value < 0))) {
+                  throw new Error("Serie semanal incompleta o inválida");
+                }
+              }
+            }
+            return payload;
+          }).catch((error) => { cache.delete(entityId); throw error; });
+        cache.set(entityId, pending);
+        if (cache.size > 12) cache.delete([...cache.keys()].find((key) => key !== "national"));
+      }
+      return cache.get(entityId);
+    }
+    function summaryFor(payload, method) {
+      const source = [];
+      for (const group of ["all", "5_14", "15_49"]) {
+        payload.series[method][group].forEach((value, index) => {
+          const [year, week] = manifest.weeks[index];
+          source.push({ year, week, age_group: group, notification_rate_per_100k: value });
+        });
+      }
+      return seasonalSummaryRows(source);
+    }
+    const national = await load("national");
+    const summary = summaryFor(national, "notification");
     if (summary.length !== SEASONAL_PERIODS.length * 3 * 52) {
       throw new Error("Faltan semanas o grupos en el resumen estacional");
     }
     if (typeof vegaEmbed !== "function") throw new Error("Vega-Lite no está disponible");
-    await Promise.all([
-      renderChart(SEASONAL_CHART_IDS[0], "Curva estacional típica: tasa total", seasonalSpec(summary, "total"),
-        { annualContext: false }),
-      ...SEASONAL_PERIODS.map((period, index) =>
-        renderChart(SEASONAL_CHART_IDS[index + 1], `Curva estacional: escolares y adultos · ${period.label}`,
-          seasonalSpec(summary, period.label), { annualContext: false })),
-    ]);
+    currentSpecs = [seasonalSpec(summary, "total"), ...SEASONAL_PERIODS.map((period) =>
+      seasonalSpec(summary, period.label))];
+    views = await Promise.all(SEASONAL_CHART_IDS.map((id, index) =>
+      renderChart(id, titles[index], currentSpecs[index], { annualContext: false,
+        modalSpec: () => currentSpecs[index],
+        modalTitle: () => `${titles[index]} · ${territory.value} · ${date.selectedOptions[0].textContent}` })));
+    territory.value = "Colombia";
+    controls.disabled = false;
+    status.textContent = "Colombia · fecha de notificación · tasas semanales por 100.000 habitantes.";
+    let selectedId = "national";
+    let version = 0;
+    let queue = Promise.resolve();
+    function update() {
+      const id = labels.get(territory.value.trim());
+      if (!id) {
+        status.textContent = "Busca y selecciona un municipio o departamento de la lista.";
+        return;
+      }
+      const current = ++version;
+      const method = date.value;
+      status.textContent = `Cargando ${territory.value}…`;
+      load(id).then((payload) => {
+        if (current !== version) return;
+        const nextSummary = summaryFor(payload, method);
+        if (!nextSummary.length) throw new Error("No hay tasas disponibles para esta selección");
+        queue = queue.then(async () => {
+          if (current !== version) return;
+          await Promise.all(views.map((view, index) => view.change("seasonal_data",
+            vega.changeset().remove(() => true).insert(nextSummary.filter((row) =>
+              index === 0 ? row.age_group === "all" :
+                row.period === SEASONAL_PERIODS[index - 1].label && row.age_group !== "all"))).runAsync()));
+          if (current !== version) return;
+          currentSpecs = [seasonalSpec(nextSummary, "total"), ...SEASONAL_PERIODS.map((period) =>
+            seasonalSpec(nextSummary, period.label))];
+          selectedId = id;
+          SEASONAL_CHART_IDS.forEach((chartId, index) => {
+            document.querySelector(chartId).setAttribute("aria-label",
+              `${titles[index]} · ${territory.value} · fecha de ${method === "notification" ? "notificación" : "inicio de síntomas"}`);
+          });
+          status.textContent = `${territory.value} · fecha de ${method === "notification" ? "notificación" : "inicio de síntomas"} · tasas semanales por 100.000 habitantes. ` +
+            "Las semanas sin datos nacionales se excluyen; un municipio sin registros en una semana observada tiene tasa cero.";
+        }).catch((error) => { if (current === version) status.textContent = `No se pudieron actualizar las curvas: ${error.message}`; console.error(error); });
+      }).catch((error) => { if (current === version) status.textContent = `No se pudo cargar la selección: ${error.message}`; console.error(error); });
+    }
+    territory.addEventListener("input", update);
+    territory.addEventListener("change", update);
+    date.addEventListener("change", () => {
+      if (!labels.has(territory.value.trim())) territory.value = [...labels].find(([, id]) => id === selectedId)[0];
+      update();
+    });
   } catch (error) {
+    if (!views.length) {
+      const summary = seasonalSummaryRows(rows);
+      if (typeof vegaEmbed === "function") {
+        views = await Promise.all(SEASONAL_CHART_IDS.map((id, index) => renderChart(id, titles[index],
+          seasonalSpec(summary, index === 0 ? "total" : SEASONAL_PERIODS[index - 1].label),
+          { annualContext: false })));
+      }
+    }
+    status.textContent = `No se pudieron activar los filtros: ${error.message}. Se muestran las curvas nacionales por notificación.`;
     for (const id of SEASONAL_CHART_IDS) {
       const chart = document.querySelector(id);
       if (!chart.querySelector("svg")) chart.textContent = `No se pudieron cargar las curvas estacionales: ${error.message}`;
