@@ -18,10 +18,10 @@ from shapely.geometry import shape
 
 
 ROOT = Path(__file__).resolve().parents[1]
-PARQUET = ROOT / "data/sivigila_integrado_semanal_municipal.parquet"
+PARQUET = ROOT / "data/sivigila_integrado_notification_semanal_municipal.parquet"
 POPULATION = ROOT / "data/population_municipal_2007_2025.csv"
-BOUNDARIES = ROOT / "docs/data_processed/municipal_boundaries_dane.geojson"
-OUTPUT = ROOT / "docs/data_processed/latitude_week_heatmap.csv"
+BOUNDARIES = ROOT / "docs/data_processed/cartografia/municipal_boundaries_dane.geojson"
+OUTPUT = ROOT / "docs/data_processed/estacionalidad/latitude_week_heatmap.csv"
 PERIODS = {
     "2008–2014": range(2008, 2015),
     "2016–2019": range(2016, 2020),
