@@ -1614,9 +1614,17 @@
         <div class="age-chart" id="chart-age-shift" role="img"
              aria-label="Gráfico de barras 100 % apiladas de la composición etaria de las notificaciones de varicela entre 2007 y 2025; 2007 es diagnóstico"></div>
         <p class="scroll-hint">Desplaza el gráfico horizontalmente para ver todos los años.</p>
+        <p class="data-specifications"><a href="https://github.com/thesis-varicella-colombia/exploratory-analysis/blob/main/docs/data_processed/varicela_grupo_edad/README_age_shift.md#composicion-etaria">Composición etaria: Especificaciones de los datos</a>.</p>
         <p class="age-note">La composición muestra la carga relativa de notificaciones, no la incidencia por edad.
             El grupo de 15–49 años reúne adolescentes mayores y adultos, por lo que no permite distinguirlos.
             El año 2007 se conserva como referencia diagnóstica por la discrepancia descrita arriba.</p>
+        <p class="intro">Frente a 2008–2014, el promedio anual de notificaciones totales disminuye moderadamente
+            en 2016–2019 (de 90.285 a 85.195), mientras que en 15–49 años aumenta de 28.886 a 31.340.
+            En 2022–2025 el total desciende mucho más, a 27.177 por año, y también bajan las notificaciones
+            de 15–49 años. Sin embargo, las de 1–4 y 5–14 años caen más, por lo que la participación de
+            15–49 años sube del 32,0 % al 46,6 % entre el periodo previo y el reciente. Este cambio en la
+            composición motiva examinar a continuación si la <strong>incidencia relativa</strong> también se
+            desplaza hacia edades mayores mediante la razón de incidencias por edad (ASR).</p>
 
         <h3>Razón de incidencias por edad (Age-shift)</h3>
         <p class="intro">Definición principal para el análisis: <strong>ASR</strong> (Age-Shift Rating).</p>
@@ -1641,35 +1649,15 @@
                 </mfrac>
             </math>
         </div>
-        <p>La razón inversa se conserva en la tabla y al pasar el cursor, pero no se usa como segunda definición de ASR.</p>
+        <p>La razón inversa se muestra al pasar el cursor sobre la gráfica, pero no se usa como segunda definición de ASR.</p>
         <div class="age-chart" id="chart-age-shift-ratio" role="img"
              aria-label="Serie anual de la razón entre la incidencia de 15 a 49 años y la de 1 a 4 años entre 2007 y 2025; 2007 se muestra solo como diagnóstico"></div>
         <p class="scroll-hint">Desplaza el gráfico horizontalmente para ver todos los años.</p>
-        <p class="age-note" id="age-shift-ratio-summary"></p>
+        <p class="data-specifications"><a href="https://github.com/thesis-varicella-colombia/exploratory-analysis/blob/main/docs/data_processed/varicela_grupo_edad/README_age_shift.md#razon-de-incidencias-por-edad-asr">Razón de incidencias por edad: Especificaciones de los datos</a>.</p>
         <p class="age-note">Las incidencias se calculan con las notificaciones y poblaciones anuales de cada grupo.
             El periodo anterior comprende 2008–2014; el posterior comienza en 2015. Se excluye 2007 de esa comparación
             por la discrepancia del total anual. La pandemia y la introducción del refuerzo en 2019 también coinciden
             con parte del periodo posterior.</p>
-        <details>
-            <summary>Ver incidencias y ambas razones por año</summary>
-            <div class="table-scroll">
-                <table>
-                    <thead>
-                    <tr>
-                        <th scope="col">Año</th>
-                        <th scope="col">Incidencia 15–49</th>
-                        <th scope="col">Incidencia 1–4</th>
-                        <th scope="col">ASR 15–49 / 1–4</th>
-                        <th scope="col">Inversa 1–4 / 15–49</th>
-                    </tr>
-                    </thead>
-                    <tbody id="age-shift-ratio-table">
-                    <tr><td colspan="5">Cargando razones…</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </details>
-
         <h3>Protección indirecta: menores de 1 año</h3>
         <p class="intro">La primera dosis de varicela del esquema colombiano se administra a los 12 meses, por lo que
             los menores de 1 año no son la población objetivo de esa dosis <a
@@ -1678,20 +1666,19 @@
         <div class="age-chart" id="chart-infant-protection" role="img"
              aria-label="Incidencia anual notificada de varicela en menores de 1 año y en niños de 1 a 4 años entre 2008 y 2025"></div>
         <p class="scroll-hint">Desplaza el gráfico horizontalmente para ver todos los años.</p>
-        <p class="age-note" id="infant-protection-summary"></p>
+        <p class="data-specifications"><a href="https://github.com/thesis-varicella-colombia/exploratory-analysis/blob/main/docs/data_processed/varicela_grupo_edad/README_age_shift.md#proteccion-indirecta-menores-de-1-ano">Protección indirecta en menores de 1 año: Especificaciones de los datos</a>.</p>
         <p class="age-note">Cada tasa usa la población anual del grupo como denominador. Se excluye 2007 por la
-            discrepancia documentada en la fuente. Una reducción en menores de 1 año sería compatible con protección
-            indirecta, pero también con otros cambios en exposición, atención o vigilancia.</p>
+            discrepancia documentada en la fuente.</p>
 
-        <h3>Conclusiones</h3>
+        <h3>Conclusiones de la razón de incidencias por edad y protección indirecta</h3>
         <ul class="notes">
-            <li>Tras 2015 baja la participación de 1–4 años y crece la de 15–49, especialmente en años recientes: la carga relativa se desplaza hacia edades mayores.</li>
-            <li>El ASR (incidencia 15–49 / incidencia 1–4) pasó de una mediana de 0,17 en 2008–2014 a 0,23 en 2015–2025; llegó a 0,50 en 2024. Las incidencias se acercaron en términos relativos.</li>
-            <li>Un ASR mayor no implica más incidencia adulta: puede reflejar una caída infantil más intensa.</li>
-            <li>En menores de 1 año, fuera de la primera dosis, no hubo descenso inmediato: medianas de 567 y 571 por 100.000 en 2008–2014 y 2015–2019; en 2022–2025 fue 162.</li>
-            <li>La caída reciente en menores de 1 año acompaña la de 1–4 años y es compatible con protección indirecta, sin que este EDA pueda atribuirla solo a la vacuna.</li>
-            <li>Los cambios de 2020–2021 exigen considerar contactos, atención y notificación durante la pandemia; el refuerzo de 2019 impide tratar todo el periodo posterior a 2015 como una sola etapa.</li>
+            <li>La mediana del ASR aumenta de 0,17 en 2008–2014 a 0,22 en 2015–2025: la incidencia notificada de 15–49 años gana peso relativo frente a la de 1–4 años. El ASR permanece por debajo de 1 en todos los años, de modo que la incidencia de 1–4 años sigue siendo mayor.</li>
+            <li>El cambio no es uniforme: el ASR cae a 0,15 en 2021, alcanza 0,50 en 2024 y vuelve a 0,26 en 2025. El máximo de 2024 coincide con una incidencia de 1–4 años especialmente baja; un solo año no define una tendencia sostenida.</li>
+            <li>En modelos endémicos, una menor <strong>fuerza de infección λ</strong> —el riesgo instantáneo de infección entre personas susceptibles— puede retrasar la primera infección y elevar su edad media. Una vacunación que reduzca esa fuerza sería compatible con un ASR mayor si la incidencia infantil cae relativamente más. Este conjunto no mide λ ni el estado vacunal individual, y el ASR también puede cambiar por contactos, demografía, diagnóstico o vigilancia: no demuestra que la vacuna haya causado un desplazamiento etario. La <a href="https://www.who.int/publications/m/item/vaccine-preventable-diseases-surveillance-standards-varicella">OMS</a> recomienda vigilar posibles cambios hacia edades mayores tras introducir la vacunación contra varicela.</li>
+            <li>La mediana de la incidencia notificada en menores de 1 año prácticamente no cambia entre 2008–2014 y 2015–2019 (570 y 571 por 100.000). En 2018 y 2019 incluso supera la tasa de 1–4 años, por lo que la gráfica no muestra una reducción temprana clara en el grupo que aún no recibe la primera dosis.</li>
+            <li>En 2022–2025, la mediana en menores de 1 año baja a 163 por 100.000, cerca de 71 % por debajo de 2008–2014. Es compatible con una menor exposición, pero también coincide con cambios de transmisión, atención y notificación; estos datos no permiten atribuir el descenso a protección indirecta de la vacuna.</li>
         </ul>
+
     </section>
 
     <section class="panel" aria-labelledby="spatial-title">

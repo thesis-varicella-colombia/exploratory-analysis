@@ -1331,34 +1331,6 @@ function ageShiftRatioSpec(rows) {
   };
 }
 
-function fillAgeShiftRatio(rows) {
-  const body = document.querySelector("#age-shift-ratio-table");
-  body.replaceChildren();
-  for (const row of rows) {
-    const tr = document.createElement("tr");
-    if (row.year === 2007) tr.className = "questioned";
-    for (const value of [row.year, RATE.format(row.adult_incidence), RATE.format(row.child_incidence),
-      RATE.format(row.asr), RATE.format(row.inverse)]) {
-      const td = document.createElement("td");
-      td.textContent = value;
-      tr.append(td);
-    }
-    body.append(tr);
-  }
-  const median = (values) => {
-    const sorted = values.toSorted((a, b) => a - b);
-    const middle = Math.floor(sorted.length / 2);
-    return sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
-  };
-  const before = median(rows.filter((row) => row.year >= 2008 && row.year < 2015).map((row) => row.asr));
-  const after = median(rows.filter((row) => row.year >= 2015).map((row) => row.asr));
-  const asrIn = (year) => RATE.format(rows.find((row) => row.year === year).asr);
-  document.querySelector("#age-shift-ratio-summary").textContent =
-    `Mediana de ASR: ${RATE.format(before)} en 2008–2014 y ${RATE.format(after)} en 2015–2025. ` +
-    `La razón pasó de ${asrIn(2015)} en 2015 a ${asrIn(2019)} en 2019; cayó a ${asrIn(2021)} en 2021, ` +
-    `alcanzó ${asrIn(2024)} en 2024 y fue ${asrIn(2025)} en 2025. `;
-}
-
 function infantProtectionSpec(rows) {
   const [eventBand, ...eventMarks] = annualEventLayers();
   return {
@@ -1404,21 +1376,6 @@ function infantProtectionSpec(rows) {
   };
 }
 
-function fillInfantProtectionSummary(rows) {
-  const infant = rows.filter((row) => row.age_group === "under_1");
-  const median = (start, end) => {
-    const values = infant.filter((row) => row.year >= start && row.year <= end)
-      .map((row) => row.notifications / row.population * 100000).toSorted((a, b) => a - b);
-    const middle = Math.floor(values.length / 2);
-    return values.length % 2 ? values[middle] : (values[middle - 1] + values[middle]) / 2;
-  };
-  document.querySelector("#infant-protection-summary").textContent =
-    `Mediana de la incidencia notificada en menores de 1 año: ${NUMBER.format(Math.round(median(2008, 2014)))} ` +
-    `por 100.000 en 2008–2014, ${NUMBER.format(Math.round(median(2015, 2019)))} en 2015–2019 y ` +
-    `${NUMBER.format(Math.round(median(2022, 2025)))} en 2022–2025. ` +
-    "La mediana no disminuyó en los primeros años tras 2015. La caída posterior coincide con la pandemia y otros cambios posibles en transmisión o notificación; estos datos no permiten atribuirla a protección indirecta.";
-}
-
 async function loadAgeCharts() {
   const chartIds = ["#chart-annual-age-population", "#chart-age-cases", "#chart-age-rates", "#chart-age-shift", "#chart-age-shift-ratio", "#chart-infant-protection"];
   try {
@@ -1429,8 +1386,6 @@ async function loadAgeCharts() {
       throw new Error("The age-group series is incomplete");
     }
     const ratioRows = ageShiftRatioRows(rows);
-    fillAgeShiftRatio(ratioRows);
-    fillInfantProtectionSummary(rows);
     const unknown = rows.filter((row) => row.age_group === "unknown")
       .reduce((total, row) => total + row.notifications, 0);
     document.querySelector("#age-unknown-note").textContent =
