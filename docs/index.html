@@ -828,6 +828,185 @@
             outline-offset: 2px;
         }
 
+        .climate-map-controls {
+            display: grid;
+            gap: .85rem;
+            margin: 1rem 0;
+        }
+
+        .climate-map-controls label,
+        .climate-map-controls legend {
+            font-weight: 700;
+        }
+
+        .climate-map-controls select {
+            width: min(100%, 30rem);
+            padding: .5rem .7rem;
+            border: 1px solid #a9c5ca;
+            border-radius: .5rem;
+            background: white;
+            color: #173042;
+            font: inherit;
+        }
+
+        .climate-map-controls select:focus-visible,
+        .climate-map-controls input:focus-visible,
+        .climate-map-controls button:focus-visible {
+            outline: 3px solid #176b68;
+            outline-offset: 2px;
+        }
+
+        .climate-map-segments {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .35rem;
+        }
+
+        #climate-map-periods[hidden],
+        #climate-map-year-control[hidden] {
+            display: none;
+        }
+
+        .climate-map-segments button,
+        .climate-map-player button {
+            padding: .45rem .7rem;
+            border: 1px solid #a9c5ca;
+            border-radius: .5rem;
+            background: white;
+            color: #173042;
+            font: inherit;
+            cursor: pointer;
+        }
+
+        .climate-map-segments button[aria-pressed="true"] {
+            background: #176b68;
+            border-color: #176b68;
+            color: white;
+        }
+
+        .climate-map-baseline-help {
+            max-width: 48rem;
+            padding: .55rem .7rem;
+            border: 1px solid #d4e2e7;
+            border-radius: .5rem;
+            background: #f3f7f9;
+            color: #425c68;
+        }
+
+        .climate-map-baseline-help summary {
+            cursor: pointer;
+            font-weight: 700;
+            color: #173042;
+        }
+
+        .climate-map-baseline-help p {
+            margin: .6rem 0 0;
+        }
+
+        .climate-map-player {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: .65rem;
+        }
+
+        .climate-map-player input[type="range"] {
+            flex: 1 1 14rem;
+            accent-color: #176b68;
+        }
+
+        .climate-map-player select {
+            width: auto;
+            padding: .45rem .7rem;
+            border: 1px solid #a9c5ca;
+            border-radius: .5rem;
+            background: white;
+            color: #173042;
+            font: inherit;
+        }
+
+        .climate-map-legend {
+            margin: .7rem 0 1rem;
+            max-width: 34rem;
+        }
+
+        .climate-map-gradient {
+            height: .9rem;
+            border: 1px solid #a9c5ca;
+            border-radius: .3rem;
+        }
+
+        .climate-map-legend-labels {
+            display: flex;
+            justify-content: space-between;
+            gap: .5rem;
+            font-size: .85rem;
+            color: #425c68;
+        }
+
+        .climate-map-legend-missing {
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+            margin-top: .4rem;
+            font-size: .85rem;
+        }
+
+        .climate-map-missing-swatch {
+            width: .85rem;
+            height: .85rem;
+            background: #d1d5db;
+            border: 1px solid #a9b1bc;
+        }
+
+        #climate-map .leaflet-interactive {
+            transition: fill .3s ease;
+        }
+
+        .phase-map-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+        }
+
+        .phase-map-year-card {
+            grid-column: 1 / -1;
+            width: 100%;
+            max-width: 34rem;
+            justify-self: center;
+        }
+
+        .phase-map {
+            height: 400px;
+        }
+
+        .lisa-swatch {
+            display: inline-block;
+            width: 1rem;
+            height: .8rem;
+            margin-right: .35rem;
+            border: 1px solid #667b84;
+        }
+
+        .phase-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .4rem 1rem;
+            margin: .75rem 0 1rem;
+            color: #425c68;
+            font-size: .9rem;
+        }
+
+        .phase-legend span {
+            display: inline-flex;
+            align-items: center;
+        }
+
+        @media (max-width: 700px) {
+            .phase-map-grid { grid-template-columns: 1fr; }
+            .phase-map-year-card { max-width: none; }
+        }
+
     </style>
     <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
@@ -840,7 +1019,9 @@
     <script defer src="rt_filters.js?v=20261107-section-folders"></script>
     <script defer src="rt_municipal_priorities.js?v=20261109-decline-note"></script>
     <script defer src="population_density.js?v=20261107-section-folders"></script>
-    <script defer src="spatial.js?v=20261017-5"></script>
+    <script defer src="spatial.js?v=20261107-section-folders"></script>
+    <script defer src="climate_map.js?v=20261107-section-folders"></script>
+    <script defer src="moran_lisa.js?v=20261107-section-folders"></script>
     <script defer src="phase.js?v=20261115-department-selection-fix"></script>
 </head>
 <body>
@@ -872,7 +1053,7 @@
             <li><a href="#rt-title">4. Número reproductivo instantáneo (Rₜ)</a></li>
             <li><a href="#seasonality-title">Estacionalidad y Gradiente Latitudinal</a></li>
             <li><a href="#age-shift-title">Impacto vacunación y cambios en la distribución etaria</a></li>
-            <li><a href="#spatial-title">Heterogeneidad espacial</a></li>
+            <li><a href="#spatial-title">8. Heterogeneidad espacial</a></li>
             <li><a href="#method-title">Datos y método</a></li>
         </ul>
     </nav>
@@ -1682,7 +1863,74 @@
     </section>
 
     <section class="panel" aria-labelledby="spatial-title">
-        <h2 id="spatial-title">Heterogeneidad espacial</h2>
+        <h2 id="spatial-title">8. Heterogeneidad espacial</h2>
+        <h3>Clima municipal</h3>
+        <p class="intro">Promedio semanal de cinco variables climáticas en los municipios de Colombia.
+            Los promedios de los períodos son comparables aunque tengan distinta duración. Cada municipio tiene su
+            propia línea base: su promedio en 2007–2019. La anomalía es la diferencia frente a esa línea base.
+            Los municipios con menos del 80 % de semanas válidas aparecen en gris.</p>
+        <div class="climate-map-controls">
+            <label for="climate-map-variable">Variable climática</label>
+            <select id="climate-map-variable">
+                <option value="precip_chirps" selected>Precipitación CHIRPS (mm/semana)</option>
+                <option value="precip_era5">Precipitación ERA5 (mm/semana)</option>
+                <option value="spec_humidity_era5">Humedad específica ERA5 (g/kg)</option>
+                <option value="rel_humidity_era5">Humedad relativa ERA5 (%)</option>
+                <option value="temp_era5">Temperatura ERA5 (°C)</option>
+            </select>
+            <label for="climate-map-horizon-type">Horizonte temporal</label>
+            <select id="climate-map-horizon-type">
+                <option value="period" selected>Períodos</option>
+                <option value="year">Exploración por año (2007–2025)</option>
+            </select>
+            <div id="climate-map-periods" class="climate-map-segments" role="group" aria-label="Período climático">
+                <button type="button" data-horizon="2007-2014" aria-pressed="false">2007–2014</button>
+                <button type="button" data-horizon="2015-2019" aria-pressed="true">2015–2019</button>
+                <button type="button" data-horizon="2020-2021" aria-pressed="false">2020–2021</button>
+                <button type="button" data-horizon="2022-2025" aria-pressed="false">2022–2025</button>
+            </div>
+            <div id="climate-map-year-control" hidden>
+                <label for="climate-map-year">Año</label>
+                <select id="climate-map-year"></select>
+            </div>
+            <div id="climate-map-modes" class="climate-map-segments" role="group" aria-label="Modo de visualización">
+                <button type="button" data-mode="absolute" aria-pressed="true">Promedio del período</button>
+                <button type="button" data-mode="anomaly" aria-pressed="false">Anomalía vs. Línea base (2007–2019)</button>
+            </div>
+            <details class="climate-map-baseline-help">
+                <summary>ⓘ ¿Por qué se usa esta línea base?</summary>
+                <p>Se utiliza 2007–2019 como línea base histórica para evitar la contaminación de la referencia:
+                    los períodos recientes (2020–2025) representaron eventos muy prolongados (un episodio triple de
+                    La Niña 2020–2023 seguido por El Niño 2023–2024 y récords térmicos globales). Incluirlos en la
+                    referencia elevaría artificialmente la media, amortiguando la magnitud real de las anomalías recientes.</p>
+                <p>El efecto concreto sobre la media depende de la variable y el municipio. Contexto climático:
+                    <a href="https://repository.library.noaa.gov/view/noaa/60189">NOAA (La Niña 2020–2023)</a> y
+                    <a href="https://public.wmo.int/news/media-centre/wmo-confirms-2024-warmest-year-record-about-155degc-above-pre-industrial-level">OMM (temperaturas de 2023–2024)</a>.</p>
+            </details>
+            <div class="climate-map-player">
+                <button id="climate-map-play" type="button" aria-label="Reproducir animación">▶ Reproducir</button>
+                <label for="climate-map-timeline">Línea de tiempo</label>
+                <input id="climate-map-timeline" type="range" min="0" max="3" value="1">
+                <output id="climate-map-frame" for="climate-map-timeline">2015–2019</output>
+                <label for="climate-map-speed">Velocidad</label>
+                <select id="climate-map-speed">
+                    <option value="0.5">0,5× · 1600 ms</option>
+                <option value="1" selected>1× · 800 ms</option>
+                    <option value="2">2× · 400 ms</option>
+                </select>
+            </div>
+        </div>
+        <div id="climate-map" class="spatial-map" role="img"
+             aria-label="Mapa municipal interactivo del clima en Colombia"></div>
+        <div id="climate-map-legend" class="climate-map-legend" aria-label="Leyenda del mapa climático"></div>
+        <p id="climate-map-status" class="age-note" role="status">Cargando mapa climático…</p>
+        <p class="age-note">Cada valor es la media de las semanas con cobertura válida de al menos 95 % en su
+            fuente. Los límites de color se fijan por variable y modo con los percentiles 2 y 98 de todas las vistas
+            de 2007–2025; las anomalías usan límites simétricos alrededor de cero. La geometría municipal MGN 2025
+            se mantiene durante la animación. Las áreas no municipalizadas sin serie climática aparecen en gris.</p>
+        <p class="data-specifications"><a href="https://github.com/thesis-varicella-colombia/exploratory-analysis/blob/main/docs/data_processed/heterogeneidad_espacial/climate_map/README.md">Clima municipal: Especificaciones de los datos</a>.</p>
+
+        <h3>Incidencia notificada de varicela</h3>
         <p class="intro">Mapa de Colombia por municipio de la incidencia notificada de varicela por 100.000 habitantes;
             también incluye las áreas no municipalizadas para cubrir todo el territorio. Selecciona un año o periodo y
             busca una entidad para resaltarla en el mapa.</p>
@@ -1724,6 +1972,21 @@
                 <div id="spatial-municipality-options" class="spatial-options" role="listbox" hidden></div>
             </div>
         </div>
+        <div class="climate-map-player">
+            <button id="spatial-play" type="button" disabled aria-label="Reproducir mapa municipal">▶ Reproducir</button>
+            <label for="spatial-timeline">Línea de tiempo</label>
+            <input id="spatial-timeline" type="range" min="0" max="17" value="17" disabled>
+            <output id="spatial-frame" for="spatial-timeline">2025</output>
+            <label for="spatial-speed">Velocidad</label>
+            <select id="spatial-speed" disabled>
+                <option value="0.5">0,5×</option>
+                <option value="1" selected>1×</option>
+                <option value="2">2×</option>
+            </select>
+        </div>
+        <p class="age-note">La animación recorre los años en orden cronológico o los cuatro períodos, según la selección.
+            Conserva el municipio resaltado, el zoom y la escala de colores. Al cambiar la selección o mover la línea de tiempo,
+            la reproducción se pausa.</p>
         <div id="spatial-map" class="spatial-map"
              aria-label="Mapa interactivo de tasas municipales de notificación de varicela en Colombia"></div>
         <p id="spatial-map-status" class="age-note" role="status">Cargando mapa municipal…</p>
@@ -1734,8 +1997,217 @@
         <p class="age-note">La cartografía <a href="https://geoportal.dane.gov.co/mparcgis/rest/services/MGN2025/Serv_CapasMGN_2025/FeatureServer/317">MGN 2025 del DANE</a>
             cubre Colombia con 1.103 municipios, 18 áreas no municipalizadas y la Isla de San Andrés. Cuando falta el
             denominador, la unidad aparece en gris. Los límites de 2025 se aplican a todos los años y la escala de
-            colores es fija. El código histórico de Mapiripana (94663) no tiene polígono separado en esta capa.</p>
-        <p><a href="data_processed/spatial_series_2008_2025.csv" download>Descargar tasas municipales y periodos (CSV)</a>.</p>
+            colores es fija. Mapiripana (código histórico 94663) es un centro poblado de Barrancominas y fue un área no municipalizada,
+            no un municipio independiente. Se representa dentro de Barrancominas (94343), incluyendo su población histórica en los denominadores.</p>
+        <p class="data-specifications"><a href="https://github.com/thesis-varicella-colombia/exploratory-analysis/blob/main/docs/data_processed/heterogeneidad_espacial/README_spatial_series.md">Incidencia notificada de varicela: Especificaciones de los datos</a>.</p>
+        <h3 class="component-title" id="moran-lisa-title">Moran global y clústeres LISA municipales por período</h3>
+        <p class="intro">La <strong>I de Moran global</strong> resume si las tasas municipales cercanas son parecidas
+            en el conjunto del país. Un valor positivo indica asociación espacial de tasas semejantes. Los
+            <a href="https://onlinelibrary.wiley.com/doi/10.1111/j.1538-4632.1995.tb00338.x">indicadores
+            locales LISA de Anselin</a> comparan la tasa de cada municipio con las de sus vecinos:
+            <strong>High–High (HH)</strong> señala tasa alta con un promedio alto en sus vecinos y
+            <strong>Low–Low (LL)</strong>, tasa baja con un promedio vecinal bajo. High–Low (HL) y Low–High (LH)
+            son contrastes locales. «Alta» y «baja» se definen respecto de la media municipal de
+            <em>cada período</em>, no por un umbral absoluto de incidencia.</p>
+        <p class="age-note">Se usan las tasas promedio anuales por 100.000 de
+            <a href="data_processed/heterogeneidad_espacial/spatial_series_2008_2025.csv">la serie municipal</a> y los mismos
+            <strong>1.102 municipios con denominador válido en los cuatro períodos</strong>. Se excluye el
+            municipio Nuevo Belén de Bajirá (27493) por falta de tasa. Para cada polígono se toma un punto interior; sus
+            <strong>ocho vecinos más cercanos</strong> se eligen con distancia de gran círculo y reciben peso 1/8.
+            La matriz de vecinos es la misma en todos los períodos.</p>
+        <p class="age-note">La significación de Moran global se evalúa con <strong>9.999 permutaciones</strong>
+            de las tasas (prueba unilateral para asociación positiva; p mínimo = 0,0001). Para cada LISA se mantiene fija la
+            tasa del municipio y se reasignan sin reemplazo las de sus vecinos: el valor <em>p</em> local es
+            bilateral. Los mapas muestran por defecto clústeres con <strong>p ≤ 0,05 sin ajuste</strong>,
+            por lo que son exploratorios; el selector permite ver los que sobreviven al
+            <a href="https://rss.onlinelibrary.wiley.com/doi/10.1111/j.2517-6161.1995.tb02031.x">ajuste
+            de Benjamini–Hochberg</a> (<em>q</em> ≤ 0,05) entre las 1.102 pruebas locales de cada período.</p>
+            <p class="data-specifications"><a href="https://github.com/thesis-varicella-colombia/exploratory-analysis/blob/main/docs/data_processed/heterogeneidad_espacial/moran_lisa/README.md">Moran global y clústeres LISA municipales por período: Metodología del cálculo</a>.</p>
+        <div class="table-scroll">
+            <table>
+                <thead><tr>
+                    <th scope="col">Período</th>
+                    <th scope="col">Municipios</th>
+                    <th scope="col">I de Moran</th>
+                    <th scope="col">p global</th>
+                    <th scope="col">HH / LL sin ajuste</th>
+                    <th scope="col">HH / LL con ajuste</th>
+                </tr></thead>
+                <tbody id="moran-global-table"><tr><td colspan="6">Calculando Moran y LISA…</td></tr></tbody>
+            </table>
+        </div>
+        <div class="spatial-controls">
+            <label for="moran-map-filter">Mostrar en los mapas:</label>
+            <select id="moran-map-filter" disabled>
+                <option value="cluster_nominal">Sin ajuste · p ≤ 0,05</option>
+                <option value="cluster_fdr">Con ajuste · q ≤ 0,05</option>
+            </select>
+        </div>
+        <div class="phase-legend" aria-label="Leyenda de los mapas LISA">
+            <span><i class="lisa-swatch" style="background:#b43c32"></i>HH · alto con alto</span>
+            <span><i class="lisa-swatch" style="background:#236a9b"></i>LL · bajo con bajo</span>
+            <span><i class="lisa-swatch" style="background:#df9d32"></i>HL · alto con bajo</span>
+            <span><i class="lisa-swatch" style="background:#8660a5"></i>LH · bajo con alto</span>
+            <span><i class="lisa-swatch" style="background:#e0e6e8"></i>Sin clúster nominal</span>
+        </div>
+        <div class="phase-map-grid">
+            <div><h4>2008–2014 · prevacunal</h4><div id="moran-map-2008-2014" class="spatial-map phase-map" role="img" aria-label="Mapa LISA municipal prevacunal de 2008 a 2014"></div></div>
+            <div><h4>2015–2019 · transición</h4><div id="moran-map-2015-2019" class="spatial-map phase-map" role="img" aria-label="Mapa LISA municipal de 2015 a 2019"></div></div>
+            <div><h4>2020–2021 · pandemia</h4><div id="moran-map-2020-2021" class="spatial-map phase-map" role="img" aria-label="Mapa LISA municipal de 2020 a 2021"></div></div>
+            <div><h4>2022–2025 · posterior al refuerzo</h4><div id="moran-map-2022-2025" class="spatial-map phase-map" role="img" aria-label="Mapa LISA municipal de 2022 a 2025"></div></div>
+        </div>
+        <p id="moran-lisa-status" class="age-note" role="status">Cargando mapas LISA…</p>
+        <p class="data-specifications"><a href="https://github.com/thesis-varicella-colombia/exploratory-analysis/blob/main/docs/data_processed/heterogeneidad_espacial/moran_lisa/README_data.md">Moran global y clústeres LISA municipales por período: Especificaciones de los datos</a>.</p>
+        <h4 id="spatial-sensitivity-title">Sensibilidad a la vecindad espacial</h4>
+        <details><summary>Comparar Moran y HH con 4, 8 y 12 vecinos</summary>
+            <p>Se mantienen los mismos 1.102 municipios, las tasas y las pruebas del análisis original; cambia el número de vecinos más cercanos.
+                Los pesos de cada fila suman uno. El índice de coincidencia HH es la intersección dividida por la unión respecto de 8 vecinos.
+                Si ambos conjuntos están vacíos no se interpreta como una coincidencia informativa.</p>
+            <div class="weekly-filter"><label for="spatial-sensitivity-period">Período</label><select id="spatial-sensitivity-period" disabled>
+                <option value="2008-2014">2008–2014</option><option value="2015-2019">2015–2019</option><option value="2020-2021">2020–2021</option><option value="2022-2025" selected>2022–2025</option></select></div>
+            <div class="table-scroll"><table><caption>Sensibilidad a k vecinos, con ajuste de Benjamini–Hochberg dentro de cada período y vecindad.</caption>
+                <thead><tr><th scope="col">Vecinos</th><th scope="col">Moran I</th><th scope="col">p global</th><th scope="col">HH nominales</th><th scope="col">HH ajustados</th>
+                    <th scope="col">Coincidencia HH ajustados con 8 vecinos</th><th scope="col">HH ajustados añadidos</th><th scope="col">HH ajustados retirados</th></tr></thead>
+                <tbody id="spatial-sensitivity-table"></tbody></table></div>
+            <p>El Moran global permanece positivo con las tres vecindades. Los HH locales dependen de la especificación:
+                en 2022–2025 hay 0 HH ajustados con 4 u 8 vecinos y 15 con 12. No deben presentarse como una selección territorial invariable.
+                Esto no prueba transmisión entre vecinos ni diferencia significativa de Moran entre etapas.
+                La sensibilidad no cubre todavía contigüidad ni suavizado de tasas de municipios pequeños.</p>
+            <p class="data-specifications"><a href="https://github.com/thesis-varicella-colombia/exploratory-analysis/blob/main/docs/data_processed/heterogeneidad_espacial/moran_lisa/README_sensitivity.md">Sensibilidad a la vecindad espacial: Especificaciones de los datos</a>.</p>
+        </details><p id="spatial-sensitivity-status" class="age-note" role="status">Cargando sensibilidad espacial…</p>
+        <h4>Conclusiones de Moran y LISA</h4>
+        <div class="moran-conclusions">
+            <p>En los cuatro períodos la I de Moran es positiva y su prueba por permutaciones da p = 0,0001, el valor más bajo que permiten 9.999 reasignaciones. Es decir, en ninguna de esas reasignaciones al azar las tasas quedaron tan agrupadas como en el mapa real: la varicela notificada no se reparte de forma indiferente al territorio, sino que municipios con incidencia parecida tienden a estar juntos. Esta estructura espacial se sostiene en todas las etapas analizadas.</p>
+            <p>La fuerza de ese agrupamiento, sin embargo, se debilita con el tiempo. La I baja de 0,3473 en 2008–2014 a 0,2580 en 2015–2019, cae a su mínimo de 0,1269 en 2020–2021 y se recupera solo en parte hasta 0,1782 en 2022–2025. Leído como una correlación espacial, el patrón pasa de moderado antes de la vacunación a débil después: la geografía sigue importando, pero cada vez menos. No se ha probado formalmente que estas diferencias entre períodos sean significativas, así que la tendencia descriptiva no debe tomarse como un cambio demostrado.</p>
+            <p>A escala local, los mapas sin ajuste muestran numerosos clústeres High–High y Low–Low, pero muchos son falsas alarmas esperables al hacer 1.102 pruebas por período. Tras el ajuste de Benjamini–Hochberg (q ≤ 0,05) sobreviven 51 High–High en 2008–2014, 34 High–High y 1 Low–Low en 2015–2019, y ninguno en 2020–2021 ni en 2022–2025 con ocho vecinos. La señal local fiable, entonces, se concentra en el período prevacunal y prácticamente desaparece después. Esto no contradice la I global positiva del último período: el país conserva estructura espacial, pero ningún municipio aislado destaca con fuerza suficiente para resistir la corrección.</p>
+            <p>Estos clústeres locales, además, dependen de cómo se defina la vecindad. Con doce vecinos reaparecen 15 High–High ajustados en 2022–2025, donde con ocho no quedaba ninguno. Por eso la lista de municipios señalados no es fija: cambia con el número de vecinos y conviene tratarla como una pista exploratoria, no como un conjunto cerrado de territorios.</p>
+            <p>De los 23 municipios que mantienen la etiqueta High–High en los tres períodos no pandémicos, 19 están en Cundinamarca; de los 31 Low–Low, 16 están en Chocó y 9 en Nariño. La incidencia alta recurrente se agrupa alrededor del centro del país y la baja recurrente en el litoral pacífico, lo que sugiere territorios que vale la pena investigar. Aun así, son etiquetas relativas a la media de cada período que no sobreviven al ajuste múltiple, y una tasa baja persistente puede reflejar subregistro o un denominador inestable tanto como menor enfermedad real.</p>
+            <p>El período 2020–2021 reúne la menor I global y los menos clústeres nominales de toda la serie. Coincide con la pandemia, de modo que el debilitamiento del patrón espacial probablemente mezcla cambios de movilidad, contactos, acceso a servicios y notificación; no puede atribuirse a la vacunación ni interpretarse como un efecto aislado.</p>
+            <p>En conjunto, la varicela notificada muestra una estructura espacial que se debilita después de 2015 sin desaparecer del todo a escala nacional, mientras los clústeres locales fiables se vuelven escasos. El análisis es descriptivo: describe dónde se agrupa la incidencia notificada, no prueba que la enfermedad se transmita entre municipios vecinos ni atribuye los cambios a la vacuna. Su utilidad es señalar hacia dónde mirar: cobertura vacunal, clima y características territoriales junto con la calidad de la vigilancia.</p>
+        </div>
+
+        <h3 class="component-title" id="phase-map-title">Mapas departamentales de fase y amplitud</h3>
+        <p class="intro">Estos mapas parten de las tasas semanales del componente B: allí se ven las 52 semanas;
+            aquí, cada departamento se representa por la semana de su pico y la amplitud de su ciclo.
+            La <strong>fase</strong> es la semana del año en la que la tasa semanal suavizada alcanza
+            su valor máximo: responde «¿cuándo repunta la varicela en cada departamento?» y permite comparar si todos
+            llegan a su pico en las mismas semanas y si ese calendario se mueve entre periodos. En el mapa anual es
+            el pico de ese año; en los mapas por periodo, el de la curva promediada entre los años del periodo. Cuando
+            las tasas y su amplitud son bajas, la semana del máximo es inestable y pequeñas variaciones la desplazan.
+            Las semanas 52 y 1 son contiguas en el calendario aunque reciban colores distintos. Los cinco mapas
+            comparten la escala de color de cada medida.</p>
+        <p class="age-note">Sea <em>T<sub>d,j</sub></em> la tasa de la semana <em>j</em> del departamento <em>d</em>:
+            la tasa de esa semana en el año seleccionado, o el promedio de las tasas de esa semana entre los años con
+            dato del periodo. Para reducir el ruido semana a semana, se suaviza con un promedio móvil circular de
+            cinco semanas y se obtiene la curva <em>T̃<sub>d,s</sub></em>:</p>
+        <div class="formula">
+            <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"
+                  aria-label="Tasa suavizada del departamento d en la semana s igual al promedio de las tasas disponibles en una ventana circular de cinco semanas">
+                <msub><mover><mi>T</mi><mo>~</mo></mover><mrow><mi>d</mi><mo>,</mo><mi>s</mi></mrow></msub><mo>=</mo>
+                <mfrac><mn>1</mn><mrow><mo>|</mo><msub><mi>W</mi><mi>s</mi></msub><mo>|</mo></mrow></mfrac>
+                <munder><mo>∑</mo><mrow><mi>j</mi><mo>∈</mo><msub><mi>W</mi><mi>s</mi></msub></mrow></munder>
+                <msub><mi>T</mi><mrow><mi>d</mi><mo>,</mo><mi>j</mi></mrow></msub>
+            </math>
+        </div>
+        <p class="age-note">La ventana <em>W<sub>s</sub></em> son las cinco semanas de <em>s − 2</em> a <em>s + 2</em>
+            tomadas en círculo (la 52 es vecina de la 1), y <em>|W<sub>s</sub>|</em> es cuántas de ellas tienen dato.
+            Una semana sin dato se excluye del promedio para no abrir una caída artificial, por eso el divisor es
+            <em>|W<sub>s</sub>|</em> y no siempre 5. La curva resultante tiene una tasa suavizada por cada semana
+            <em>s</em> = 1, …, 52. Sobre esas 52 posiciones se definen dos amplitudes, que miden el tamaño del ciclo
+            estacional:</p>
+        <div class="formula">
+            <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"
+                  aria-label="Amplitud absoluta del departamento igual al máximo menos el mínimo de sus 52 tasas semanales suavizadas">
+                <msubsup><mi>A</mi><mi>d</mi><mtext>abs</mtext></msubsup><mo>=</mo>
+                <msub><mtext>máx</mtext><mi>s</mi></msub><mo>(</mo><msub><mover><mi>T</mi><mo>~</mo></mover><mrow><mi>d</mi><mo>,</mo><mi>s</mi></mrow></msub><mo>)</mo>
+                <mo>−</mo><msub><mtext>mín</mtext><mi>s</mi></msub><mo>(</mo><msub><mover><mi>T</mi><mo>~</mo></mover><mrow><mi>d</mi><mo>,</mo><mi>s</mi></mrow></msub><mo>)</mo>
+            </math>
+        </div>
+        <p class="age-note">La <strong>amplitud absoluta</strong> <em>A<sub>d</sub><sup>abs</sup></em> es la distancia
+            entre la semana más alta y la más baja de la curva, en notificaciones por 100.000 habitantes. La
+            <strong>amplitud relativa</strong> <em>A<sub>d</sub><sup>rel</sup></em> divide esa distancia por la tasa
+            media anual de la misma curva, de modo que es adimensional:</p>
+        <div class="formula">
+            <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"
+                  aria-label="Amplitud relativa del departamento igual a amplitud absoluta dividida por la media de sus 52 tasas semanales suavizadas">
+                <msubsup><mi>A</mi><mi>d</mi><mtext>rel</mtext></msubsup><mo>=</mo>
+                <mfrac>
+                    <msubsup><mi>A</mi><mi>d</mi><mtext>abs</mtext></msubsup>
+                    <mrow><mfrac><mn>1</mn><mn>52</mn></mfrac>
+                        <munderover><mo>∑</mo><mrow><mi>s</mi><mo>=</mo><mn>1</mn></mrow><mn>52</mn></munderover>
+                        <msub><mover><mi>T</mi><mo>~</mo></mover><mrow><mi>d</mi><mo>,</mo><mi>s</mi></mrow></msub>
+                    </mrow>
+                </mfrac>
+            </math>
+        </div>
+        <p class="age-note">Las dos amplitudes responden preguntas distintas. La absoluta dice <em>cuánto</em> sube
+            y baja la tasa en el año, en sus propias unidades; la relativa dice qué tan marcado es ese vaivén
+            <em>comparado con el nivel habitual</em> del departamento, y por eso permite comparar departamentos que
+            notifican mucho con otros que notifican poco. Por ejemplo, si la curva llega a 8, baja a 2 y promedia 5,
+            la absoluta es 8 − 2 = 6 por 100.000 y la relativa es 6 / 5 = 1,2: el ciclo abarca el 120 % de la tasa
+            media. Un mismo valor de 6 pesa poco donde la media es 50 y mucho donde es 5.</p>
+        <p class="age-note">Conviene leerlas con cautela. La amplitud absoluta no es un recuento de casos; la relativa
+            no dice si el pico es agudo o prolongado, solo su altura frente a la media. Ninguna demuestra que la
+            transmisión persista ni mide el efecto de una intervención. En departamentos con pocos registros, unas
+            pocas notificaciones producen tasas altas y, al ser baja la media, la amplitud relativa se dispara; si la
+            media anual es cero, no se define y queda sin calcular.</p>
+        <div class="weekly-filter">
+            <label for="phase-map-metric">Mostrar</label>
+            <select id="phase-map-metric" disabled>
+                <option value="peak_week">Semana del pico (fase)</option>
+                <option value="amplitude_per_100k">Amplitud absoluta</option>
+                <option value="relative_amplitude">Amplitud relativa</option>
+            </select>
+        </div>
+        <div class="phase-map-grid">
+            <div><h4>2008–2014 · prevacunal</h4><div id="phase-map-before" class="spatial-map phase-map" role="img" aria-label="Mapa departamental de fase o amplitud estacional antes de 2015"></div></div>
+            <div><h4>2015–2019 · transición / dosis única</h4><div id="phase-map-after" class="spatial-map phase-map" role="img" aria-label="Mapa departamental de fase o amplitud estacional entre 2015 y 2019"></div></div>
+            <div><h4>2020–2021 · pandemia</h4><div id="phase-map-pandemic" class="spatial-map phase-map" role="img" aria-label="Mapa departamental de fase o amplitud estacional entre 2020 y 2021"></div></div>
+            <div><h4>2022–2025 · dosis refuerzo</h4><div id="phase-map-booster" class="spatial-map phase-map" role="img" aria-label="Mapa departamental de fase o amplitud estacional entre 2022 y 2025"></div></div>
+            <div class="phase-map-year-card">
+                <h4>Año individual</h4>
+                <div class="weekly-filter">
+                    <label for="phase-map-year">Año</label>
+                    <select id="phase-map-year" disabled></select>
+                    <label for="phase-map-speed">Velocidad</label>
+                    <select id="phase-map-speed" disabled>
+                        <option value="0.5">0,5×</option>
+                        <option value="1" selected>1×</option>
+                        <option value="2">2×</option>
+                    </select>
+                    <button id="phase-map-play" class="phase-map-play" type="button" aria-pressed="false" disabled>▶ Reproducir</button>
+                </div>
+                <div id="phase-map-yearly" class="spatial-map phase-map" role="img" aria-label="Mapa departamental de fase o amplitud estacional del año seleccionado"></div>
+            </div>
+        </div>
+        <div id="phase-map-legend" class="phase-legend" aria-label="Leyenda de los mapas departamentales"></div>
+        <p id="phase-map-status" class="age-note" role="status">Cargando mapas departamentales…</p>
+        <p class="data-specifications"><a href="https://github.com/thesis-varicella-colombia/exploratory-analysis/blob/main/docs/data_processed/estacionalidad/README_phase_maps.md">Mapas departamentales de fase y amplitud: Especificaciones de los datos</a>.</p>
+        <h4 id="seasonal-sensitivity-title">Estabilidad de los picos estacionales</h4>
+        <details><summary>Estabilidad del pico ante distintos suavizados</summary>
+            <p>Se recalcula el máximo con tres ventanas circulares. El desplazamiento respecto de 5 semanas usa la distancia más corta
+                en el calendario: entre las semanas 52 y 1 hay una semana, no 51. Una curva plana no tiene fase estimable.</p>
+            <div class="weekly-filter"><label for="seasonal-sensitivity-horizon">Año o período</label><select id="seasonal-sensitivity-horizon" disabled></select></div>
+            <div class="table-scroll"><table><caption>Desplazamientos en semanas respecto del suavizado original de 5 semanas.</caption>
+                <thead><tr><th scope="col">Ventana</th><th scope="col">Departamentos con fase</th><th scope="col">Mediana del desplazamiento</th><th scope="col">Percentil 90 del desplazamiento</th>
+                    <th scope="col">Cambian más de 4 semanas</th></tr></thead>
+                <tbody id="seasonal-sensitivity-table"></tbody></table></div>
+            <p>En el promedio de 2022–2025, el pico se desplaza más de cuatro semanas en 7 de 32 departamentos al usar
+                una ventana de 3 semanas y en 4 de 32 al usar 9 semanas, respecto de la ventana original de 5.
+                Las medianas de desplazamiento son 1 y 2 semanas, respectivamente: algunos picos son mucho menos estables que el resumen central.</p>
+            <p>Estas comparaciones miden sensibilidad al suavizado, no intervalos de confianza.
+                Un único máximo puede ocultar un segundo pico; la evaluación completa de bimodalidad sigue pendiente.</p>
+            <p><a href="data_processed/estacionalidad/seasonal_sensitivity.csv" download>Sensibilidad estacional (CSV)</a> ·
+                <a href="data_processed/estacionalidad/seasonal_sensitivity_departments.csv" download>Detalle por departamento (CSV)</a>.</p>
+        </details><p id="seasonal-sensitivity-status" class="age-note" role="status">Cargando sensibilidad estacional…</p>
+        <h4>Conclusiones de los mapas</h4>
+        <div class="phase-conclusions">
+            <p>La semana del pico no es un calendario fijo. En 2008–2014 el norte tiende a repuntar antes que el centro y el sur, pero el orden cambia de un año a otro, así que el mapa del período es un promedio de situaciones distintas más que un patrón estable. El contraste entre 2020 y 2021 lo hace evidente: la mediana de la semana pico pasa de 9 a 43, dos calendarios casi opuestos que no deben promediarse. En 2022–2025 el pico llega más tarde en varios departamentos del norte, sin que los datos permitan atribuirle una causa.</p>
+            <p>La oscilación absoluta de la tasa no cae de inmediato tras el inicio de la vacunación. Su mediana departamental sube de 2,14 a 2,45 notificaciones por 100.000 entre 2008–2014 y 2015–2019, aunque Bogotá D.C. y Antioquia sí bajan; recién desciende a 1,05 en 2020–2021 y 0,99 en 2022–2025. Es la diferencia entre la semana más alta y la más baja, no un conteo de casos evitados: la baja reciente puede deberse a que se notifica menos, no necesariamente a que haya menos enfermedad.</p>
+            <p>Las dos amplitudes pueden contar historias opuestas, y 2020–2021 lo muestra. La amplitud relativa salta a 1,95 justo cuando la absoluta cae, porque la tasa media semanal se desploma a 0,64 por 100.000: una oscilación pequeña pesa mucho frente a un nivel muy bajo. Por eso la relativa alta de ese período no indica un ciclo estacional más marcado, sino un denominador deprimido. En 2022–2025 vuelve a 0,99, cercana a los 0,79 y 0,73 de antes y después de 2015.</p>
+            <p>Esa misma mecánica explica los valores extremos de la periferia: en 2022–2025 Guainía llega a 2,45 de amplitud relativa, Vaupés a 2,24 y Amazonas a 1,04, departamentos con pocas notificaciones donde unos pocos registros disparan el cociente. Conviene leer siempre la relativa junto con la amplitud absoluta y la tasa media antes de interpretarla como estacionalidad real.</p>
+            <p>En conjunto, los mapas describen cuándo y cuánto oscila la varicela notificada por departamento, no su transmisión ni el efecto de una intervención. El calendario del pico es inestable entre años, la oscilación absoluta baja en los períodos recientes y la relativa depende fuertemente del nivel de notificación. Las cifras por período son medianas de los 32 departamentos, no tasas nacionales, y ninguna demuestra extinciones y reintroducciones del virus ni una relación con la lluvia o la vacuna.</p>
+        </div>
     </section>
 
     <section class="panel" aria-labelledby="method-title">
