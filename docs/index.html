@@ -518,6 +518,38 @@
             font-size: .92rem;
         }
 
+        .r0-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+            gap: .8rem;
+            margin: 1rem 0;
+        }
+
+        .r0-metric {
+            padding: .85rem 1rem;
+            border: 1px solid #c9dcda;
+            border-radius: .6rem;
+            background: #f3f8f7;
+        }
+
+        .r0-metric strong {
+            display: block;
+            margin-top: .2rem;
+            color: #103d49;
+            font-size: 1.5rem;
+        }
+
+        .r0-metric small {
+            display: block;
+            margin-top: .3rem;
+            color: #425c68;
+            line-height: 1.35;
+        }
+
+        .r0-chart {
+            min-height: 250px;
+        }
+
         .weekly-filter {
             display: flex;
             flex-wrap: wrap;
@@ -1014,7 +1046,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/vega-lite@6.5.0/build/vega-lite.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/vega-embed@7.3.0/build/vega-embed.min.js"></script>
     <script defer src="annual_territories.js?v=20261107-section-folders"></script>
-    <script defer src="charts.js?v=20261115-seasonal-refresh"></script>
+    <script defer src="charts.js?v=20261116-r0-individual-age"></script>
     <script defer src="comparability.js?v=20261107-section-folders"></script>
     <script defer src="rt_filters.js?v=20261107-section-folders"></script>
     <script defer src="rt_municipal_priorities.js?v=20261109-decline-note"></script>
@@ -1053,6 +1085,7 @@
             <li><a href="#rt-title">4. Número reproductivo instantáneo (Rₜ)</a></li>
             <li><a href="#seasonality-title">Estacionalidad y Gradiente Latitudinal</a></li>
             <li><a href="#age-shift-title">Impacto vacunación y cambios en la distribución etaria</a></li>
+            <li><a href="#r0-age-proxy-title">7. Número reproductivo básico (R₀): escenario prevacunal</a></li>
             <li><a href="#spatial-title">8. Heterogeneidad espacial</a></li>
             <li><a href="#method-title">Datos y método</a></li>
         </ul>
@@ -1860,6 +1893,175 @@
             <li>En 2022–2025, la mediana en menores de 1 año baja a 163 por 100.000, cerca de 71 % por debajo de 2008–2014. Es compatible con una menor exposición, pero también coincide con cambios de transmisión, atención y notificación; estos datos no permiten atribuir el descenso a protección indirecta de la vacuna.</li>
         </ul>
 
+    </section>
+
+    <section class="panel" aria-labelledby="r0-age-proxy-title">
+        <h2 id="r0-age-proxy-title">7. Número reproductivo básico (R₀): escenario prevacunal</h2>
+        <p class="intro"><strong>R₀</strong> es el número esperado de infecciones secundarias causadas por una
+            persona infectada en una población completamente susceptible; es distinto del Rₜ estimado para cada
+            fecha más arriba. <strong>L</strong> representa la duración media de la vida, es decir, la esperanza
+            de vida al nacer de la población estudiada, en este caso Colombia. Para aproximarla usamos la
+            <a href="https://www.dane.gov.co/files/investigaciones/poblacion/conciliacenso/7_Proyecciones_poblacion.pdf#page=59">esperanza de vida al nacer nacional del DANE (tabla 20)</a>:
+            <strong>74,00 años en 2005–2010</strong> y <strong>75,22 en 2010–2015</strong>. Se fija
+            <strong>L = 75 años</strong> como valor redondeado representativo de esos quinquenios que abarcan
+            la base 2008–2014; el DANE no publica 75 como valor exacto de ese período de siete años.</p>
+        <p class="intro">El cálculo usa la edad registrada en cada notificación individual de varicela,
+            junto con su unidad de medida. Las edades consignadas en meses, días, horas o minutos se convierten
+            a años; las registradas en años conservan la precisión con que fueron notificadas. Para cada año
+            epidemiológico <em>t</em>, <em>I<sub>t</sub></em> es el conjunto de notificaciones con edad válida,
+            <em>a<sub>i</sub></em> es la edad en años de la notificación <em>i</em> y
+            <em>N<sub>t</sub></em> es el número de esas notificaciones. Los registros sin edad válida se
+            excluyen del promedio, pero se contabilizan por separado. Se aplican los mismos filtros de casos
+            y territorio que en la serie publicada por grupos de edad.</p>
+        <div class="formula">
+            <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"
+                  aria-label="Edad media anual igual a la suma de edades individuales válidas dividida por el número de notificaciones con edad válida">
+                <msub><mi>A</mi><mi>t</mi></msub><mo>=</mo>
+                <mfrac>
+                    <mrow><munder><mo>∑</mo><mrow><mi>i</mi><mo>∈</mo><msub><mi>I</mi><mi>t</mi></msub></mrow></munder>
+                        <msub><mi>a</mi><mi>i</mi></msub></mrow>
+                    <msub><mi>N</mi><mi>t</mi></msub>
+                </mfrac>
+            </math>
+        </div>
+        <p class="age-note">La referencia prevacunal es la media de las siete edades medias anuales de
+            2008–2014; así, cada año pesa igual. Se excluye 2007 por la discrepancia de registros documentada
+            en la fuente. Esta es la edad al momento de la notificación, no la edad comprobada de primera infección.</p>
+        <div class="formula">
+            <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"
+                  aria-label="Edad media prevacunal igual a un séptimo de la suma de las edades medias anuales desde 2008 hasta 2014">
+                <msub><mover><mi>A</mi><mo>¯</mo></mover><mtext>2008–2014</mtext></msub><mo>=</mo>
+                <mfrac><mn>1</mn><mn>7</mn></mfrac>
+                <munderover><mo>∑</mo><mrow><mi>t</mi><mo>=</mo><mn>2008</mn></mrow><mn>2014</mn></munderover>
+                <msub><mi>A</mi><mi>t</mi></msub>
+            </math>
+        </div>
+        <p class="age-note">La relación <strong>R₀ = 1 + L/A</strong> aparece en
+            <a href="https://doi.org/10.1017/S002217240002893X">Anderson y May (1983, ecuación 20)</a>,
+            quienes atribuyen su derivación a <a href="https://www.stat.cmu.edu/~kass/covid/Dietz1975.pdf">Dietz (1975, ecuación 18)</a>.
+            Corresponde a un modelo endémico con mortalidad constante e independiente de la edad;
+            <em>A</em> es la <strong>edad media de primera infección</strong>. Aquí se sustituye por
+            la edad media de <strong>notificación</strong>, por lo que el resultado se presenta
+            únicamente como proxy:</p>
+        <div class="formula">
+            <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"
+                  aria-label="R cero proxy aproximadamente igual a uno más L dividido por la edad media de notificación de 2008 a 2014; L se fija en 75 años">
+                <msub><mi>R</mi><mn>0</mn></msub><mo>≈</mo><mn>1</mn><mo>+</mo>
+                <mfrac><mi>L</mi><msub><mover><mi>A</mi><mo>¯</mo></mover><mtext>2008–2014</mtext></msub></mfrac>
+                <mspace width="1em"/><mo>(</mo><mi>L</mi><mo>=</mo><mn>75</mn><mtext> años</mtext><mo>)</mo>
+            </math>
+        </div>
+        <p class="age-note"><strong>Referencia del modelo:</strong> Anderson, R. M. y May, R. M. (1983).
+            <em>Vaccination against rubella and measles: quantitative investigations of different policies</em>.
+            <em>Journal of Hygiene</em>, 90(2), 259–325, ecuación 20.
+            <a href="https://doi.org/10.1017/S002217240002893X">doi:10.1017/S002217240002893X</a>.</p>
+        <p class="age-note">Sea <em>N</em> la población total, <em>N<sub>v</sub></em> el número de personas
+            vacunadas y <em>N<sub>prot</sub></em> el número que el modelo supone protegido contra la infección
+            gracias a la vacuna. Entonces <strong>p</strong> es la cobertura vacunal y
+            <strong>ε (épsilon)</strong> es la <strong>eficacia vacunal hipotética frente a la infección</strong>,
+            entendida aquí como la fracción de vacunados completamente protegidos:</p>
+        <div class="formula">
+            <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"
+                  aria-label="Cobertura p igual a número de vacunados dividido por población total; eficacia hipotética épsilon igual a vacunados protegidos contra infección dividido por número de vacunados">
+                <mi>p</mi><mo>=</mo><mfrac><msub><mi>N</mi><mi>v</mi></msub><mi>N</mi></mfrac>
+                <mspace width="2em"/>
+                <mi>ε</mi><mo>=</mo><mfrac><msub><mi>N</mi><mtext>prot</mtext></msub><msub><mi>N</mi><mi>v</mi></msub></mfrac>
+            </math>
+        </div>
+        <p class="age-note">Con <em>p</em> y ε entre 0 y 1, la fracción de toda la población protegida
+            por la vacuna resulta de multiplicar ambas proporciones:</p>
+        <div class="formula">
+            <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"
+                  aria-label="Fracción de la población protegida por vacunación igual a cobertura p multiplicada por eficacia hipotética épsilon">
+                <msub><mi>f</mi><mtext>protegida</mtext></msub><mo>=</mo><mi>p</mi><mo>×</mo><mi>ε</mi>
+                <mo>=</mo><mfrac><msub><mi>N</mi><mtext>prot</mtext></msub><mi>N</mi></mfrac>
+            </math>
+        </div>
+        <p class="age-note">Este producto supone vacunación homogénea y protección completa en la fracción
+            ε de vacunados. Para mostrar cómo se obtienen los umbrales, <em>R<sub>v</sub></em> representa el
+            número reproductivo teórico después de vacunar en ese modelo. El valor 1 es la frontera:
+            si <em>R<sub>v</sub></em> &gt; 1, cada caso genera en promedio más de un caso secundario y
+            la transmisión puede sostenerse; si <em>R<sub>v</sub></em> &lt; 1, genera menos de uno y
+            las cadenas tienden a extinguirse. La igualdad define el
+            <a href="https://doi.org/10.1017/S002217240002893X">umbral teórico de control</a>
+            de este modelo.
+            Para hallar la cobertura crítica se impone <em>R<sub>v</sub></em> ≤ 1:</p>
+        <div class="formula">
+            <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"
+                  aria-label="R sub v igual a R cero multiplicado por uno menos p por épsilon; R sub v menor o igual a uno implica p por épsilon mayor o igual que uno menos uno dividido por R cero">
+                <msub><mi>R</mi><mi>v</mi></msub><mo>=</mo><msub><mi>R</mi><mn>0</mn></msub>
+                <mo>(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mi>ε</mi><mo>)</mo><mo>≤</mo><mn>1</mn>
+                <mspace width="1em"/><mo>⇒</mo><mspace width="1em"/>
+                <mi>p</mi><mi>ε</mi><mo>≥</mo><mn>1</mn><mo>−</mo>
+                <mfrac><mn>1</mn><msub><mi>R</mi><mn>0</mn></msub></mfrac>
+            </math>
+        </div>
+        <p class="age-note">El lado derecho es la <strong>fracción inmune crítica</strong>. Este criterio
+            no garantiza ausencia inmediata de casos ni contempla importaciones u otros cambios de transmisión.
+            Al despejar
+            la cobertura mínima <em>p<sub>c</sub></em> para una eficacia supuesta ε, se obtiene:</p>
+        <div class="formula">
+            <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"
+                  aria-label="Cobertura crítica p sub c igual a fracción inmune crítica, uno menos uno dividido por R cero, dividida por épsilon">
+                <msub><mi>p</mi><mi>c</mi></msub><mo>=</mo>
+                <mfrac>
+                    <mrow><mn>1</mn><mo>−</mo><mfrac><mn>1</mn><msub><mi>R</mi><mn>0</mn></msub></mfrac></mrow>
+                    <mi>ε</mi>
+                </mfrac>
+            </math>
+        </div>
+        <p class="age-note">Con el R₀ proxy sin redondear (≈ 6,8636), la fracción crítica es 85,43 %. Por ejemplo, si
+            ε = 0,82, <em>p<sub>c</sub></em> = 0,8543 / 0,82 = 1,0418 (104,2 %); si ε = 0,92,
+            <em>p<sub>c</sub></em> = 0,8543 / 0,92 = 0,9286 (92,9 %). El primer resultado supera
+            el máximo posible de cobertura, que es 100 %.</p>
+        <p class="age-note">Se usan ε = 0,82 (una dosis) y ε = 0,92 (dos dosis) como valores ilustrativos, tomados de
+            estimaciones de <strong>efectividad frente a varicela clínica de cualquier gravedad</strong> que
+            resumen los <a href="https://www.cdc.gov/vaccines/hcp/by-disease/varicella.html">CDC</a>.
+            La
+            <a href="https://www.who.int/docs/default-source/immunization/position_paper_documents/varicella/who-pp-varicella-herpes-zoster-june2014-presentation.pdf">OMS</a>
+            también resume ensayos de una y dos dosis; uno de ellos encontró 65,4 % con una dosis monovalente
+            y 94,9 % con dos dosis de una vacuna combinada, lo que ilustra la variación entre estudios y
+            productos. <strong>Ninguna de esas cifras estima la protección contra la infección o la transmisión
+            en Colombia.</strong> Usarlas como ε exige suponer que la efectividad frente a enfermedad clínica
+            aproxima la protección frente a infección, equivalencia que estas fuentes no establecen. Por
+            ello, los resultados siguientes son solo escenarios ilustrativos.</p>
+        <div class="r0-metrics" aria-label="Resultados del escenario teórico de R cero">
+            <div class="r0-metric">Edad media previa <strong id="r0-age-before">Cargando…</strong><small>Media de las edades anuales de notificación individual, 2008–2014.</small></div>
+            <div class="r0-metric">R₀ proxy <strong id="r0-proxy">Cargando…</strong><small>Escenario 1 + 75 / Ā; no es una estimación identificada de transmisión.</small></div>
+            <div class="r0-metric">Cobertura crítica · 1 dosis <strong id="r0-pc-one">Cargando…</strong><small>ε = 0,82; si supera 100 %, es inalcanzable en este modelo.</small></div>
+            <div class="r0-metric">Cobertura crítica · 2 dosis <strong id="r0-pc-two">Cargando…</strong><small>ε = 0,92; escenario para vacunación homogénea de toda la población.</small></div>
+        </div>
+        <p class="age-note">Esta relación ilustrativa supone equilibrio endémico, mezcla homogénea,
+            mortalidad constante e independiente de la edad e inmunidad duradera, además de edad de primera infección.
+            Aquí conocemos la edad reportada de cada caso notificado, pero no la edad de todas las primeras infecciones
+            de la población. La notificación puede ser incompleta y el cálculo no distingue infecciones previas.
+            Por eso R₀ y los umbrales siguientes son <strong>proxies de escenario</strong>, no resultados medidos
+            ni metas de cobertura para Colombia.</p>
+        <p class="age-note">El gráfico marca
+            la franja <strong>90–95 %</strong> como referencia visual solicitada, no como un intervalo de
+            confianza ni como umbral estimado de la vigilancia. Un valor superior a 100 % indica que esa eficacia
+            no alcanzaría el umbral del modelo aun vacunando a todos.</p>
+        <div class="age-chart r0-chart" id="chart-r0-threshold" role="img"
+             aria-label="Cobertura crítica teórica para una y dos dosis, con franja de referencia entre 90 y 95 por ciento y límite de 100 por ciento"></div>
+        <p class="scroll-hint">Desplaza el gráfico horizontalmente si es necesario.</p>
+        <p class="data-specifications"><a href="https://github.com/thesis-varicella-colombia/exploratory-analysis/blob/main/docs/data_processed/varicela_grupo_edad/README_r0_individual_age.md">Escenario R₀ con edades individuales: Especificaciones de los datos</a>.</p>
+        <details>
+            <summary>Ver edad media de los casos notificados por año</summary>
+            <div class="table-scroll">
+                <table>
+                    <thead><tr><th scope="col">Año</th><th scope="col">Casos con edad válida</th><th scope="col">Casos sin edad válida</th><th scope="col">Edad media (años)</th></tr></thead>
+                    <tbody id="r0-age-table"><tr><td colspan="4">Calculando edades…</td></tr></tbody>
+                </table>
+            </div>
+        </details>
+        <h3>Conclusiones del escenario R₀</h3>
+        <ul class="notes">
+            <li>Con las edades individuales reportadas, la media de las edades anuales de notificación en 2008–2014 es 12,79 años. La relación de <a href="https://doi.org/10.1017/S002217240002893X">Dietz, presentada por Anderson y May (1983)</a>, produce un R₀ proxy de 6,86. No es una estimación directa del R₀ colombiano: la relación requiere la edad de primera infección y aquí se usa la edad reportada en las notificaciones.</li>
+            <li>Con el R₀ proxy de 6,86 calculado a partir de las edades individuales, la fracción inmune crítica teórica es 85,4 %. Si las estimaciones de efectividad de 0,82 y 0,92 <a href="https://www.cdc.gov/vaccines/hcp/by-disease/varicella.html">frente a varicela clínica</a> se usan como aproximaciones hipotéticas de ε, las coberturas críticas son 104,2 % y 92,9 %. La primera supera 100 %; la segunda solo tendría esa interpretación bajo los supuestos del modelo. No son metas para Colombia porque la fórmula requiere protección frente a infección y vacunación homogénea de toda la población.</li>
+            <li>Las medias anuales de edad en 2008–2014 varían entre 12,45 y 13,08 años. Al excluir cada año por turno, el R₀ proxy queda entre 6,84 y 6,89; el valor de 6,86 no depende de un solo año. Este rango describe sensibilidad a la selección de años, no un intervalo de confianza.</li>
+            <li>Si se sustituyen los 75 años redondeados de <em>L</em> por los valores quinquenales del DANE (74,00 y 75,22), el R₀ proxy va de 6,79 a 6,88. Las coberturas teóricas siguen por encima de 100 % para ε = 0,82 y entre 92,7 % y 92,9 % para ε = 0,92. Esta estabilidad numérica no resuelve las limitaciones de usar la edad de notificación ni la efectividad contra enfermedad clínica.</li>
+            <li>En 2008–2014 se incluyeron 630.710 notificaciones con edad válida y se excluyeron 1.287 sin edad válida; 1.183 de estas últimas corresponden a 2008. El promedio puede seguir sesgado por casos no notificados, diferencias en la precisión de la edad y posibles diferencias entre edad de notificación y edad de primera infección.</li>
+        </ul>
     </section>
 
     <section class="panel" aria-labelledby="spatial-title">

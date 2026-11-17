@@ -2,6 +2,7 @@
 
 const DATA_URL = "data_processed/varicela_totales_por_anio/annual_series_2007_2025.csv?v=20261023-notification";
 const AGE_DATA_URL = "data_processed/varicela_grupo_edad/age_group_series_2007_2025.csv?v=20261023-notification";
+const R0_AGE_DATA_URL = "data_processed/varicela_grupo_edad/r0_individual_age_2008_2025.csv?v=20261115-individual";
 const WEEKLY_DATA_URL = "data_processed/evolucion_semanal/weekly_series_2007_2025.csv?v=20261023-notification";
 const RT_DATA_URL = "data_processed/numero_reproductivo/rt_national_daily.csv?v=20261025-daily";
 const RT_ONSET_DATA_URL = "data_processed/numero_reproductivo/rt_national_symptom_daily.csv?v=20261025-onset";
@@ -256,6 +257,16 @@ function parseAgeCsv(text) {
     notifications: Number(row.notifications),
     population: row.population ? Number(row.population) : null,
     notification_rate_per_100k: row.notification_rate_per_100k ? Number(row.notification_rate_per_100k) : null,
+  }));
+}
+
+function parseR0AgeCsv(text) {
+  return csvObjects(text).map((row) => ({
+    year: Number(row.year),
+    knownCases: Number(row.known_age_cases),
+    unknownCases: Number(row.unknown_age_cases),
+    ageSum: Number(row.age_sum_years),
+    meanAge: Number(row.mean_age_years),
   }));
 }
 
@@ -1331,6 +1342,100 @@ function ageShiftRatioSpec(rows) {
   };
 }
 
+function ageR0Proxy(annual) {
+  if (annual.length !== 18 || annual.some((row, index) =>
+    row.year !== 2008 + index || row.knownCases <= 0 || row.unknownCases < 0 ||
+    !Number.isFinite(row.meanAge) || !Number.isFinite(row.ageSum) ||
+    Math.abs(row.ageSum / row.knownCases - row.meanAge) > 0.000001)) {
+    throw new Error("The individual-age summary is incomplete or inconsistent");
+  }
+  const baseline = annual.filter((row) => row.year <= 2014);
+  const baselineMeanAge = baseline.reduce((total, row) => total + row.meanAge, 0) / baseline.length;
+  const lifeExpectancy = 75;
+  const r0Proxy = 1 + lifeExpectancy / baselineMeanAge;
+  const criticalImmuneFraction = 1 - 1 / r0Proxy;
+  return {
+    annual,
+    baselineMeanAge,
+    r0Proxy,
+    oneDoseCoverage: criticalImmuneFraction / 0.82,
+    twoDoseCoverage: criticalImmuneFraction / 0.92,
+  };
+}
+
+function fillAgeR0Proxy(summary) {
+  document.querySelector("#r0-age-before").textContent = `${RATE.format(summary.baselineMeanAge)} años`;
+  document.querySelector("#r0-proxy").textContent = RATE.format(summary.r0Proxy);
+  document.querySelector("#r0-pc-one").textContent = `${RATE.format(100 * summary.oneDoseCoverage)} %`;
+  document.querySelector("#r0-pc-two").textContent = `${RATE.format(100 * summary.twoDoseCoverage)} %`;
+  const body = document.querySelector("#r0-age-table");
+  const fragment = document.createDocumentFragment();
+  for (const row of summary.annual) {
+    const tr = document.createElement("tr");
+    for (const value of [row.year, NUMBER.format(row.knownCases), NUMBER.format(row.unknownCases), RATE.format(row.meanAge)]) {
+      const td = document.createElement("td");
+      td.textContent = value;
+      tr.append(td);
+    }
+    fragment.append(tr);
+  }
+  body.replaceChildren(fragment);
+}
+
+function ageR0ThresholdSpec(summary) {
+  const doseOrder = ["1 dosis", "2 dosis"];
+  const reference = doseOrder.map((dose) => ({ dose, start: 90, end: 95 }));
+  const thresholds = [
+    { dose: "1 dosis", coverage: 100 * summary.oneDoseCoverage,
+      label: `${RATE.format(100 * summary.oneDoseCoverage)} %` },
+    { dose: "2 dosis", coverage: 100 * summary.twoDoseCoverage,
+      label: `${RATE.format(100 * summary.twoDoseCoverage)} %` },
+  ];
+  const y = { field: "dose", type: "nominal", sort: doseOrder, title: null,
+    axis: { labelColor: "#425c68" } };
+  const x = { type: "quantitative", scale: { domain: [0, 110] },
+    title: "Cobertura teórica de vacunación (%)",
+    axis: { gridColor: "#e4ecee", labelColor: "#425c68", titleColor: "#425c68" } };
+  return {
+    $schema: SCHEMA,
+    width: CHART_WIDTH,
+    height: 150,
+    background: "transparent",
+    layer: [
+      {
+        data: { values: reference },
+        mark: { type: "bar", size: 48, color: "#dcefd7" },
+        encoding: { y, x: { ...x, field: "start" }, x2: { field: "end" } },
+      },
+      {
+        data: { values: [{}] },
+        mark: { type: "rule", strokeDash: [4, 3], color: "#6d7880" },
+        encoding: { x: { datum: 100, type: "quantitative" } },
+      },
+      {
+        data: { values: thresholds },
+        mark: { type: "point", filled: true, size: 190 },
+        encoding: {
+          y,
+          x: { ...x, field: "coverage" },
+          color: { field: "dose", type: "nominal", scale: { domain: doseOrder,
+            range: ["#b85f44", "#176b68"] }, legend: null },
+          tooltip: [
+            { field: "dose", title: "Esquema" },
+            { field: "coverage", title: "Cobertura teórica (%)", format: ".2f" },
+          ],
+        },
+      },
+      {
+        data: { values: thresholds },
+        mark: { type: "text", align: "left", dx: 11, fontWeight: "bold", color: "#173042" },
+        encoding: { y, x: { ...x, field: "coverage" }, text: { field: "label" } },
+      },
+    ],
+    config: { view: { stroke: null }, font: "system-ui, sans-serif" },
+  };
+}
+
 function infantProtectionSpec(rows) {
   const [eventBand, ...eventMarks] = annualEventLayers();
   return {
@@ -1411,6 +1516,22 @@ async function loadAgeCharts() {
       const chart = document.querySelector(id);
       if (!chart.querySelector("svg")) chart.textContent = `No se pudieron cargar los gráficos por edad: ${error.message}`;
     }
+    console.error(error);
+  }
+}
+
+async function loadR0Chart() {
+  const chart = document.querySelector("#chart-r0-threshold");
+  if (!chart) return;
+  try {
+    const response = await fetch(R0_AGE_DATA_URL);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const summary = ageR0Proxy(parseR0AgeCsv(await response.text()));
+    fillAgeR0Proxy(summary);
+    if (typeof vegaEmbed !== "function") throw new Error("Vega-Lite could not be loaded");
+    await renderChart("#chart-r0-threshold", "Cobertura crítica del escenario R₀", ageR0ThresholdSpec(summary));
+  } catch (error) {
+    chart.textContent = `No se pudo cargar el escenario R₀: ${error.message}`;
     console.error(error);
   }
 }
@@ -1525,4 +1646,5 @@ async function main() {
 main();
 loadWeeklyCharts();
 loadAgeCharts();
+loadR0Chart();
 loadLatitudeHeatmap();
