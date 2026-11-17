@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Municipal climate map dataset",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "variable", "unit", "minimum_coverage", "source_week_coverage", "baseline_horizon", "scale_bounds", "columns", "rows"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "variable": { "enum": ["precip_chirps", "precip_era5", "spec_humidity_era5", "rel_humidity_era5", "temp_era5"] },
+    "unit": { "enum": ["mm/semana", "g/kg", "%", "°C"] },
+    "minimum_coverage": { "const": 0.8 },
+    "source_week_coverage": { "const": 0.95 },
+    "baseline_horizon": { "const": "2007-2019" },
+    "scale_bounds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["absolute", "anomaly"],
+      "properties": {
+        "absolute": { "$ref": "#/$defs/bounds" },
+        "anomaly": { "$ref": "#/$defs/bounds" }
+      }
+    },
+    "columns": {
+      "const": ["code", "horizon", "valid_weeks", "total_weeks", "mean_value", "baseline_2007_2019", "anomaly"]
+    },
+    "rows": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "prefixItems": [
+          { "type": "string", "pattern": "^[0-9]{5}$" },
+          { "type": "string", "pattern": "^(2007-2014|2015-2019|2020-2021|2022-2025|20(0[7-9]|1[0-9]|2[0-5]))$" },
+          { "type": "integer", "minimum": 0 },
+          { "type": "integer", "minimum": 1 },
+          { "type": ["number", "null"] },
+          { "type": ["number", "null"] },
+          { "type": ["number", "null"] }
+        ],
+        "minItems": 7,
+        "maxItems": 7
+      }
+    }
+  },
+  "$defs": {
+    "bounds": {
+      "type": "array",
+      "prefixItems": [{ "type": "number" }, { "type": "number" }],
+      "minItems": 2,
+      "maxItems": 2
+    }
+  }
+}

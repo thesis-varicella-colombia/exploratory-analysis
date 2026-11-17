@@ -1,7 +1,7 @@
 "use strict";
 
-const SPATIAL_DATA_URL = "data_processed/spatial_series_2008_2025.csv";
-const MUNICIPAL_BOUNDARIES_URL = "data_processed/municipal_boundaries_dane.geojson";
+const SPATIAL_DATA_URL = "data_processed/heterogeneidad_espacial/spatial_series_2008_2025.csv?v=20261102-mapiripana-population";
+const MUNICIPAL_BOUNDARIES_URL = "data_processed/cartografia/municipal_boundaries_dane.geojson";
 const SPATIAL_NUMBER = new Intl.NumberFormat("es-CO");
 const SPATIAL_RATE = new Intl.NumberFormat("es-CO", { maximumFractionDigits: 1 });
 const RATE_COLORS = ["#d9efeb", "#9fd6cb", "#5ab8ab", "#218f8c", "#176b7a", "#103d60"];
@@ -89,6 +89,79 @@ function addLegend(map) {
     return container;
   };
   legend.addTo(map);
+}
+
+function initSpatialPlayer(selector, renderFrame) {
+  const play = document.querySelector("#spatial-play");
+  const timeline = document.querySelector("#spatial-timeline");
+  const output = document.querySelector("#spatial-frame");
+  const speed = document.querySelector("#spatial-speed");
+  let running = false;
+  let timer = null;
+  let generation = 0;
+
+  function frames() {
+    const annual = /^\d{4}$/.test(selector.value);
+    return [...selector.options].map((option) => option.value)
+      .filter((value) => /^\d{4}$/.test(value) === annual)
+      .sort((a, b) => a.localeCompare(b));
+  }
+  function sync() {
+    const sequence = frames();
+    timeline.max = String(sequence.length - 1);
+    timeline.value = String(sequence.indexOf(selector.value));
+    output.textContent = selector.value.replace("-", "–");
+    timeline.setAttribute("aria-valuetext", output.textContent);
+  }
+  function stop() {
+    running = false;
+    generation += 1;
+    clearTimeout(timer);
+    timer = null;
+    play.textContent = "▶ Reproducir";
+    play.setAttribute("aria-label", "Reproducir mapa municipal");
+  }
+  async function update() {
+    for (const control of [selector, timeline, play, speed]) control.disabled = true;
+    sync();
+    try {
+      await renderFrame();
+    } catch (error) {
+      stop();
+      console.error(error);
+    } finally {
+      for (const control of [selector, timeline, play, speed]) control.disabled = false;
+    }
+  }
+  function schedule() {
+    const version = generation;
+    timer = setTimeout(async () => {
+      const sequence = frames();
+      selector.value = sequence[(sequence.indexOf(selector.value) + 1) % sequence.length];
+      await update();
+      if (running && version === generation) schedule();
+    }, 1200 / Number(speed.value));
+  }
+  function start() {
+    running = true;
+    play.textContent = "⏸ Pausar";
+    play.setAttribute("aria-label", "Pausar mapa municipal");
+    schedule();
+  }
+  play.addEventListener("click", () => running ? stop() : start());
+  selector.addEventListener("change", () => { stop(); return update(); });
+  timeline.addEventListener("input", () => {
+    stop();
+    selector.value = frames()[Number(timeline.value)];
+    return update();
+  });
+  speed.addEventListener("change", () => {
+    if (running) { stop(); start(); }
+  });
+  document.addEventListener("visibilitychange", () => { if (document.hidden) stop(); });
+  window.addEventListener("pagehide", stop);
+  sync();
+  for (const control of [selector, timeline, play, speed]) control.disabled = false;
 }
 
 async function loadSpatialMap() {
@@ -229,7 +302,6 @@ async function loadSpatialMap() {
       if (selectedCode) layersByCode.get(selectedCode).bringToFront().openPopup();
       updateStatus();
     }
-    selector.addEventListener("change", update);
     municipalitySelector.addEventListener("focus", () => {
       renderMunicipalities("");
       municipalitySelector.select();
@@ -262,6 +334,7 @@ async function loadSpatialMap() {
     selector.disabled = false;
     municipalitySelector.disabled = false;
     update();
+    initSpatialPlayer(selector, update);
   } catch (error) {
     status.textContent = `No se pudo cargar el mapa: ${error.message}`;
     console.error(error);

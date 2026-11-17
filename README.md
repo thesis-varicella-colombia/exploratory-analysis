@@ -153,11 +153,19 @@ pip install -r requirements.txt
 jupyter lab
 ```
 
-Abrir `notebooks/01_moran_global_knn.ipynb` y ejecutar las celdas en orden. El notebook usa `docs/data_processed/spatial_series_2008_2025.csv` y `docs/data_processed/municipal_boundaries_dane.geojson`, incluidos en el repositorio; se puede abrir Jupyter desde la raíz o desde `notebooks/`.
+Abrir `notebooks/01_moran_global_knn.ipynb` y ejecutar las celdas en orden. El notebook usa `docs/data_processed/heterogeneidad_espacial/spatial_series_2008_2025.csv` y `docs/data_processed/cartografia/municipal_boundaries_dane.geojson`, incluidos en el repositorio; se puede abrir Jupyter desde la raíz o desde `notebooks/`.
 
 ## Gráficos y vista local
 
-La [página estática](docs/index.html) muestra las notificaciones y tasas anuales, semanales y por edad, curvas estacionales, un mapa de calor de anomalías semanales ordenadas por latitud y un mapa municipal con años y periodos. El [README de `data/`](data/README.md) documenta las fuentes y los cálculos. Cada CSV publicado tiene su propio script generador.
+La [página estática](docs/index.html) muestra las notificaciones y tasas anuales, semanales y por edad, curvas estacionales, un mapa de calor de anomalías semanales ordenadas por latitud y, en la sección 8, mapas de clima, incidencia municipal, clústeres LISA y fase y amplitud departamental. El [README de `data/`](data/README.md) documenta las fuentes y los cálculos. Cada CSV publicado tiene su propio script generador.
+
+El [análisis de Moran/LISA](scripts/generate_moran_lisa.py) calcula cuatro períodos
+con 1.102 municipios comparables y publica [Moran global](docs/data_processed/heterogeneidad_espacial/moran_global_periods.csv)
+y [LISA municipal](docs/data_processed/heterogeneidad_espacial/moran_lisa_periods.csv). Los mapas permiten
+alternar entre clústeres locales con valor p sin ajuste y clústeres que resisten
+el ajuste de Benjamini–Hochberg. Nuevo Belén de Bajirá (27493) se excluye por
+falta de tasa. La [metodología completa del cálculo](docs/data_processed/heterogeneidad_espacial/moran_lisa/README.md)
+documenta las fórmulas, la vecindad por ocho vecinos más cercanos y el esquema de permutaciones.
 
 Desde la raíz del repositorio, con Python 3 y [DuckDB CLI](https://duckdb.org/docs/stable/clients/cli/overview.html) instalados:
 
@@ -167,7 +175,9 @@ python3 scripts/generate_weekly_series.py
 python3 scripts/generate_age_group_series.py
 python3 scripts/generate_spatial_series.py
 python3 scripts/prepare_spatial_boundaries.py
+python3 scripts/generate_moran_lisa.py
 python3 scripts/generate_latitude_week_heatmap.py
+python3 scripts/generate_phase_analysis.py
 python3 -m http.server 8000 --directory docs
 ```
 

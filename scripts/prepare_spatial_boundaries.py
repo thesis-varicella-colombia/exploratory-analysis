@@ -11,7 +11,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "data/MGN_ADM_MPIO_GRAFICO.geojson.xz"
-OUTPUT = ROOT / "docs/data_processed/municipal_boundaries_dane.geojson"
+OUTPUT = ROOT / "docs/data_processed/cartografia/municipal_boundaries_dane.geojson"
 TOLERANCE_SQUARED = 0.002 ** 2  # Degrees in CRS84; sufficient for the national view.
 
 

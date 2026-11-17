@@ -4,13 +4,14 @@ Esta carpeta guarda **copias locales** de los insumos necesarios para regenerar 
 
 ## Procedencia
 
-Los insumos proceden de [`thesis-varicella-colombia/data-processing`](https://github.com/thesis-varicella-colombia/data-processing). El Parquet local coincide archivo por archivo con el del repositorio de origen; el CSV de población se copió de allí el 16 de octubre de 2026. En esa fecha, la copia local de origen tenía `HEAD` en `cca6bec23ad449563d569e28ac064fdba6b25a39`. Los archivos de datos no estaban registrados en Git en ese repositorio; por ello el commit **no identifica por sí solo** su contenido. Los SHA-256 de abajo identifican las copias exactas utilizadas aquí. El GeoJSON MGN 2025 se copió del mismo repositorio a `data/` comprimido con XZ, sin modificar el contenido descomprimido.
+Los insumos proceden de [`thesis-varicella-colombia/data-processing`](https://github.com/thesis-varicella-colombia/data-processing). Los Parquet locales coinciden archivo por archivo con los del repositorio de origen; el CSV de población se copió de allí el 16 de octubre de 2026. En esa fecha, la copia local de origen tenía `HEAD` en `cca6bec23ad449563d569e28ac064fdba6b25a39`. Los archivos de datos no estaban registrados en Git en ese repositorio; por ello el commit **no identifica por sí solo** su contenido. Los SHA-256 de abajo identifican las copias exactas utilizadas aquí. El GeoJSON MGN 2025 se copió del mismo repositorio a `data/` comprimido con XZ, sin modificar el contenido descomprimido.
 
 Las notificaciones originales proceden de los [microdatos de Sivigila publicados por el Instituto Nacional de Salud (INS)](https://portalsivigila.ins.gov.co/Paginas/Buscador.aspx); `data-processing` los convirtió, procesó e integró antes de producir el Parquet usado aquí.
 
 | Insumo local | Ruta y ficha en `data-processing` | Contenido |
 | --- | --- | --- |
 | [`sivigila_integrado_semanal_municipal.parquet/`](sivigila_integrado_semanal_municipal.parquet/) | `data/processed/integration_data/sivigila_integrado_semanal_municipal.parquet/` · [ficha de integración](https://github.com/thesis-varicella-colombia/data-processing/blob/main/data/processed/integration_data/README.md) | Notificaciones de varicela (evento 831) por entidad DIVIPOLA de residencia y semana epidemiológica reportada, con variables de población y otras fuentes integradas. |
+| [`sivigila_integrado_notification_semanal_municipal.parquet/`](sivigila_integrado_notification_semanal_municipal.parquet/) | `data/processed/integration_data/sivigila_integrado_notification_semanal_municipal.parquet/` · [ficha de integración](https://github.com/thesis-varicella-colombia/data-processing/blob/main/data/processed/integration_data/README.md) | **Fuente de los análisis publicados.** Registros agregados por semana de la fecha de notificación (`FEC_NOT`). |
 | [`population_municipal_2007_2025.csv`](population_municipal_2007_2025.csv) | `data/processed/population/population_municipal_2007_2025.csv` · [ficha de población](https://github.com/thesis-varicella-colombia/data-processing/blob/main/data/processed/population/README.md) | Población municipal anual. Cada clave `codigo_municipio`–`ano_epidemiologico` aparece una vez. |
 | [`MGN_ADM_MPIO_GRAFICO.geojson.xz`](MGN_ADM_MPIO_GRAFICO.geojson.xz) | `data/raw/municipios/MGN_ADM_MPIO_GRAFICO.geojson` · [ficha geográfica](https://github.com/thesis-varicella-colombia/data-processing/blob/main/data/raw/municipios/README.md) | Geometría DANE MGN 2025 de municipios, áreas no municipalizadas e Isla; copia íntegra comprimida. |
 
@@ -23,6 +24,9 @@ El Parquet integrado contiene además columnas de [cobertura municipal de vacuna
 | `sivigila_integrado_semanal_municipal.parquet/part-00000-28a93b17-ad5a-4e7c-aa6c-0f91af7c65d8-c000.snappy.parquet` | `683648606247556885945becbf8b5981f37ab14b6a8bae1f9fb653b5624039ae` |
 | `sivigila_integrado_semanal_municipal.parquet/part-00001-28a93b17-ad5a-4e7c-aa6c-0f91af7c65d8-c000.snappy.parquet` | `2e84e5eb0b6c6e84ee43a34de522dec742a9c627ea531d0cd44407dd9cd94fe7` |
 | `sivigila_integrado_semanal_municipal.parquet/part-00002-28a93b17-ad5a-4e7c-aa6c-0f91af7c65d8-c000.snappy.parquet` | `84c46566ae14be86c251d4bc2e72c056888a6751e88e8b1e38ff2bdd35d6611d` |
+| `sivigila_integrado_notification_semanal_municipal.parquet/part-00000-c421289c-3950-478c-974a-0c56e15bbae6-c000.snappy.parquet` | `a2158dfe01f45150c9624dbdef4bafd6364e8b0e18d97b6a2045a4f20700bbed` |
+| `sivigila_integrado_notification_semanal_municipal.parquet/part-00001-c421289c-3950-478c-974a-0c56e15bbae6-c000.snappy.parquet` | `b03d98e97103982e187488fbb05167dd1083a6cb6b5686b67f7925bc3eac3423` |
+| `sivigila_integrado_notification_semanal_municipal.parquet/part-00002-c421289c-3950-478c-974a-0c56e15bbae6-c000.snappy.parquet` | `fb0c6293bae1d102aebce8bd18a4e4b1124c67be668956cc0562a73d07ff06ea` |
 | `population_municipal_2007_2025.csv` | `8b8392c3c9d03f130018ad895fab252ca5fd3bb1c37494c8367e515f3b8343f8` |
 | `MGN_ADM_MPIO_GRAFICO.geojson.xz` | `86d527cd493b2a8bc1513dc84dc775a7c52973f75528873dfa64f2b9d3f7b4e6` |
 
