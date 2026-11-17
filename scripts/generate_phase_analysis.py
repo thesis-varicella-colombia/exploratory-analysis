@@ -9,10 +9,16 @@ import math
 from collections import defaultdict
 from pathlib import Path
 
+from shapely.geometry import mapping, shape
+from shapely.ops import unary_union
+
+
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "docs/data_processed/estacionalidad/latitude_week_heatmap.csv"
+BOUNDARIES = ROOT / "docs/data_processed/cartografia/municipal_boundaries_dane.geojson"
 PHASE_OUTPUT = ROOT / "docs/data_processed/estacionalidad/department_phase_2008_2025.csv"
 CORRELATION_OUTPUT = ROOT / "docs/data_processed/estacionalidad/phase_spearman_2008_2025.csv"
+GEO_OUTPUT = ROOT / "docs/data_processed/estacionalidad/department_boundaries_dane.geojson"
 PERIODS = {
     "2008–2014": range(2008, 2015),
     "2015–2019": range(2015, 2020),
@@ -117,10 +123,36 @@ def write_phase(departments, rates):
     return len(rows)
 
 
+def write_boundaries(departments):
+    with BOUNDARIES.open(encoding="utf-8") as source:
+        municipal = json.load(source)
+    geometries = defaultdict(list)
+    for feature in municipal["features"]:
+        code = feature["properties"]["code"][:2]
+        if code in departments:
+            geometry = shape(feature["geometry"])
+            geometries[code].append(geometry if geometry.is_valid else geometry.buffer(0))
+    if set(geometries) != set(departments):
+        raise ValueError("Department geometry and rates do not match")
+    features = []
+    for code, (name, latitude) in sorted(departments.items()):
+        geometry = unary_union(geometries[code])
+        features.append({
+            "type": "Feature",
+            "properties": {"code": code, "name": name, "latitude": latitude},
+            "geometry": mapping(geometry),
+        })
+    with GEO_OUTPUT.open("w", encoding="utf-8") as target:
+        json.dump({"type": "FeatureCollection", "features": features}, target,
+                  ensure_ascii=False, separators=(",", ":"))
+        target.write("\n")
+
+
 def main():
     departments, rates = read_rates()
     count = write_phase(departments, rates)
-    print(f"Generated {count} phase rows and 18 correlations")
+    write_boundaries(departments)
+    print(f"Generated {count} phase rows, 18 correlations, and 32 department geometries")
 
 
 if __name__ == "__main__":

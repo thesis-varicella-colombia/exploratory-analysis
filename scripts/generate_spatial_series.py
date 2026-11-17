@@ -1,6 +1,6 @@
 """Generate municipal annual and period rates for the Leaflet map.
 
-Requires Python 3 and the DuckDB CLI.
+Requires Python 3, pandas and the DuckDB CLI.
 Usage: python3 scripts/generate_spatial_series.py
 """
 
@@ -10,11 +10,14 @@ import subprocess
 from collections import defaultdict
 from pathlib import Path
 
+import pandas as pd
+from municipal_coverage import normalize_codes, complete_sum
+
 
 ROOT = Path(__file__).resolve().parents[1]
-PARQUET = ROOT / "data/sivigila_integrado_semanal_municipal.parquet"
+PARQUET = ROOT / "data/sivigila_integrado_notification_semanal_municipal.parquet"
 POPULATION = ROOT / "data/population_municipal_2007_2025.csv"
-OUTPUT = ROOT / "docs/data_processed/spatial_series_2008_2025.csv"
+OUTPUT = ROOT / "docs/data_processed/heterogeneidad_espacial/spatial_series_2008_2025.csv"
 YEARS = range(2008, 2026)
 PERIODS = {
     "2008-2014": range(2008, 2015),
@@ -35,27 +38,28 @@ def read_notifications():
     result = subprocess.run(
         ["duckdb", "-csv", "-c", query], check=True, capture_output=True, text=True
     )
-    return {
-        (int(row["year"]), row["code"]): int(row["notifications"])
-        for row in csv.DictReader(io.StringIO(result.stdout))
-    }
+    rows = list(csv.DictReader(io.StringIO(result.stdout)))
+    codes = normalize_codes(pd.Series([row["code"] for row in rows]))
+    notifications = defaultdict(int)
+    for row, code in zip(rows, codes):
+        notifications[int(row["year"]), code] += int(row["notifications"])
+    return dict(notifications)
 
 
 def read_population():
-    population = {}
-    with POPULATION.open(newline="", encoding="utf-8") as source:
-        for row in csv.DictReader(source):
-            year = int(row["ano_epidemiologico"])
-            if year not in YEARS:
-                continue
-            key = (year, row["codigo_municipio"])
-            if key in population:
-                raise ValueError(f"Duplicate population key: {key}")
-            value = int(row["poblacion_total"])
-            if value < 0:
-                raise ValueError(f"Negative population: {key}")
-            population[key] = value
-    return population
+    source = pd.read_csv(POPULATION, dtype={"codigo_municipio": str})
+    keys = ["ano_epidemiologico", "codigo_municipio"]
+    if source.duplicated(keys).any():
+        raise ValueError("Duplicate raw population key")
+    source = source.loc[source.ano_epidemiologico.isin(YEARS)].copy()
+    source["codigo_municipio"] = normalize_codes(source.codigo_municipio)
+    # Mapiripana was a non-municipalized area; its separate historical population
+    # belongs to Barrancominas in the fixed current geography, not another polygon.
+    source = source.groupby(keys, as_index=False).agg(poblacion_total=("poblacion_total", complete_sum))
+    if source.poblacion_total.isna().any() or source.poblacion_total.lt(0).any():
+        raise ValueError("Missing or invalid harmonized population")
+    return {(int(row.ano_epidemiologico), row.codigo_municipio): int(row.poblacion_total)
+            for row in source.itertuples(index=False)}
 
 
 def rate(notifications, population):

@@ -3,11 +3,19 @@
 const PHASE_DATA_URL = "data_processed/estacionalidad/department_phase_2008_2025.csv?v=20261023-notification";
 const MUNICIPAL_PHASE_DATA_URL = "data_processed/estacionalidad/municipal_phase_2008_2025.csv?v=20261115";
 const PHASE_CORRELATION_URL = "data_processed/estacionalidad/phase_spearman_2008_2025.csv?v=20261023-notification";
+const PHASE_BOUNDARIES_URL = "data_processed/estacionalidad/department_boundaries_dane.geojson?v=20261020-1";
 const PHASE_PERIODS = [
   { label: "2008–2014", chart: "#chart-phase-2008-2014", color: "#3569b0" },
   { label: "2015–2019", chart: "#chart-phase-2015-2019", color: "#d97736" },
   { label: "2022–2025", chart: "#chart-phase-2022-2025", color: "#197f7a" },
 ];
+const PHASE_COLORS = ["#fff7ec", "#fee8c8", "#fdd49e", "#fdbb84", "#e34a33", "#8c2d04"];
+const AMPLITUDE_COLORS = ["#eff8f7", "#ccece6", "#99d8c9", "#66c2a4", "#2ca25f", "#006d2c"];
+const PHASE_WEEK_BINS = [8, 17, 26, 35, 44];
+const PHASE_AMPLITUDE_BINS = [0.5, 1, 2, 3, 5];
+const PHASE_RELATIVE_BINS = [0.5, 0.8, 1.2, 2, 3];
+const PHASE_RATE_FORMAT = new Intl.NumberFormat("es-CO", { maximumFractionDigits: 2 });
+
 function phaseRowsFromCsv(source) {
   return vega.read(source, { type: "csv" }).map((row) => ({
     period: row.period,
@@ -167,15 +175,165 @@ function phaseCorrelationSpec(rows) {
   };
 }
 
+function phaseColor(value, metric) {
+  if (!Number.isFinite(value)) return "#b7c3c9";
+  const bins = metric === "peak_week" ? PHASE_WEEK_BINS
+    : metric === "relative_amplitude" ? PHASE_RELATIVE_BINS : PHASE_AMPLITUDE_BINS;
+  const colors = metric === "peak_week" ? PHASE_COLORS : AMPLITUDE_COLORS;
+  const index = bins.findIndex((limit) => value <= limit);
+  return colors[index < 0 ? colors.length - 1 : index];
+}
+
+function updatePhaseLegend(metric) {
+  const legend = document.querySelector("#phase-map-legend");
+  const labels = metric === "peak_week"
+    ? ["Semanas 1–8", "9–17", "18–26", "27–35", "36–44", "45–52"]
+    : metric === "relative_amplitude"
+      ? ["≤0,5", ">0,5–0,8", ">0,8–1,2", ">1,2–2", ">2–3", ">3 (sin unidades)"]
+      : ["≤0,5", ">0,5–1", ">1–2", ">2–3", ">3–5", ">5 por 100.000"];
+  const colors = metric === "peak_week" ? PHASE_COLORS : AMPLITUDE_COLORS;
+  legend.replaceChildren(...labels.map((label, index) => {
+    const entry = document.createElement("span");
+    const swatch = document.createElement("i");
+    swatch.className = "spatial-legend-swatch";
+    swatch.style.backgroundColor = colors[index];
+    entry.append(swatch, document.createTextNode(label));
+    return entry;
+  }));
+}
+
+function phasePopup(feature, row, period) {
+  const content = document.createElement("div");
+  const title = document.createElement("strong");
+  title.textContent = feature.properties.name;
+  const detail = document.createElement("div");
+  detail.textContent = `${period} · semana del pico: ${row.peak_week} · amplitud absoluta: ${PHASE_RATE_FORMAT.format(row.amplitude_per_100k)} por 100.000 · amplitud relativa: ${row.relative_amplitude === null ? "no calculable" : PHASE_RATE_FORMAT.format(row.relative_amplitude)}`;
+  content.append(title, detail);
+  return content;
+}
+
+function renderPhaseMaps(rows, boundaries) {
+  const metricSelector = document.querySelector("#phase-map-metric");
+  const yearSelector = document.querySelector("#phase-map-year");
+  const playButton = document.querySelector("#phase-map-play");
+  const speedSelector = document.querySelector("#phase-map-speed");
+  const status = document.querySelector("#phase-map-status");
+  if (typeof L === "undefined") throw new Error("Leaflet no está disponible");
+  if (boundaries.type !== "FeatureCollection" || boundaries.features.length !== 32) {
+    throw new Error("Los límites departamentales están incompletos");
+  }
+  const annualOptions = document.querySelector('#spatial-period optgroup[label="Años"]');
+  if (!annualOptions) throw new Error("Faltan los años del filtro espacial");
+  yearSelector.append(...[...annualOptions.querySelectorAll("option")].map((option) => option.cloneNode(true)));
+  yearSelector.value = "2025";
+  const valuesByPeriod = new Map();
+  for (const row of rows) {
+    if (!valuesByPeriod.has(row.period)) valuesByPeriod.set(row.period, new Map());
+    valuesByPeriod.get(row.period).set(row.department_code, row);
+  }
+  for (const option of annualOptions.querySelectorAll("option")) {
+    if (valuesByPeriod.get(option.value)?.size !== 32) throw new Error(`Faltan datos de ${option.value}`);
+  }
+  const years = [...yearSelector.options].map((option) => option.value).sort((a, b) => Number(a) - Number(b));
+  const mapConfigs = [
+    { id: "phase-map-before", period: "2008–2014" },
+    { id: "phase-map-after", period: "2015–2019" },
+    { id: "phase-map-pandemic", period: "2020–2021" },
+    { id: "phase-map-booster", period: "2022–2025" },
+    { id: "phase-map-yearly", period: () => yearSelector.value },
+  ];
+  const maps = mapConfigs.map(({ id, period }) => {
+    const selectedPeriod = () => typeof period === "function" ? period() : period;
+    const values = () => valuesByPeriod.get(selectedPeriod());
+    if (values()?.size !== 32) throw new Error(`Faltan datos de ${selectedPeriod()}`);
+    const map = L.map(id, { scrollWheelZoom: false, preferCanvas: true });
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 18,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    }).addTo(map);
+    const layer = L.geoJSON(boundaries, {
+      style(feature) {
+        return {
+          color: "#526b74", weight: 0.7, fillOpacity: 0.82,
+          fillColor: phaseColor(values().get(feature.properties.code)?.[metricSelector.value], metricSelector.value),
+        };
+      },
+      onEachFeature(feature, featureLayer) {
+        featureLayer.bindPopup(() => phasePopup(feature, values().get(feature.properties.code), selectedPeriod()));
+        featureLayer.on("mouseover", () => featureLayer.setStyle({ weight: 2, color: "#173042" }));
+        featureLayer.on("mouseout", () => layer.resetStyle(featureLayer));
+      },
+    }).addTo(map);
+    map.fitBounds(layer.getBounds(), { padding: [12, 12] });
+    return { map, layer };
+  });
+  const updateAnnualPresentation = () => {
+    const metricName = metricSelector.value === "peak_week" ? "fase"
+      : metricSelector.value === "relative_amplitude" ? "amplitud relativa" : "amplitud absoluta";
+    document.querySelector("#phase-map-yearly").setAttribute("aria-label",
+      `Mapa departamental de ${metricName} estacional de ${yearSelector.value}`);
+    const metricDescription = metricSelector.value === "peak_week"
+      ? "Fase: semana del pico suavizado. Las semanas 52 y 1 son contiguas."
+      : metricSelector.value === "relative_amplitude"
+        ? "Amplitud relativa: rango de la tasa suavizada dividido por su media semanal, sin unidades."
+        : "Amplitud absoluta: diferencia entre el máximo y el mínimo de la tasa suavizada, por 100.000 habitantes.";
+    status.textContent = `Mapa anual: ${yearSelector.value}. ${metricDescription}`;
+  };
+  const refresh = () => {
+    maps.forEach(({ map, layer }) => {
+      map.closePopup();
+      layer.setStyle(layer.options.style);
+    });
+    updatePhaseLegend(metricSelector.value);
+    updateAnnualPresentation();
+  };
+  const refreshAnnual = () => {
+    const { map, layer } = maps[maps.length - 1];
+    map.closePopup();
+    layer.setStyle(layer.options.style);
+    updateAnnualPresentation();
+  };
+  let playbackTimer = null;
+  const setPlayback = (playing) => {
+    if (playbackTimer !== null) window.clearInterval(playbackTimer);
+    playbackTimer = playing ? window.setInterval(() => {
+      const index = years.indexOf(yearSelector.value);
+      yearSelector.value = years[(index + 1) % years.length];
+      refreshAnnual();
+    }, 1500 / Number(speedSelector.value)) : null;
+    playButton.textContent = playing ? "⏸ Pausar" : "▶ Reproducir";
+    playButton.setAttribute("aria-pressed", String(playing));
+    status.setAttribute("aria-live", playing ? "off" : "polite");
+  };
+  speedSelector.addEventListener("change", () => {
+    if (playbackTimer !== null) setPlayback(true);
+  });
+  metricSelector.addEventListener("change", refresh);
+  yearSelector.addEventListener("change", () => {
+    setPlayback(false);
+    refreshAnnual();
+  });
+  playButton.addEventListener("click", () => setPlayback(playbackTimer === null));
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden && playbackTimer !== null) setPlayback(false);
+  });
+  metricSelector.disabled = false;
+  yearSelector.disabled = false;
+  playButton.disabled = false;
+  speedSelector.disabled = false;
+  refresh();
+}
+
 async function loadPhaseAnalysis() {
   const chartIds = [...PHASE_PERIODS.map((period) => period.chart), "#chart-phase-spearman"];
   try {
     const responses = await Promise.all([
-      fetch(PHASE_DATA_URL), fetch(PHASE_CORRELATION_URL), fetch(MUNICIPAL_PHASE_DATA_URL),
+      fetch(PHASE_DATA_URL), fetch(PHASE_CORRELATION_URL), fetch(PHASE_BOUNDARIES_URL),
+      fetch(MUNICIPAL_PHASE_DATA_URL),
     ]);
     if (responses.some((response) => !response.ok)) throw new Error("No se pudieron cargar los datos de fase");
-    const [phaseCsv, correlationCsv, municipalCsv] = await Promise.all([
-      responses[0].text(), responses[1].text(), responses[2].text(),
+    const [phaseCsv, correlationCsv, boundaries, municipalCsv] = await Promise.all([
+      responses[0].text(), responses[1].text(), responses[2].json(), responses[3].text(),
     ]);
     const rows = phaseRowsFromCsv(phaseCsv);
     const municipalRows = phaseRowsFromCsv(municipalCsv);
@@ -200,11 +358,13 @@ async function loadPhaseAnalysis() {
     await renderChart("#chart-phase-spearman", "Correlación anual de Spearman",
       phaseCorrelationSpec(correlations), { annualContext: false });
     initPhaseScatterFilters(rows, municipalRows, views, currentSpecs);
+    renderPhaseMaps(rows, boundaries);
   } catch (error) {
     for (const id of chartIds) {
       const chart = document.querySelector(id);
       if (!chart.querySelector("svg")) chart.textContent = `No se pudo cargar el gráfico: ${error.message}`;
     }
+    document.querySelector("#phase-map-status").textContent = `No se pudieron cargar los mapas: ${error.message}`;
     document.querySelector("#phase-scatter-status").textContent = `No se pudieron cargar las fases territoriales: ${error.message}`;
     console.error(error);
   }

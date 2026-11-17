@@ -6,6 +6,30 @@ function comparisonValue(value,format=comparisonRate){return value===null||value
 function comparisonRow(body,values){const tr=document.createElement('tr');for(const [index,value] of values.entries()){const cell=document.createElement(index===0?'th':'td');if(index===0)cell.scope='row';cell.textContent=String(value);tr.append(cell);}body.append(tr);}
 async function comparisonCsv(url,numbers){const response=await fetch(url);if(!response.ok)throw new Error('No se pudo cargar '+url);return vega.read(await response.text(),{type:'csv'}).map(row=>{for(const field of numbers)row[field]=row[field]===''?null:Number(row[field]);return row;});}
 
+function renderSpatialSensitivity(rows,period){
+  const body=document.querySelector('#spatial-sensitivity-table');body.replaceChildren();
+  for(const row of rows.filter(row=>row.period===period))comparisonRow(body,[comparisonValue(row.neighbors,comparisonNumber),comparisonValue(row.global_i,comparisonRho),comparisonValue(row.p_positive,new Intl.NumberFormat('es-CO',{minimumFractionDigits:4})),comparisonValue(row.hh_nominal,comparisonNumber),comparisonValue(row.hh_fdr,comparisonNumber),row.hh_jaccard_fdr===null?'Sin HH ajustados en ambas vecindades':comparisonValue(row.hh_jaccard_fdr,comparisonRho),comparisonValue(row.hh_added_fdr,comparisonNumber),comparisonValue(row.hh_removed_fdr,comparisonNumber)]);
+}
+async function initSpatialSensitivity(){
+  const select=document.querySelector('#spatial-sensitivity-period'),status=document.querySelector('#spatial-sensitivity-status');
+  try{const rows=await comparisonCsv('data_processed/heterogeneidad_espacial/spatial_sensitivity.csv?v=20261102-mapiripana-population',['neighbors','global_i','p_positive','hh_nominal','hh_fdr','hh_jaccard_fdr','hh_added_fdr','hh_removed_fdr']);
+    select.disabled=false;select.addEventListener('change',()=>renderSpatialSensitivity(rows,select.value));renderSpatialSensitivity(rows,select.value);
+    status.textContent='Mismos 1.102 municipios y 9.999 permutaciones por prueba. La fila de 8 vecinos reproduce el resultado original.';
+  }catch(error){status.textContent=error.message;console.error(error);}
+}
+function renderSeasonalSensitivity(rows,horizon){
+  const body=document.querySelector('#seasonal-sensitivity-table');body.replaceChildren();
+  for(const row of rows.filter(row=>row.horizon===horizon))comparisonRow(body,[comparisonValue(row.width,comparisonNumber),comparisonValue(row.departments,comparisonNumber),comparisonValue(row.median_peak_shift),comparisonValue(row.p90_peak_shift),comparisonValue(row.departments_shift_over_4,comparisonNumber)]);
+}
+async function initSeasonalSensitivity(){
+  const select=document.querySelector('#seasonal-sensitivity-horizon'),status=document.querySelector('#seasonal-sensitivity-status');
+  try{const rows=await comparisonCsv('data_processed/estacionalidad/seasonal_sensitivity.csv?v=20261102',['width','departments','median_peak_shift','p90_peak_shift','departments_shift_over_4']);
+    for(const horizon of [...new Set(rows.map(row=>row.horizon))]){const option=document.createElement('option');option.value=horizon;option.textContent=horizon;select.append(option);}select.value='2022–2025';
+    select.disabled=false;select.addEventListener('change',()=>renderSeasonalSensitivity(rows,select.value));renderSeasonalSensitivity(rows,select.value);
+    status.textContent='Distancias de pico respecto del suavizado de 5 semanas; se respeta la cercanía entre semanas 52 y 1.';
+  }catch(error){status.textContent=error.message;console.error(error);}
+}
+
 let rtInformationSelection={id:'national',label:'Colombia'};
 let rtInformationData=null,rtInformationVersion=0;
 const rtInformationCache=new Map();
@@ -41,5 +65,6 @@ async function loadRtInformation(selection){
 }
 document.addEventListener('rt-selection-changed',event=>{rtInformationSelection=event.detail;if(document.readyState!=='loading')loadRtInformation(event.detail);});
 document.addEventListener('DOMContentLoaded',()=>{
+  initSpatialSensitivity();initSeasonalSensitivity();
   document.querySelector('#rt-information-width').addEventListener('change',renderRtInformation);loadRtInformation(rtInformationSelection);
 });

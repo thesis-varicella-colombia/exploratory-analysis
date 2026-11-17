@@ -1,0 +1,31 @@
+{
+  "spatial": {
+    "neighbors": [
+      4,
+      8,
+      12
+    ],
+    "baseline": 8,
+    "permutations": 9999,
+    "seed": 2026,
+    "weights": "row-standardized directed great-circle k nearest neighbors, same full 1102-entity universe as original",
+    "baseline_output": "existing k=8 results reused unchanged",
+    "local_test": "same conditional two-sided permutation and period-wise BH as original",
+    "jaccard": "HH overlap / union relative to k=8; missing if both sets empty",
+    "limits": "k sensitivity only; not contiguity or small-area smoothing; finite Monte Carlo p-values; no test of differences in I"
+  },
+  "seasonal": {
+    "widths": [
+      3,
+      5,
+      9
+    ],
+    "baseline": 5,
+    "window": "circular average of available weeks; national missing week never filled as zero",
+    "distance": "min(abs(peak_a-peak_b),52-abs(peak_a-peak_b))",
+    "flat_curves": "phase missing if no positive amplitude",
+    "circular_linear": "multiple-correlation magnitude of latitude with sin/cos(2*pi*(week-1)/52); no north/south sign",
+    "limits": "sensitivity of observed maxima, not sampling confidence intervals, no complete bimodality analysis or causal mechanism",
+    "circular_reference": "https://raw.githubusercontent.com/circstat/circstat-matlab/master/circ_corrcl.m"
+  }
+}
