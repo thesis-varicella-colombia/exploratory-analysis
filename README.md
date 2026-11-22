@@ -182,3 +182,20 @@ python3 -m http.server 8000 --directory docs
 ```
 
 Abrir `http://localhost:8000/` en el navegador. El servidor local es necesario para cargar los CSV y el GeoJSON mediante JavaScript; abrir `docs/index.html` directamente como archivo puede bloquear esa carga. Los gráficos usan Vega-Lite y el mapa usa Leaflet y teselas de OpenStreetMap, por lo que la vista local necesita conexión a Internet. Los cambios locales aparecerán en la [página publicada](https://thesis-varicella-colombia.github.io/exploratory-analysis/) después de incorporarlos y publicarlos mediante GitHub Pages.
+
+La sección «Cobertura administrativa y dosis sobre población de referencia»,
+anterior a «Anomalías (O/E) y cobertura», incluye un mapa municipal para comparar la cobertura administrativa
+publicada con `100 × dosis / población de referencia`: población de 1 año para
+primera dosis y población de exactamente 5 años para refuerzo. Conserva los años de análisis
+2016–2025 y el desplazamiento metodológico ya aplicado a las dosis; usa la población
+del mismo año de análisis. Los filtros permiten elegir año, dosis y medida, con
+una escala común y datos faltantes en gris. Se regenera mediante
+[`generate_vaccine_coverage_comparison.py`](scripts/generate_vaccine_coverage_comparison.py);
+las [reglas y limitaciones](data/README.md#comparación-municipal-anual-de-coberturas)
+distinguen esta razón poblacional de la cobertura del esquema.
+También incluye **Cobertura Sobrevivientes**, solo para primera dosis: `100 × primeras dosis / sobrevivientes_edad_1` del mismo año de análisis. El denominador ya corresponde a nacimientos menos defunciones infantiles del año anterior, sin un segundo desplazamiento. El [dataset copiado y su README](data/births_mortality_dane/integration/README.md) documentan procedencia, faltantes y reproducción.
+La misma sección incluye líneas anuales de cobertura e incidencia, con búsqueda
+de municipio y filtros de grupo de edad de la incidencia, dosis y medida de
+cobertura. El grupo de edad no cambia el denominador de vacunación. Los ejes
+separan porcentajes y notificaciones por 100.000 habitantes; los filtros reutilizan
+la gráfica y descargan únicamente la serie municipal seleccionada.

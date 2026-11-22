@@ -357,3 +357,68 @@ la razón de refuerzo queda ausente; no se sustituye por la de otras edades. El 
 
 Se incorpora la [copia local de nacimientos y mortalidad infantil DANE](births_mortality_dane/integration/README.md), con Parquet y reportes originales. La medida **Cobertura Sobrevivientes** es `100 × primeras dosis / sobrevivientes_edad_1`. Se une por municipio homologado y año de análisis: la columna ya resta defunciones de menores de un año a nacimientos del año anterior. No se aplica otro rezago. Denominadores ausentes, no positivos o inválidos dejan la estimación sin dato. El CSV de comparación y las series municipales incluyen esta medida; para refuerzo queda no aplicable. En el agregado se dividen las sumas del mismo subconjunto con datos válidos, conservando el conteo de entidades.
 
+### Series municipales de cobertura e incidencia
+
+[`generate_coverage_incidence_series.py`](../scripts/generate_coverage_incidence_series.py)
+genera el [catálogo y método](../docs/data_processed/cobertura_vacunacion/coverage_incidence/manifest.json)
+y un JSON por cada una de las 1.122 entidades de la cartografía, para 2008–2025.
+La nueva gráfica de líneas de la sección 8 permite buscar municipio y elegir
+una sola entidad o «Todos los municipios», con el mismo estilo de búsqueda de los demás filtros. Los
+grupos de edad de incidencia, dosis y medidas de cobertura se eligen mediante
+casillas en tres filas independientes y admiten selección múltiple. Cada serie se carga
+solo al seleccionarla y se conserva en una caché de hasta 12 entidades; cambiar
+edad, dosis o medida actualiza los datos de la misma gráfica.
+
+La incidencia anual es `100000 × notificaciones / población del mismo grupo y año`.
+Se ofrecen todas las edades, <1, 1–4, 5–14, 15–49 y ≥50 años. El total incluye
+notificaciones sin edad, que no se asignan a los grupos conocidos. Se homologan
+los códigos y se suma la población histórica de Mapiripana a Barrancominas antes
+del cruce. No se restringe a los 1.102 municipios completos del panel SIR:
+una población ausente o no positiva deja la incidencia sin dato. Un municipio-año
+sin filas de notificaciones recibe cero por la convención del panel, con una
+bandera visible en el detalle; esto no demuestra ausencia de enfermedad.
+
+La cobertura reproduce exactamente `vaccine_coverage_comparison.csv`, con el
+desplazamiento de año ya aplicado y los denominadores de 1 y 5 años. Elegir edad
+modifica solo la incidencia. Cada edad añade una línea de incidencia; cada par
+dosis/medida añade una línea de cobertura, que no se duplica por cada edad.
+Una leyenda identifica cada serie con color y las medidas administrativas usan
+líneas discontinuas. Sin edades se oculta incidencia; sin dosis o sin medidas
+se oculta cobertura. Se admite desmarcar todo sin forzar una selección.
+El eje y la incidencia conservan siempre 2008–2025, independientemente de las
+dosis seleccionadas. La cobertura de primera dosis solo tiene datos desde 2016
+y el refuerzo se ofrece desde 2019, incluyendo su faltante de ese año; los años
+sin cobertura permanecen ausentes, no se convierten en cero. 2007 sigue excluido
+del período analítico por la discrepancia de notificaciones documentada. Los valores ausentes interrumpen las
+líneas, y los porcentajes >100 se conservan. Los ejes independientes identifican
+porcentaje e incidencia por 100.000; su superposición no demuestra igualdad,
+asociación causal, seguimiento de cohortes ni protección poblacional.
+
+La selección predeterminada «Todos los municipios» carga `coverage_incidence/all.json`, agregado de las
+1.122 entidades de la cartografía (incluidas áreas no municipalizadas e islas).
+Para cada edad y año, suma notificaciones y población del mismo subconjunto
+con denominador válido, sin promediar tasas municipales. Dosis/población usa
+la suma de dosis y población de referencia de las entidades con ambas medidas
+disponibles. El porcentaje administrativo agrega los porcentajes publicados,
+ponderados por sus metas PAI positivas y válidas, conservando valores >100 %.
+No se usa la media simple ni se sustituyen faltantes por cero. La tabla y los
+tooltips muestran el número de entidades incluidas por serie/año y los ceros
+de incidencia asignados por falta de registro. Cada medida puede incluir un
+universo distinto; no se presenta como cobertura nacional completa. El agregado
+es una opción adicional del catálogo, sin modificar las 1.122 series individuales.
+La incidencia se representa en el eje izquierdo y la cobertura en el derecho,
+tanto en la vista normal como al ampliar.
+Los puntos muestran tooltips en ambas vistas: la cobertura incluye dosis
+administradas, edad y población DANE de referencia (1 o 5 años), meta PAI y
+número de entidades; la incidencia muestra grupo de edad, notificaciones y su
+población correspondiente. En el agregado, los detalles de cobertura suman
+exactamente las entidades de la medida seleccionada. Si falta algún componente,
+su suma se mantiene ausente en vez de mostrar un total parcial. Los porcentajes
+administrativos siguen siendo los publicados y ponderados por metas; el número
+de dosis mostrado no redefine esos porcentajes.
+
+```bash
+.venv/bin/python scripts/generate_vaccine_coverage_comparison.py
+.venv/bin/python scripts/generate_coverage_incidence_series.py
+```
+

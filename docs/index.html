@@ -1039,6 +1039,19 @@
             .phase-map-year-card { max-width: none; }
         }
 
+        .coverage-incidence-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .6rem 1rem;
+            margin: .75rem 0;
+        }
+
+        .coverage-incidence-legend span {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+        }
+
     </style>
     <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
@@ -1056,6 +1069,7 @@
     <script defer src="moran_lisa.js?v=20261107-section-folders"></script>
     <script defer src="phase.js?v=20261115-department-selection-fix"></script>
     <script defer src="vaccine_coverage_comparison.js?v=20261107-section-folders"></script>
+    <script defer src="coverage_incidence.js?v=20261107-section-folders"></script>
 </head>
 <body>
 <header>
@@ -2500,6 +2514,54 @@
                 </tbody>
             </table>
         </div>
+        
+        <h3 id="coverage-incidence-title">Evolución de cobertura e incidencia por municipio</h3>
+        <p>Compara las series anuales en una misma gráfica. Elige un municipio o entidad y marca uno o varios grupos de edad,
+            dosis y medidas de cobertura. Los filtros de esta gráfica son independientes de los del mapa.
+            El eje temporal conserva todo el período 2008–2025, incluso cuando solo hay incidencia disponible.
+            La cobertura sin dato permanece ausente y no se sustituye por cero.</p>
+        <fieldset id="coverage-incidence-controls" disabled>
+            <legend>Filtros de cobertura e incidencia</legend>
+            <div class="spatial-controls">
+                <label for="coverage-incidence-municipality">Municipio o entidad: buscar nombre, departamento o código</label>
+                <div class="spatial-combobox">
+                    <input id="coverage-incidence-municipality" type="search" list="coverage-incidence-municipalities"
+                           placeholder="Todos los municipios, nombre o código DIVIPOLA" autocomplete="off">
+                    <datalist id="coverage-incidence-municipalities"></datalist>
+                </div>
+            </div>
+            <fieldset id="coverage-incidence-age" class="secondary-age-options">
+                <legend>Grupo de edad de la incidencia</legend>
+            </fieldset>
+            <fieldset id="coverage-incidence-dose" class="secondary-age-options">
+                <legend>Dosis</legend>
+                <label><input type="checkbox" value="first_dose" checked> Primera dosis</label>
+                <label><input type="checkbox" value="booster"> Segunda dosis / refuerzo</label>
+            </fieldset>
+            <fieldset id="coverage-incidence-metric" class="secondary-age-options">
+                <legend>Medida de cobertura</legend>
+                <label><input type="checkbox" value="reference" checked> Dosis / población de referencia</label>
+                <label><input type="checkbox" value="administrative"> Cobertura PAI</label>
+                <label><input type="checkbox" value="survivors"> Cobertura Sobrevivientes (solo primera dosis)</label>
+            </fieldset>
+            <fieldset id="coverage-incidence-rate" class="secondary-age-options">
+                <legend>Tasa de incidencia</legend>
+                <label><input type="radio" name="coverage-incidence-rate" value="crude" checked> Cruda</label>
+                <label><input type="radio" name="coverage-incidence-rate" value="eb"> Suavizada EB (nacional)</label>
+                <label><input type="radio" name="coverage-incidence-rate" value="eb_local"> Suavizada EB (vecinos)</label>
+            </fieldset>
+        </fieldset>
+        <p id="coverage-incidence-selection" class="age-note"></p>
+        <p><strong style="color:#bb4c16">◆ Incidencia notificada: eje izquierdo (por 100.000)</strong> ·
+            <strong style="color:#146a8a">● Cobertura: eje derecho (%)</strong>.</p>
+        <div id="coverage-incidence-legend" class="coverage-incidence-legend" aria-label="Series seleccionadas"></div>
+        <div id="coverage-incidence-chart" class="chart" role="img"
+             aria-label="Series anuales municipales de cobertura e incidencia notificada"></div>
+        <p id="coverage-incidence-status" class="age-note" role="status">La gráfica se carga al acercarse a esta subsección…</p>
+        <p class="age-note">La incidencia (eje izquierdo) y la cobertura (eje derecho) usan escalas independientes: la altura o el cruce de las líneas no demuestra una asociación.
+            El filtro de edad cambia solo la incidencia; la cobertura conserva su población objetivo (1 año para primera dosis, 5 años para refuerzo).
+            Los valores ausentes interrumpen las líneas y no se interpolan. Son comparaciones descriptivas, no un seguimiento de cohortes ni una estimación del efecto de la vacuna.</p>
+        <p class="data-specifications"><a href="https://github.com/thesis-varicella-colombia/exploratory-analysis/blob/main/docs/data_processed/cobertura_vacunacion/coverage_incidence/README.md">Evolución municipal de cobertura e incidencia: Especificaciones de los datos</a>.</p>
     </section>
 
     <section class="panel" aria-labelledby="method-title">
