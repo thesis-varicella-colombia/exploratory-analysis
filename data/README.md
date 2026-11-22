@@ -362,7 +362,7 @@ Se incorpora la [copia local de nacimientos y mortalidad infantil DANE](births_m
 [`generate_coverage_incidence_series.py`](../scripts/generate_coverage_incidence_series.py)
 genera el [catálogo y método](../docs/data_processed/cobertura_vacunacion/coverage_incidence/manifest.json)
 y un JSON por cada una de las 1.122 entidades de la cartografía, para 2008–2025.
-La nueva gráfica de líneas de la sección 8 permite buscar municipio y elegir
+La nueva gráfica de líneas de la sección 9 permite buscar municipio y elegir
 una sola entidad o «Todos los municipios», con el mismo estilo de búsqueda de los demás filtros. Los
 grupos de edad de incidencia, dosis y medidas de cobertura se eligen mediante
 casillas en tres filas independientes y admiten selección múltiple. Cada serie se carga
@@ -422,3 +422,48 @@ de dosis mostrado no redefine esos porcentajes.
 .venv/bin/python scripts/generate_coverage_incidence_series.py
 ```
 
+
+## Municipios para revisión de incidencia y cobertura
+
+La preselección de municipios se reproduce con
+[`analyze_municipal_priority_candidates.py`](../scripts/analyze_municipal_priority_candidates.py).
+La lista une dos criterios independientes, sin duplicados:
+
+- **Municipal:** tasa municipal total ajustada por edad **>0,95 × su propia basal**
+  de 2008–2014 en 2024 y en 2025. Usa `adjusted_pre_weights` y `baseline_adjusted`
+  de `comparable_incidence_annual.csv`, con los mismos pesos fijos de 2008–2014.
+  Este criterio no exige superar límites en los cinco grupos por separado.
+- **Infantil:** tasa específica **>0,8 × su propia basal en cada grupo <1, 1–4 y
+  5–14 años**, en los dos años. La basal agrupa casos y poblaciones anuales de
+  2008–2014 del mismo municipio y grupo.
+
+Ambos requieren alguna cobertura administrativa o calculada **<80 % en cada año**.
+Se aplica AND entre 2024 y 2025 dentro de cada criterio y luego OR entre los dos
+criterios completos; no se mezcla municipal solo en un año con infantil solo en
+el otro. Los límites son estrictos. Se conservan las reglas del año de análisis
+ya desplazado y los denominadores de población de 1 año y de 5 años.
+
+Los datos actuales dan **48 municipios por el criterio municipal**, **7 por el
+infantil**, **6 compartidos** y **49 únicos en la lista completa**. Quibdó entra
+solo por el infantil. La tabla de la sección 8 identifica uno o ambos criterios,
+muestra tasas municipales ajustadas y tasas infantiles específicas, basales y
+anuales, ambas coberturas por dosis y las notificaciones. Mantiene altura máxima
+de 27rem, desplazamiento en ambos ejes y encabezados fijos; es independiente de
+los filtros de la gráfica. Primero aparecen los que cumplen el criterio infantil
+(incluidos los que cumplen ambos), y después los que cumplen solo el municipal.
+En cada grupo se ordena por el menor `100 × incidencia / basal` calculable entre
+las comparaciones de 2024–2025 del criterio de orden: seis infantiles o dos
+municipales. La tabla y el CSV muestran ese porcentaje, el grupo y la comparación
+de origen. Basales cero no producen porcentajes; se omiten del mínimo y, si no
+hay ninguno calculable, la fila va al final de su grupo. Los empates se resuelven
+por departamento y nombre. Este orden es descriptivo y no cambia la selección.
+
+El [informe](../REVISION_MUNICIPIOS_PRIORITARIOS_2026_11_02.md), la
+[lista completa](../docs/data_processed/cobertura_vacunacion/municipal_priority_union_2024_2025.csv),
+el [detalle anual](../docs/data_processed/cobertura_vacunacion/municipal_priority_age_annual_2024_2025.csv)
+y los [metadatos](../docs/data_processed/cobertura_vacunacion/municipal_priority_age_2024_2025.metadata.json)
+registran reglas y resultados. Los faltantes no se convierten en cero; coberturas
+administrativas fuera de 0–100 % no se consideran bajas. Basal cero exige tasa
+positiva, sin forzar razones infinitas. Es una selección exploratoria sin
+intervalos municipales ni inferencia causal y no elimina automáticamente
+desenlaces del modelo por pocos casos.
