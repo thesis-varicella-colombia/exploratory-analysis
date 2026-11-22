@@ -1,0 +1,621 @@
+{
+  "model_global": "global Poisson-Gamma Empirical Bayes, per age group and year (Marshall 1991): shrinks each municipality towards the national group mean",
+  "model_local": "local (neighbourhood) Poisson-Gamma EB (Marshall 1991): shrinks towards the mean of the municipality and its 8 nearest neighbours, using the same neighbour matrix as section 8 (Moran/LISA)",
+  "rate_scale_per": 100000,
+  "years": [
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+  ],
+  "baseline_years": [
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014
+  ],
+  "neighbor_count": 8,
+  "age_groups": {
+    "all": "Todas las edades",
+    "under_1": "Menores de 1 año",
+    "1_4": "1–4 años",
+    "5_14": "5–14 años",
+    "15_49": "15–49 años",
+    "50_plus": "50 años o más"
+  },
+  "municipalities": 1102,
+  "municipalities_without_point": [],
+  "shrinkage_rule": "C = phi / (phi + m / n); smoothed = C*crude + (1-C)*m; phi=0 shrinks fully to the target mean (national for global, neighbourhood for local)",
+  "local_note": "rate_eb_local and shrinkage_local are null where the municipality has no representative point or its neighbourhood has fewer than two valid areas; local EB stabilises small municipalities less than global because each neighbourhood has fewer data than the country",
+  "scope_note": "annual rows cover 2008-2025 for the evolution chart; the priority list reads the 2024 and 2025 values; baseline rows pool 2008-2014",
+  "limitations": "stabilises variance only; does not correct under-reporting, surveillance changes or denominator errors; depends on the Gamma assumption and on the shrinkage target (national or neighbourhood)",
+  "group_summaries": {
+    "annual_all_2008": {
+      "mean_per_100k": 147.67908330354146,
+      "between_var": 23439.105662918297,
+      "n": 1102
+    },
+    "annual_all_2009": {
+      "mean_per_100k": 166.63293939512573,
+      "between_var": 21299.63130679798,
+      "n": 1102
+    },
+    "annual_all_2010": {
+      "mean_per_100k": 167.82538251644854,
+      "between_var": 22673.84294686719,
+      "n": 1102
+    },
+    "annual_all_2011": {
+      "mean_per_100k": 270.1399897673769,
+      "between_var": 38169.112938482045,
+      "n": 1102
+    },
+    "annual_all_2012": {
+      "mean_per_100k": 221.02651688154893,
+      "between_var": 24604.872839412692,
+      "n": 1102
+    },
+    "annual_all_2013": {
+      "mean_per_100k": 207.0466602943266,
+      "between_var": 23797.24141571644,
+      "n": 1102
+    },
+    "annual_all_2014": {
+      "mean_per_100k": 234.95875487193857,
+      "between_var": 25425.922335389758,
+      "n": 1102
+    },
+    "annual_all_2015": {
+      "mean_per_100k": 238.6396069281046,
+      "between_var": 22160.69513363277,
+      "n": 1102
+    },
+    "annual_all_2016": {
+      "mean_per_100k": 239.0312462548748,
+      "between_var": 21210.40410745156,
+      "n": 1102
+    },
+    "annual_all_2017": {
+      "mean_per_100k": 182.5196303516385,
+      "between_var": 11109.533708542396,
+      "n": 1102
+    },
+    "annual_all_2018": {
+      "mean_per_100k": 154.91592606301387,
+      "between_var": 8888.532634105997,
+      "n": 1102
+    },
+    "annual_all_2019": {
+      "mean_per_100k": 136.10663488682988,
+      "between_var": 9030.214966569187,
+      "n": 1102
+    },
+    "annual_all_2020": {
+      "mean_per_100k": 36.92124820219644,
+      "between_var": 532.8746482226976,
+      "n": 1102
+    },
+    "annual_all_2021": {
+      "mean_per_100k": 27.50174666370085,
+      "between_var": 365.5782880804037,
+      "n": 1102
+    },
+    "annual_all_2022": {
+      "mean_per_100k": 43.91957941328974,
+      "between_var": 867.5276134067111,
+      "n": 1102
+    },
+    "annual_all_2023": {
+      "mean_per_100k": 60.682642924673125,
+      "between_var": 1427.3122049942583,
+      "n": 1102
+    },
+    "annual_all_2024": {
+      "mean_per_100k": 47.35503877386683,
+      "between_var": 659.1950790485495,
+      "n": 1102
+    },
+    "annual_all_2025": {
+      "mean_per_100k": 55.490222318305705,
+      "between_var": 1000.2329659634759,
+      "n": 1102
+    },
+    "baseline_all": {
+      "mean_per_100k": 202.77393130817347,
+      "between_var": 18756.278969342926,
+      "n": 1102
+    },
+    "annual_under_1_2008": {
+      "mean_per_100k": 207.4777411200692,
+      "between_var": 53242.80768758715,
+      "n": 1102
+    },
+    "annual_under_1_2009": {
+      "mean_per_100k": 462.35923302148234,
+      "between_var": 226094.22990618215,
+      "n": 1102
+    },
+    "annual_under_1_2010": {
+      "mean_per_100k": 450.38412796903845,
+      "between_var": 230499.94148732704,
+      "n": 1102
+    },
+    "annual_under_1_2011": {
+      "mean_per_100k": 683.8897735268134,
+      "between_var": 322549.4916595533,
+      "n": 1102
+    },
+    "annual_under_1_2012": {
+      "mean_per_100k": 588.6653992900918,
+      "between_var": 216185.29068810074,
+      "n": 1102
+    },
+    "annual_under_1_2013": {
+      "mean_per_100k": 569.9394013833947,
+      "between_var": 233544.229094409,
+      "n": 1102
+    },
+    "annual_under_1_2014": {
+      "mean_per_100k": 674.3774101656398,
+      "between_var": 218911.73597512458,
+      "n": 1102
+    },
+    "annual_under_1_2015": {
+      "mean_per_100k": 705.8539140244147,
+      "between_var": 215696.57612462356,
+      "n": 1102
+    },
+    "annual_under_1_2016": {
+      "mean_per_100k": 693.0992126618473,
+      "between_var": 177189.0077084376,
+      "n": 1102
+    },
+    "annual_under_1_2017": {
+      "mean_per_100k": 571.049350009901,
+      "between_var": 111107.54524518005,
+      "n": 1102
+    },
+    "annual_under_1_2018": {
+      "mean_per_100k": 453.24850666330826,
+      "between_var": 103682.96886278158,
+      "n": 1102
+    },
+    "annual_under_1_2019": {
+      "mean_per_100k": 494.4006254742797,
+      "between_var": 106619.36604305619,
+      "n": 1102
+    },
+    "annual_under_1_2020": {
+      "mean_per_100k": 132.39617090028062,
+      "between_var": 9213.023495955213,
+      "n": 1102
+    },
+    "annual_under_1_2021": {
+      "mean_per_100k": 156.59258821919207,
+      "between_var": 23692.223848039677,
+      "n": 1102
+    },
+    "annual_under_1_2022": {
+      "mean_per_100k": 149.73829644933403,
+      "between_var": 26848.989046459497,
+      "n": 1102
+    },
+    "annual_under_1_2023": {
+      "mean_per_100k": 249.16024528077656,
+      "between_var": 57419.90154113966,
+      "n": 1102
+    },
+    "annual_under_1_2024": {
+      "mean_per_100k": 122.7621765595969,
+      "between_var": 11303.750784956186,
+      "n": 1102
+    },
+    "annual_under_1_2025": {
+      "mean_per_100k": 176.1306020286446,
+      "between_var": 20610.47097010792,
+      "n": 1102
+    },
+    "baseline_under_1": {
+      "mean_per_100k": 518.042578981599,
+      "between_var": 171070.47508773903,
+      "n": 1102
+    },
+    "annual_1_4_2008": {
+      "mean_per_100k": 510.12733666880985,
+      "between_var": 436291.42352550215,
+      "n": 1102
+    },
+    "annual_1_4_2009": {
+      "mean_per_100k": 558.7417432024615,
+      "between_var": 379764.79916898545,
+      "n": 1102
+    },
+    "annual_1_4_2010": {
+      "mean_per_100k": 627.1919388377939,
+      "between_var": 589389.3427870509,
+      "n": 1102
+    },
+    "annual_1_4_2011": {
+      "mean_per_100k": 952.6399700508489,
+      "between_var": 1016836.1416905993,
+      "n": 1102
+    },
+    "annual_1_4_2012": {
+      "mean_per_100k": 777.0055255843723,
+      "between_var": 680708.6003732915,
+      "n": 1102
+    },
+    "annual_1_4_2013": {
+      "mean_per_100k": 805.3496003504683,
+      "between_var": 842932.5678616974,
+      "n": 1102
+    },
+    "annual_1_4_2014": {
+      "mean_per_100k": 976.6850991389207,
+      "between_var": 901586.0077352609,
+      "n": 1102
+    },
+    "annual_1_4_2015": {
+      "mean_per_100k": 917.6505823782672,
+      "between_var": 669501.1827477885,
+      "n": 1102
+    },
+    "annual_1_4_2016": {
+      "mean_per_100k": 895.2374913861714,
+      "between_var": 548755.7069042728,
+      "n": 1102
+    },
+    "annual_1_4_2017": {
+      "mean_per_100k": 589.8894256796889,
+      "between_var": 185641.21082677838,
+      "n": 1102
+    },
+    "annual_1_4_2018": {
+      "mean_per_100k": 427.55874028732546,
+      "between_var": 120848.40581441214,
+      "n": 1102
+    },
+    "annual_1_4_2019": {
+      "mean_per_100k": 355.7174036247,
+      "between_var": 72441.47444447633,
+      "n": 1102
+    },
+    "annual_1_4_2020": {
+      "mean_per_100k": 100.36979368143314,
+      "between_var": 15463.214625638668,
+      "n": 1102
+    },
+    "annual_1_4_2021": {
+      "mean_per_100k": 141.0790159324846,
+      "between_var": 29387.02680970788,
+      "n": 1102
+    },
+    "annual_1_4_2022": {
+      "mean_per_100k": 162.63535360838807,
+      "between_var": 64994.840007083745,
+      "n": 1102
+    },
+    "annual_1_4_2023": {
+      "mean_per_100k": 284.54978282880353,
+      "between_var": 93309.65219565951,
+      "n": 1102
+    },
+    "annual_1_4_2024": {
+      "mean_per_100k": 98.94375456342613,
+      "between_var": 9785.862366458929,
+      "n": 1102
+    },
+    "annual_1_4_2025": {
+      "mean_per_100k": 204.78290479738985,
+      "between_var": 43471.27688103652,
+      "n": 1102
+    },
+    "baseline_1_4": {
+      "mean_per_100k": 741.6574635364029,
+      "between_var": 585327.3729172085,
+      "n": 1102
+    },
+    "annual_5_14_2008": {
+      "mean_per_100k": 289.4812688204331,
+      "between_var": 101796.52772346139,
+      "n": 1102
+    },
+    "annual_5_14_2009": {
+      "mean_per_100k": 322.61329754404676,
+      "between_var": 97244.93230975505,
+      "n": 1102
+    },
+    "annual_5_14_2010": {
+      "mean_per_100k": 329.7436554723346,
+      "between_var": 108609.37169932738,
+      "n": 1102
+    },
+    "annual_5_14_2011": {
+      "mean_per_100k": 556.2898401676385,
+      "between_var": 206967.93426704823,
+      "n": 1102
+    },
+    "annual_5_14_2012": {
+      "mean_per_100k": 461.1314033225204,
+      "between_var": 157041.17779502826,
+      "n": 1102
+    },
+    "annual_5_14_2013": {
+      "mean_per_100k": 427.6940234560869,
+      "between_var": 147368.551384589,
+      "n": 1102
+    },
+    "annual_5_14_2014": {
+      "mean_per_100k": 469.0035322367952,
+      "between_var": 161392.03308292874,
+      "n": 1102
+    },
+    "annual_5_14_2015": {
+      "mean_per_100k": 477.6392392429071,
+      "between_var": 154686.16049464658,
+      "n": 1102
+    },
+    "annual_5_14_2016": {
+      "mean_per_100k": 502.5363968103174,
+      "between_var": 161562.15137281478,
+      "n": 1102
+    },
+    "annual_5_14_2017": {
+      "mean_per_100k": 390.651768991573,
+      "between_var": 78798.45490992969,
+      "n": 1102
+    },
+    "annual_5_14_2018": {
+      "mean_per_100k": 331.37002826366694,
+      "between_var": 58724.794088381306,
+      "n": 1102
+    },
+    "annual_5_14_2019": {
+      "mean_per_100k": 299.84557916688556,
+      "between_var": 72403.39543065605,
+      "n": 1102
+    },
+    "annual_5_14_2020": {
+      "mean_per_100k": 65.91390624261415,
+      "between_var": 3214.6161863682732,
+      "n": 1102
+    },
+    "annual_5_14_2021": {
+      "mean_per_100k": 30.768039986913966,
+      "between_var": 458.6122442577772,
+      "n": 1102
+    },
+    "annual_5_14_2022": {
+      "mean_per_100k": 76.13398321030014,
+      "between_var": 4735.510999978242,
+      "n": 1102
+    },
+    "annual_5_14_2023": {
+      "mean_per_100k": 91.63550432158318,
+      "between_var": 5090.594175638091,
+      "n": 1102
+    },
+    "annual_5_14_2024": {
+      "mean_per_100k": 79.297102194927,
+      "between_var": 4111.803238438489,
+      "n": 1102
+    },
+    "annual_5_14_2025": {
+      "mean_per_100k": 77.88836648007313,
+      "between_var": 3668.012066998988,
+      "n": 1102
+    },
+    "baseline_5_14": {
+      "mean_per_100k": 406.90968509224416,
+      "between_var": 96388.85982876326,
+      "n": 1102
+    },
+    "annual_15_49_2008": {
+      "mean_per_100k": 87.54919337681491,
+      "between_var": 6613.651061889911,
+      "n": 1102
+    },
+    "annual_15_49_2009": {
+      "mean_per_100k": 103.50767908028418,
+      "between_var": 7339.788373440856,
+      "n": 1102
+    },
+    "annual_15_49_2010": {
+      "mean_per_100k": 98.73101518441311,
+      "between_var": 5471.005649483433,
+      "n": 1102
+    },
+    "annual_15_49_2011": {
+      "mean_per_100k": 164.0273180042349,
+      "between_var": 10549.073113163986,
+      "n": 1102
+    },
+    "annual_15_49_2012": {
+      "mean_per_100k": 136.82177011110605,
+      "between_var": 6969.995935175329,
+      "n": 1102
+    },
+    "annual_15_49_2013": {
+      "mean_per_100k": 123.85038602592907,
+      "between_var": 5255.165936501463,
+      "n": 1102
+    },
+    "annual_15_49_2014": {
+      "mean_per_100k": 142.4849668410494,
+      "between_var": 6791.3401649161215,
+      "n": 1102
+    },
+    "annual_15_49_2015": {
+      "mean_per_100k": 156.7688740223179,
+      "between_var": 8660.768434163914,
+      "n": 1102
+    },
+    "annual_15_49_2016": {
+      "mean_per_100k": 156.94620219372544,
+      "between_var": 8926.05590594542,
+      "n": 1102
+    },
+    "annual_15_49_2017": {
+      "mean_per_100k": 129.39625594676232,
+      "between_var": 6322.011484943379,
+      "n": 1102
+    },
+    "annual_15_49_2018": {
+      "mean_per_100k": 116.55415217621537,
+      "between_var": 6177.45497388877,
+      "n": 1102
+    },
+    "annual_15_49_2019": {
+      "mean_per_100k": 101.1893173359121,
+      "between_var": 5752.90681034559,
+      "n": 1102
+    },
+    "annual_15_49_2020": {
+      "mean_per_100k": 31.61787333231076,
+      "between_var": 354.6212125084396,
+      "n": 1102
+    },
+    "annual_15_49_2021": {
+      "mean_per_100k": 20.626302207149912,
+      "between_var": 149.54578115743638,
+      "n": 1102
+    },
+    "annual_15_49_2022": {
+      "mean_per_100k": 35.65634587561198,
+      "between_var": 384.33204439877363,
+      "n": 1102
+    },
+    "annual_15_49_2023": {
+      "mean_per_100k": 46.44365937170862,
+      "between_var": 671.1788384347833,
+      "n": 1102
+    },
+    "annual_15_49_2024": {
+      "mean_per_100k": 49.33528596031738,
+      "between_var": 738.5706055881697,
+      "n": 1102
+    },
+    "annual_15_49_2025": {
+      "mean_per_100k": 52.89978782315991,
+      "between_var": 846.9643441650396,
+      "n": 1102
+    },
+    "baseline_15_49": {
+      "mean_per_100k": 122.77893669248206,
+      "between_var": 4671.6811509315785,
+      "n": 1102
+    },
+    "annual_50_plus_2008": {
+      "mean_per_100k": 7.136532471160361,
+      "between_var": 119.27785838050836,
+      "n": 1102
+    },
+    "annual_50_plus_2009": {
+      "mean_per_100k": 10.806243099600746,
+      "between_var": 140.03637154129072,
+      "n": 1102
+    },
+    "annual_50_plus_2010": {
+      "mean_per_100k": 9.49702702518021,
+      "between_var": 43.39740950338918,
+      "n": 1102
+    },
+    "annual_50_plus_2011": {
+      "mean_per_100k": 17.73767309859177,
+      "between_var": 229.84676243461843,
+      "n": 1102
+    },
+    "annual_50_plus_2012": {
+      "mean_per_100k": 14.737355881523715,
+      "between_var": 155.25288990749058,
+      "n": 1102
+    },
+    "annual_50_plus_2013": {
+      "mean_per_100k": 13.806980285626839,
+      "between_var": 141.10051643662214,
+      "n": 1102
+    },
+    "annual_50_plus_2014": {
+      "mean_per_100k": 15.531778289282983,
+      "between_var": 107.39139914696317,
+      "n": 1102
+    },
+    "annual_50_plus_2015": {
+      "mean_per_100k": 18.346527900201096,
+      "between_var": 331.02913514369124,
+      "n": 1102
+    },
+    "annual_50_plus_2016": {
+      "mean_per_100k": 19.05168190629329,
+      "between_var": 263.4044161389797,
+      "n": 1102
+    },
+    "annual_50_plus_2017": {
+      "mean_per_100k": 18.03257037782045,
+      "between_var": 314.0272155275581,
+      "n": 1102
+    },
+    "annual_50_plus_2018": {
+      "mean_per_100k": 16.596221809643612,
+      "between_var": 345.53490233177155,
+      "n": 1102
+    },
+    "annual_50_plus_2019": {
+      "mean_per_100k": 15.036324999424632,
+      "between_var": 282.2122019794224,
+      "n": 1102
+    },
+    "annual_50_plus_2020": {
+      "mean_per_100k": 6.109821766468022,
+      "between_var": 26.528938530499904,
+      "n": 1102
+    },
+    "annual_50_plus_2021": {
+      "mean_per_100k": 3.910574412267845,
+      "between_var": 0.0,
+      "n": 1102
+    },
+    "annual_50_plus_2022": {
+      "mean_per_100k": 5.372583491539335,
+      "between_var": 0.0,
+      "n": 1102
+    },
+    "annual_50_plus_2023": {
+      "mean_per_100k": 7.57892580941913,
+      "between_var": 4.708753195256617,
+      "n": 1102
+    },
+    "annual_50_plus_2024": {
+      "mean_per_100k": 7.392108469368769,
+      "between_var": 23.98148460323791,
+      "n": 1102
+    },
+    "annual_50_plus_2025": {
+      "mean_per_100k": 7.8405940579230435,
+      "between_var": 0.0,
+      "n": 1102
+    },
+    "baseline_50_plus": {
+      "mean_per_100k": 12.937734169047912,
+      "between_var": 97.41884476537382,
+      "n": 1102
+    }
+  }
+}
