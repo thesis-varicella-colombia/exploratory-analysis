@@ -1,0 +1,130 @@
+{
+  "claves_union": [
+    "ano",
+    "codigo_departamento",
+    "codigo_municipio"
+  ],
+  "tipo_union": "outer; solo claves completas; nombres preferidos de births",
+  "formula": "sobrevivientes_edad_1(t) = total_nacimientos(t-1) - total_defunciones_menor_1(t-1)",
+  "totales_excluidos": {
+    "births": 630,
+    "mortality": 630
+  },
+  "filas_sin_totales": {
+    "births": 21184,
+    "mortality": 21006
+  },
+  "filas_mortality_asumidas_cero": 454,
+  "filas_con_join": 20322,
+  "filas_sin_join": {
+    "births": {
+      "total": 408,
+      "sin_correspondencia": 0,
+      "clave_incompleta": 408
+    },
+    "mortality": {
+      "total": 684,
+      "sin_correspondencia": 0,
+      "clave_incompleta": 684
+    }
+  },
+  "filas_salida": 21868,
+  "sobrevivientes_nulos": 2248,
+  "sobrevivientes_negativos": 16,
+  "perfil_anual": [
+    {
+      "ano": 2008,
+      "filas": 1191,
+      "sobrevivientes_nulos": 1191
+    },
+    {
+      "ano": 2009,
+      "filas": 1203,
+      "sobrevivientes_nulos": 49
+    },
+    {
+      "ano": 2010,
+      "filas": 1210,
+      "sobrevivientes_nulos": 56
+    },
+    {
+      "ano": 2011,
+      "filas": 1208,
+      "sobrevivientes_nulos": 54
+    },
+    {
+      "ano": 2012,
+      "filas": 1209,
+      "sobrevivientes_nulos": 55
+    },
+    {
+      "ano": 2013,
+      "filas": 1213,
+      "sobrevivientes_nulos": 59
+    },
+    {
+      "ano": 2014,
+      "filas": 1206,
+      "sobrevivientes_nulos": 52
+    },
+    {
+      "ano": 2015,
+      "filas": 1217,
+      "sobrevivientes_nulos": 63
+    },
+    {
+      "ano": 2016,
+      "filas": 1223,
+      "sobrevivientes_nulos": 69
+    },
+    {
+      "ano": 2017,
+      "filas": 1218,
+      "sobrevivientes_nulos": 64
+    },
+    {
+      "ano": 2018,
+      "filas": 1214,
+      "sobrevivientes_nulos": 60
+    },
+    {
+      "ano": 2019,
+      "filas": 1218,
+      "sobrevivientes_nulos": 64
+    },
+    {
+      "ano": 2020,
+      "filas": 1211,
+      "sobrevivientes_nulos": 57
+    },
+    {
+      "ano": 2021,
+      "filas": 1224,
+      "sobrevivientes_nulos": 69
+    },
+    {
+      "ano": 2022,
+      "filas": 1217,
+      "sobrevivientes_nulos": 63
+    },
+    {
+      "ano": 2023,
+      "filas": 1226,
+      "sobrevivientes_nulos": 72
+    },
+    {
+      "ano": 2024,
+      "filas": 1225,
+      "sobrevivientes_nulos": 71
+    },
+    {
+      "ano": 2025,
+      "filas": 1235,
+      "sobrevivientes_nulos": 80
+    }
+  ],
+  "entradas": {
+    "births": "/home/diego/repos/data-processing/data/processed/births_mortality_dane/births/births.parquet",
+    "mortality": "/home/diego/repos/data-processing/data/processed/births_mortality_dane/mortality/mortality.parquet"
+  }
+}

@@ -13,6 +13,8 @@ Las notificaciones originales proceden de los [microdatos de Sivigila publicados
 | [`sivigila_integrado_semanal_municipal.parquet/`](sivigila_integrado_semanal_municipal.parquet/) | `data/processed/integration_data/sivigila_integrado_semanal_municipal.parquet/` · [ficha de integración](https://github.com/thesis-varicella-colombia/data-processing/blob/main/data/processed/integration_data/README.md) | Notificaciones de varicela (evento 831) por entidad DIVIPOLA de residencia y semana epidemiológica reportada, con variables de población y otras fuentes integradas. |
 | [`sivigila_integrado_notification_semanal_municipal.parquet/`](sivigila_integrado_notification_semanal_municipal.parquet/) | `data/processed/integration_data/sivigila_integrado_notification_semanal_municipal.parquet/` · [ficha de integración](https://github.com/thesis-varicella-colombia/data-processing/blob/main/data/processed/integration_data/README.md) | **Fuente de los análisis publicados.** Registros agregados por semana de la fecha de notificación (`FEC_NOT`). |
 | [`population_municipal_2007_2025.csv`](population_municipal_2007_2025.csv) | `data/processed/population/population_municipal_2007_2025.csv` · [ficha de población](https://github.com/thesis-varicella-colombia/data-processing/blob/main/data/processed/population/README.md) | Población municipal anual. Cada clave `codigo_municipio`–`ano_epidemiologico` aparece una vez. |
+| [`population_vaccine_ages_municipal_2016_2025.csv`](population_vaccine_ages_municipal_2016_2025.csv) | Extracto de los dos Excel de `data-processing/data/raw/population/`, mediante `scripts/extract_vaccine_age_population.py` | Edades simples 1, 4, 5 y 6, ambos sexos y área Total; incluye la suma 4+5+6. Los metadatos registran los SHA-256 de los Excel. La cobertura usa solo edades 1 y 5; la suma 4+5+6 se conserva como auxiliar histórico. |
+| [`vaccine_coverage_municipal_lagged_2016_2025.csv`](vaccine_coverage_municipal_lagged_2016_2025.csv) | `data/processed/vaccine_coverage/coberturas_municipales_2016_2025.csv` · [ficha de cobertura](https://github.com/thesis-varicella-colombia/data-processing/blob/main/data/processed/vaccine_coverage/README.md) | Cobertura administrativa municipal de primera dosis y refuerzo. El año de análisis ya es el año de la hoja PAI más uno; no debe aplicarse otro rezago. |
 | [`MGN_ADM_MPIO_GRAFICO.geojson.xz`](MGN_ADM_MPIO_GRAFICO.geojson.xz) | `data/raw/municipios/MGN_ADM_MPIO_GRAFICO.geojson` · [ficha geográfica](https://github.com/thesis-varicella-colombia/data-processing/blob/main/data/raw/municipios/README.md) | Geometría DANE MGN 2025 de municipios, áreas no municipalizadas e Isla; copia íntegra comprimida. |
 
 El Parquet integrado contiene además columnas de [cobertura municipal de vacunación](https://github.com/thesis-varicella-colombia/data-processing/blob/main/data/processed/vaccine_coverage/README.md), [precipitación CHIRPS](https://github.com/thesis-varicella-colombia/data-processing/blob/main/data/processed/chirps_precipitation/README.md) y [temperatura, humedad y precipitación ERA5](https://github.com/thesis-varicella-colombia/data-processing/blob/main/data/processed/climate/README.md). Estas fichas describen las fuentes originales, la preparación y las limitaciones de las variables integradas.
@@ -295,3 +297,173 @@ independiente del territorio o límite seleccionado en la tabla interactiva.
 Si Rₜ pasa a ser un resultado principal, queda pendiente comprobar estabilidad
 ante cambios de previa, ventana e intervalo serial: variar únicamente el umbral
 de anchura del diagnóstico no realiza esa sensibilidad.
+
+## Comparación municipal anual de coberturas
+
+[`generate_vaccine_coverage_comparison.py`](../scripts/generate_vaccine_coverage_comparison.py)
+genera [`vaccine_coverage_comparison.csv`](../docs/data_processed/cobertura_vacunacion/vaccine_coverage_comparison.csv)
+y sus [metadatos](../docs/data_processed/cobertura_vacunacion/vaccine_coverage_comparison.metadata.json).
+Conserva el año de análisis de la fuente, **2016–2025**, que ya corresponde al año
+de la hoja PAI más uno. No elimina ni duplica ese desplazamiento metodológico.
+La población utilizada es la del mismo año de análisis: primera dosis dividida
+entre población de exactamente 1 año, y refuerzo dividido entre población de
+exactamente 5 años,
+ambos multiplicados por 100. El refuerzo se ofrece desde 2019; ese año no tiene
+dosis en la fuente rezagada y permanece sin dato. Las primeras dosis de 2016
+proceden de la hoja PAI 2015, cuya meta administrativa era media cohorte; la
+nueva medida usa la población de 1 año de 2016.
+
+El porcentaje administrativo se conserva tal como fue publicado, aunque difiera
+del cociente dosis/meta por redondeo. Para adaptar códigos históricos a los 1.122
+polígonos DANE, el script suma dosis y poblaciones homologadas; si se combinan
+registros PAI, pondera sus porcentajes originales por sus metas PAI. La tabla
+indica esas combinaciones. Los dos registros sin DIVIPOLA se documentan en los
+metadatos y no se asignan a un polígono.
+
+El mapa de la sección independiente «Cobertura administrativa y dosis sobre
+población de referencia», anterior a «Anomalías (O/E) y cobertura», permite elegir año, dosis y
+medida; conserva los valores
+superiores a 100 %, con escala fija 0–200 % e intensidad máxima desde 200 %.
+La animación recorre los años en orden ascendente y vuelve al inicio, con pausa,
+barra de año y velocidades 0,5×, 1× y 2×. El refuerzo recorre 2019–2025.
+Cambiar año, dosis o medida pausa la reproducción; ocultar la pestaña también.
+Cada paso actualiza los colores sobre la misma cartografía y conserva el zoom.
+Los detalles muestran el porcentaje completo. Un numerador cero válido produce
+0 %; dosis ausentes o población ausente/nula producen un dato faltante gris.
+La primera dosis usa la población DANE de 1 año; el refuerzo usa únicamente
+la población DANE de 5 años. La razón anual de dosis sobre esa edad no identifica
+por sí sola a las personas que completaron el esquema.
+No requiere el área municipal. El script y la tabla son independientes del cruce
+SIR/cobertura existente.
+
+Las edades simples se extraen directamente de los dos Excel DANE originales
+en `../data-processing/data/raw/population`, mediante
+[`extract_vaccine_age_population.py`](../scripts/extract_vaccine_age_population.py).
+Se seleccionan únicamente el área `Total` y las columnas de edad `Total` de ambos
+sexos. Se conserva cada edad (1, 4, 5 y 6) sin interpolar a partir de grupos amplios.
+La suma 4+5+6 permanece como columna auxiliar histórica y ya no se usa para
+calcular cobertura de refuerzo; se toma directamente `poblacion_5_anios`. El extracto
+[`population_vaccine_ages_municipal_2016_2025.csv`](population_vaccine_ages_municipal_2016_2025.csv)
+y sus [metadatos](population_vaccine_ages_municipal_2016_2025.metadata.json) registran
+el resultado y los SHA-256 de ambos libros. Si falta la población de 5 años,
+la razón de refuerzo queda ausente; no se sustituye por la de otras edades. El CSV de población por grupos amplios permanece intacto.
+
+```bash
+.venv/bin/python scripts/extract_vaccine_age_population.py
+.venv/bin/python scripts/generate_vaccine_coverage_comparison.py
+```
+
+### Cobertura Sobrevivientes (solo primera dosis)
+
+Se incorpora la [copia local de nacimientos y mortalidad infantil DANE](births_mortality_dane/integration/README.md), con Parquet y reportes originales. La medida **Cobertura Sobrevivientes** es `100 × primeras dosis / sobrevivientes_edad_1`. Se une por municipio homologado y año de análisis: la columna ya resta defunciones de menores de un año a nacimientos del año anterior. No se aplica otro rezago. Denominadores ausentes, no positivos o inválidos dejan la estimación sin dato. El CSV de comparación y las series municipales incluyen esta medida; para refuerzo queda no aplicable. En el agregado se dividen las sumas del mismo subconjunto con datos válidos, conservando el conteo de entidades.
+
+### Series municipales de cobertura e incidencia
+
+[`generate_coverage_incidence_series.py`](../scripts/generate_coverage_incidence_series.py)
+genera el [catálogo y método](../docs/data_processed/cobertura_vacunacion/coverage_incidence/manifest.json)
+y un JSON por cada una de las 1.122 entidades de la cartografía, para 2008–2025.
+La nueva gráfica de líneas de la sección 9 permite buscar municipio y elegir
+una sola entidad o «Todos los municipios», con el mismo estilo de búsqueda de los demás filtros. Los
+grupos de edad de incidencia, dosis y medidas de cobertura se eligen mediante
+casillas en tres filas independientes y admiten selección múltiple. Cada serie se carga
+solo al seleccionarla y se conserva en una caché de hasta 12 entidades; cambiar
+edad, dosis o medida actualiza los datos de la misma gráfica.
+
+La incidencia anual es `100000 × notificaciones / población del mismo grupo y año`.
+Se ofrecen todas las edades, <1, 1–4, 5–14, 15–49 y ≥50 años. El total incluye
+notificaciones sin edad, que no se asignan a los grupos conocidos. Se homologan
+los códigos y se suma la población histórica de Mapiripana a Barrancominas antes
+del cruce. No se restringe a los 1.102 municipios completos del panel SIR:
+una población ausente o no positiva deja la incidencia sin dato. Un municipio-año
+sin filas de notificaciones recibe cero por la convención del panel, con una
+bandera visible en el detalle; esto no demuestra ausencia de enfermedad.
+
+La cobertura reproduce exactamente `vaccine_coverage_comparison.csv`, con el
+desplazamiento de año ya aplicado y los denominadores de 1 y 5 años. Elegir edad
+modifica solo la incidencia. Cada edad añade una línea de incidencia; cada par
+dosis/medida añade una línea de cobertura, que no se duplica por cada edad.
+Una leyenda identifica cada serie con color y las medidas administrativas usan
+líneas discontinuas. Sin edades se oculta incidencia; sin dosis o sin medidas
+se oculta cobertura. Se admite desmarcar todo sin forzar una selección.
+El eje y la incidencia conservan siempre 2008–2025, independientemente de las
+dosis seleccionadas. La cobertura de primera dosis solo tiene datos desde 2016
+y el refuerzo se ofrece desde 2019, incluyendo su faltante de ese año; los años
+sin cobertura permanecen ausentes, no se convierten en cero. 2007 sigue excluido
+del período analítico por la discrepancia de notificaciones documentada. Los valores ausentes interrumpen las
+líneas, y los porcentajes >100 se conservan. Los ejes independientes identifican
+porcentaje e incidencia por 100.000; su superposición no demuestra igualdad,
+asociación causal, seguimiento de cohortes ni protección poblacional.
+
+La selección predeterminada «Todos los municipios» carga `coverage_incidence/all.json`, agregado de las
+1.122 entidades de la cartografía (incluidas áreas no municipalizadas e islas).
+Para cada edad y año, suma notificaciones y población del mismo subconjunto
+con denominador válido, sin promediar tasas municipales. Dosis/población usa
+la suma de dosis y población de referencia de las entidades con ambas medidas
+disponibles. El porcentaje administrativo agrega los porcentajes publicados,
+ponderados por sus metas PAI positivas y válidas, conservando valores >100 %.
+No se usa la media simple ni se sustituyen faltantes por cero. La tabla y los
+tooltips muestran el número de entidades incluidas por serie/año y los ceros
+de incidencia asignados por falta de registro. Cada medida puede incluir un
+universo distinto; no se presenta como cobertura nacional completa. El agregado
+es una opción adicional del catálogo, sin modificar las 1.122 series individuales.
+La incidencia se representa en el eje izquierdo y la cobertura en el derecho,
+tanto en la vista normal como al ampliar.
+Los puntos muestran tooltips en ambas vistas: la cobertura incluye dosis
+administradas, edad y población DANE de referencia (1 o 5 años), meta PAI y
+número de entidades; la incidencia muestra grupo de edad, notificaciones y su
+población correspondiente. En el agregado, los detalles de cobertura suman
+exactamente las entidades de la medida seleccionada. Si falta algún componente,
+su suma se mantiene ausente en vez de mostrar un total parcial. Los porcentajes
+administrativos siguen siendo los publicados y ponderados por metas; el número
+de dosis mostrado no redefine esos porcentajes.
+
+```bash
+.venv/bin/python scripts/generate_vaccine_coverage_comparison.py
+.venv/bin/python scripts/generate_coverage_incidence_series.py
+```
+
+
+## Municipios para revisión de incidencia y cobertura
+
+La preselección de municipios se reproduce con
+[`analyze_municipal_priority_candidates.py`](../scripts/analyze_municipal_priority_candidates.py).
+La lista une dos criterios independientes, sin duplicados:
+
+- **Municipal:** tasa municipal total ajustada por edad **>0,95 × su propia basal**
+  de 2008–2014 en 2024 y en 2025. Usa `adjusted_pre_weights` y `baseline_adjusted`
+  de `comparable_incidence_annual.csv`, con los mismos pesos fijos de 2008–2014.
+  Este criterio no exige superar límites en los cinco grupos por separado.
+- **Infantil:** tasa específica **>0,8 × su propia basal en cada grupo <1, 1–4 y
+  5–14 años**, en los dos años. La basal agrupa casos y poblaciones anuales de
+  2008–2014 del mismo municipio y grupo.
+
+Ambos requieren alguna cobertura administrativa o calculada **<80 % en cada año**.
+Se aplica AND entre 2024 y 2025 dentro de cada criterio y luego OR entre los dos
+criterios completos; no se mezcla municipal solo en un año con infantil solo en
+el otro. Los límites son estrictos. Se conservan las reglas del año de análisis
+ya desplazado y los denominadores de población de 1 año y de 5 años.
+
+Los datos actuales dan **48 municipios por el criterio municipal**, **7 por el
+infantil**, **6 compartidos** y **49 únicos en la lista completa**. Quibdó entra
+solo por el infantil. La tabla de la sección 8 identifica uno o ambos criterios,
+muestra tasas municipales ajustadas y tasas infantiles específicas, basales y
+anuales, ambas coberturas por dosis y las notificaciones. Mantiene altura máxima
+de 27rem, desplazamiento en ambos ejes y encabezados fijos; es independiente de
+los filtros de la gráfica. Primero aparecen los que cumplen el criterio infantil
+(incluidos los que cumplen ambos), y después los que cumplen solo el municipal.
+En cada grupo se ordena por el menor `100 × incidencia / basal` calculable entre
+las comparaciones de 2024–2025 del criterio de orden: seis infantiles o dos
+municipales. La tabla y el CSV muestran ese porcentaje, el grupo y la comparación
+de origen. Basales cero no producen porcentajes; se omiten del mínimo y, si no
+hay ninguno calculable, la fila va al final de su grupo. Los empates se resuelven
+por departamento y nombre. Este orden es descriptivo y no cambia la selección.
+
+El [informe](../REVISION_MUNICIPIOS_PRIORITARIOS_2026_11_02.md), la
+[lista completa](../docs/data_processed/cobertura_vacunacion/municipal_priority_union_2024_2025.csv),
+el [detalle anual](../docs/data_processed/cobertura_vacunacion/municipal_priority_age_annual_2024_2025.csv)
+y los [metadatos](../docs/data_processed/cobertura_vacunacion/municipal_priority_age_2024_2025.metadata.json)
+registran reglas y resultados. Los faltantes no se convierten en cero; coberturas
+administrativas fuera de 0–100 % no se consideran bajas. Basal cero exige tasa
+positiva, sin forzar razones infinitas. Es una selección exploratoria sin
+intervalos municipales ni inferencia causal y no elimina automáticamente
+desenlaces del modelo por pocos casos.
