@@ -12,3 +12,19 @@ def normalize_codes(values):
 def complete_sum(values):
     values = pd.to_numeric(values, errors="coerce")
     return values.sum(min_count=len(values)) if values.ge(0).all() and np.isfinite(values).all() else np.nan
+
+
+def published_percentage(group, column, target):
+    percentages = pd.to_numeric(group[column], errors="coerce")
+    if not percentages.notna().all():
+        return np.nan, "missing_admin_percentage"
+    if not (np.isfinite(percentages) & percentages.ge(0)).all():
+        return np.nan, "invalid_admin_percentage"
+    if len(group) == 1:
+        return percentages.iloc[0], "available"
+    weights = pd.to_numeric(group[target], errors="coerce")
+    if not (np.isfinite(weights) & weights.ge(0)).all() or weights.sum() <= 0:
+        return np.nan, "missing_admin_target_for_merge"
+    # Only harmonized territories require aggregation: published percentages
+    # weighted by their original PAI targets, never an unweighted mean.
+    return np.average(percentages, weights=weights), "available"

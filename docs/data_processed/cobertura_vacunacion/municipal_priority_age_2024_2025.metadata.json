@@ -1,0 +1,64 @@
+{
+  "presentation": "union_of_age_criteria_without_duplicates",
+  "years": [
+    2024,
+    2025
+  ],
+  "baseline_years": [
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014
+  ],
+  "age_labels": {
+    "under_1": "Menores de 1 año",
+    "1_4": "1–4 años",
+    "5_14": "5–14 años",
+    "15_49": "15–49 años",
+    "50_plus": "50 años o más"
+  },
+  "rate_rule": "children: 100000 * age-group cases / same-age population; baseline pools 2008-2014 cases and population-years",
+  "municipal_rate_rule": "comparable_incidence_annual.csv adjusted_pre_weights and baseline_adjusted, fixed national-panel 2008-2014 age weights in both rates; excludes unknown-age cases",
+  "coverage_strict_upper_bound": 80,
+  "coverage_rule": "some usable annual administrative or calculated measure <80 in BOTH years; first dose population exactly age 1, booster exactly age 5; preserve shifted analysis year",
+  "municipalities": 1102,
+  "annual_rows": 2204,
+  "union_candidates": 49,
+  "intersection_candidates": 6,
+  "criteria": {
+    "municipal": {
+      "label": "Municipal: incidencia total ajustada >95 % de la basal",
+      "groups": [
+        "municipal"
+      ],
+      "baseline_fraction": 0.95,
+      "strict": true,
+      "candidates": 48,
+      "candidates_by_year": {
+        "2024": 116,
+        "2025": 136
+      }
+    },
+    "children": {
+      "label": "Grupos infantiles: incidencia >80 % de la basal",
+      "groups": [
+        "under_1",
+        "1_4",
+        "5_14"
+      ],
+      "baseline_fraction": 0.8,
+      "strict": true,
+      "candidates": 7,
+      "candidates_by_year": {
+        "2024": 21,
+        "2025": 27
+      }
+    }
+  },
+  "ordering": "children first, including both-criterion rows; municipal-only second; ascending minimum calculable 100*incidence/baseline across 2024 and 2025 and the applicable groups; exclude zero baselines from percentages, never impute infinity or zero; no calculable percentage sorts last within its group; ties by department/name",
+  "empirical_bayes": "two smoothed variants: national (_eb) and neighbours (_eb_local). Columns baseline_<suffix>_<group>, incidence_<suffix>_<group>_<year> and sort_*_<suffix> use the per-age-group EB rate; the municipal line uses the EB of \"all\" (total cases over total population) instead of the age-adjusted rate; selection of municipalities is unchanged, only values and ordering; see empirical_bayes/README.md",
+  "limitations": "descriptive screening without uncertainty or causal inference; missing/nonpositive age population cannot meet a criterion; baseline zero requires positive annual incidence; unknown-age cases not assigned to groups; municipal and child criteria are independent and combined by union"
+}

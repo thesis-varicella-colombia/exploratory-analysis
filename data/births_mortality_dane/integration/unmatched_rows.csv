@@ -1,0 +1,1093 @@
+ano,codigo_departamento,nombre_departamento,codigo_municipio,nombre_municipio,total_nacimientos,total_defunciones_menor_1,origen,motivo
+2008,,EXTRANJEROS,-1,ALEMANIA,1.0,,births,clave_incompleta
+2008,,EXTRANJEROS,-1,ARUBA,6.0,,births,clave_incompleta
+2008,,EXTRANJEROS,-1,BRASIL,68.0,,births,clave_incompleta
+2008,,EXTRANJEROS,-1,BÉLGICA,1.0,,births,clave_incompleta
+2008,,EXTRANJEROS,-1,CHILE,1.0,,births,clave_incompleta
+2008,,EXTRANJEROS,-1,CHINA,1.0,,births,clave_incompleta
+2008,,EXTRANJEROS,-1,CROACIA,1.0,,births,clave_incompleta
+2008,,EXTRANJEROS,-1,ECUADOR,14.0,,births,clave_incompleta
+2008,,EXTRANJEROS,-1,ESTADOS UNIDOS DE AMÉRICA,9.0,,births,clave_incompleta
+2008,,EXTRANJEROS,-1,GEORGIA DEL SUR E ISLAS SANDWICH DEL SUR,1.0,,births,clave_incompleta
+2008,,EXTRANJEROS,-1,ISLAS COOK,1.0,,births,clave_incompleta
+2008,,EXTRANJEROS,-1,ISLAS VÍRGENES DE LOS ESTADOS UNIDOS,1.0,,births,clave_incompleta
+2008,,EXTRANJEROS,-1,PANAMÁ,1.0,,births,clave_incompleta
+2008,,EXTRANJEROS,-1,PERÚ,5.0,,births,clave_incompleta
+2008,,EXTRANJEROS,-1,REINO DE TONGA,1.0,,births,clave_incompleta
+2008,,EXTRANJEROS,-1,REINO UNIDO DE GRAN BRETAÑA E IRLANDA DEL NORTE,1.0,,births,clave_incompleta
+2008,,EXTRANJEROS,-1,RESTO DE PAISES,22.0,,births,clave_incompleta
+2008,,EXTRANJEROS,-1,VENEZUELA,138.0,,births,clave_incompleta
+2008,,EXTRANJEROS,-1,ALEMANIA,,0.0,mortality,clave_incompleta
+2008,,EXTRANJEROS,-1,ARUBA,,3.0,mortality,clave_incompleta
+2008,,EXTRANJEROS,-1,BRASIL,,0.0,mortality,clave_incompleta
+2008,,EXTRANJEROS,-1,CANADÁ,,0.0,mortality,clave_incompleta
+2008,,EXTRANJEROS,-1,CUBA,,0.0,mortality,clave_incompleta
+2008,,EXTRANJEROS,-1,ESPAÑA,,0.0,mortality,clave_incompleta
+2008,,EXTRANJEROS,-1,FEDERACIÓN DE RUSIA,,0.0,mortality,clave_incompleta
+2008,,EXTRANJEROS,-1,FRANCIA,,0.0,mortality,clave_incompleta
+2008,,EXTRANJEROS,-1,GUATEMALA,,0.0,mortality,clave_incompleta
+2008,,EXTRANJEROS,-1,JAPÓN,,0.0,mortality,clave_incompleta
+2008,,EXTRANJEROS,-1,PANAMÁ,,0.0,mortality,clave_incompleta
+2008,,EXTRANJEROS,-1,PERÚ,,1.0,mortality,clave_incompleta
+2008,,EXTRANJEROS,-1,PUERTO RICO,,0.0,mortality,clave_incompleta
+2008,,EXTRANJEROS,-1,REPÚBLICA DOMINICANA,,0.0,mortality,clave_incompleta
+2008,,EXTRANJEROS,-1,RESTO DE PAISES,,4.0,mortality,clave_incompleta
+2008,,EXTRANJEROS,-1,SURINAME,,0.0,mortality,clave_incompleta
+2008,,EXTRANJEROS,-1,TAIWÁN,,1.0,mortality,clave_incompleta
+2008,,EXTRANJEROS,-1,UCRANIA,,0.0,mortality,clave_incompleta
+2008,,EXTRANJEROS,-1,VENEZUELA,,5.0,mortality,clave_incompleta
+2009,,Extranjeros,-1,ARGENTINA,1.0,,births,clave_incompleta
+2009,,Extranjeros,-1,ARUBA,5.0,,births,clave_incompleta
+2009,,Extranjeros,-1,AUSTRALIA,1.0,,births,clave_incompleta
+2009,,Extranjeros,-1,BRASIL,50.0,,births,clave_incompleta
+2009,,Extranjeros,-1,BÉLGICA,1.0,,births,clave_incompleta
+2009,,Extranjeros,-1,CHINA,1.0,,births,clave_incompleta
+2009,,Extranjeros,-1,COSTA RICA,4.0,,births,clave_incompleta
+2009,,Extranjeros,-1,ECUADOR,6.0,,births,clave_incompleta
+2009,,Extranjeros,-1,ESTADOS UNIDOS DE AMÉRICA,4.0,,births,clave_incompleta
+2009,,Extranjeros,-1,FRANCIA,1.0,,births,clave_incompleta
+2009,,Extranjeros,-1,HOLANDA (PAISES BAJOS),2.0,,births,clave_incompleta
+2009,,Extranjeros,-1,ISLAS VÍRGENES DE LOS ESTADOS UNIDOS,3.0,,births,clave_incompleta
+2009,,Extranjeros,-1,ITALIA,1.0,,births,clave_incompleta
+2009,,Extranjeros,-1,MÉXICO,1.0,,births,clave_incompleta
+2009,,Extranjeros,-1,PERÚ,4.0,,births,clave_incompleta
+2009,,Extranjeros,-1,REPÚBLICA ISLÁMICA DE IRÁN,1.0,,births,clave_incompleta
+2009,,Extranjeros,-1,RESTO DE PAISES,5.0,,births,clave_incompleta
+2009,,Extranjeros,-1,SIN INFORMACIÓN,8.0,,births,clave_incompleta
+2009,,Extranjeros,-1,TOKELAU,1.0,,births,clave_incompleta
+2009,,Extranjeros,-1,VENEZUELA,161.0,,births,clave_incompleta
+2009,,Extranjeros,-1,Alemania,,0.0,mortality,clave_incompleta
+2009,,Extranjeros,-1,Antillas Neerlandesas,,0.0,mortality,clave_incompleta
+2009,,Extranjeros,-1,Argentina,,0.0,mortality,clave_incompleta
+2009,,Extranjeros,-1,Aruba,,3.0,mortality,clave_incompleta
+2009,,Extranjeros,-1,Austria,,0.0,mortality,clave_incompleta
+2009,,Extranjeros,-1,Brasil,,0.0,mortality,clave_incompleta
+2009,,Extranjeros,-1,Canadá,,0.0,mortality,clave_incompleta
+2009,,Extranjeros,-1,Chile,,0.0,mortality,clave_incompleta
+2009,,Extranjeros,-1,Costa Rica,,0.0,mortality,clave_incompleta
+2009,,Extranjeros,-1,Cuba,,0.0,mortality,clave_incompleta
+2009,,Extranjeros,-1,Ecuador,,1.0,mortality,clave_incompleta
+2009,,Extranjeros,-1,España,,0.0,mortality,clave_incompleta
+2009,,Extranjeros,-1,Estados Unidos de América,,2.0,mortality,clave_incompleta
+2009,,Extranjeros,-1,Francia,,0.0,mortality,clave_incompleta
+2009,,Extranjeros,-1,Holanda (Paises Bajos),,0.0,mortality,clave_incompleta
+2009,,Extranjeros,-1,Honduras,,0.0,mortality,clave_incompleta
+2009,,Extranjeros,-1,Islas Cook,,0.0,mortality,clave_incompleta
+2009,,Extranjeros,-1,Islas Vírgenes de Los Estados Unidos,,0.0,mortality,clave_incompleta
+2009,,Extranjeros,-1,Italia,,0.0,mortality,clave_incompleta
+2009,,Extranjeros,-1,Japón,,0.0,mortality,clave_incompleta
+2009,,Extranjeros,-1,México,,0.0,mortality,clave_incompleta
+2009,,Extranjeros,-1,Panamá,,1.0,mortality,clave_incompleta
+2009,,Extranjeros,-1,Perú,,1.0,mortality,clave_incompleta
+2009,,Extranjeros,-1,Reino Unido de Gran Bretaña E Irlanda del Norte,,0.0,mortality,clave_incompleta
+2009,,Extranjeros,-1,República Dominicana,,0.0,mortality,clave_incompleta
+2009,,Extranjeros,-1,Resto de Paises,,2.0,mortality,clave_incompleta
+2009,,Extranjeros,-1,Suecia,,0.0,mortality,clave_incompleta
+2009,,Extranjeros,-1,Taiwán,,0.0,mortality,clave_incompleta
+2009,,Extranjeros,-1,Venezuela,,1.0,mortality,clave_incompleta
+2010,,Extranjeros,-1,Antillas Neerlandesas,3.0,,births,clave_incompleta
+2010,,Extranjeros,-1,Aruba,15.0,,births,clave_incompleta
+2010,,Extranjeros,-1,Bolivia,1.0,,births,clave_incompleta
+2010,,Extranjeros,-1,Botswana,1.0,,births,clave_incompleta
+2010,,Extranjeros,-1,Brasil,56.0,,births,clave_incompleta
+2010,,Extranjeros,-1,Canadá,2.0,,births,clave_incompleta
+2010,,Extranjeros,-1,China,1.0,,births,clave_incompleta
+2010,,Extranjeros,-1,Congo,1.0,,births,clave_incompleta
+2010,,Extranjeros,-1,Costa Rica,1.0,,births,clave_incompleta
+2010,,Extranjeros,-1,Costa de Marfil,2.0,,births,clave_incompleta
+2010,,Extranjeros,-1,Cuba,1.0,,births,clave_incompleta
+2010,,Extranjeros,-1,Ecuador,8.0,,births,clave_incompleta
+2010,,Extranjeros,-1,España,2.0,,births,clave_incompleta
+2010,,Extranjeros,-1,Estados Unidos de América,1.0,,births,clave_incompleta
+2010,,Extranjeros,-1,Francia,1.0,,births,clave_incompleta
+2010,,Extranjeros,-1,Francia Metropolitana,1.0,,births,clave_incompleta
+2010,,Extranjeros,-1,Gambia,4.0,,births,clave_incompleta
+2010,,Extranjeros,-1,Georgia del Sur E Islas Sandwich del Sur,2.0,,births,clave_incompleta
+2010,,Extranjeros,-1,Honduras,2.0,,births,clave_incompleta
+2010,,Extranjeros,-1,Islas Vírgenes de Los Estados Unidos,35.0,,births,clave_incompleta
+2010,,Extranjeros,-1,México,1.0,,births,clave_incompleta
+2010,,Extranjeros,-1,Perú,6.0,,births,clave_incompleta
+2010,,Extranjeros,-1,Union de Las Comoras,4.0,,births,clave_incompleta
+2010,,Extranjeros,-1,Venezuela,105.0,,births,clave_incompleta
+2010,,Extranjeros,-1,Alemania,,0.0,mortality,clave_incompleta
+2010,,Extranjeros,-1,Angola,,0.0,mortality,clave_incompleta
+2010,,Extranjeros,-1,Antillas Neerlandesas,,0.0,mortality,clave_incompleta
+2010,,Extranjeros,-1,Argentina,,0.0,mortality,clave_incompleta
+2010,,Extranjeros,-1,Aruba,,4.0,mortality,clave_incompleta
+2010,,Extranjeros,-1,Brasil,,2.0,mortality,clave_incompleta
+2010,,Extranjeros,-1,Ecuador,,2.0,mortality,clave_incompleta
+2010,,Extranjeros,-1,Eritrea,,0.0,mortality,clave_incompleta
+2010,,Extranjeros,-1,España,,0.0,mortality,clave_incompleta
+2010,,Extranjeros,-1,Estados Unidos de América,,0.0,mortality,clave_incompleta
+2010,,Extranjeros,-1,Federación de Rusia,,1.0,mortality,clave_incompleta
+2010,,Extranjeros,-1,Filipinas,,0.0,mortality,clave_incompleta
+2010,,Extranjeros,-1,Francia,,0.0,mortality,clave_incompleta
+2010,,Extranjeros,-1,Francia Metropolitana,,0.0,mortality,clave_incompleta
+2010,,Extranjeros,-1,Georgia del Sur E Islas Sandwich d,,1.0,mortality,clave_incompleta
+2010,,Extranjeros,-1,Haití,,0.0,mortality,clave_incompleta
+2010,,Extranjeros,-1,Holanda (Paises Bajos),,0.0,mortality,clave_incompleta
+2010,,Extranjeros,-1,Honduras,,0.0,mortality,clave_incompleta
+2010,,Extranjeros,-1,Islas Marianas del Norte,,0.0,mortality,clave_incompleta
+2010,,Extranjeros,-1,Islas Vírgenes de Los Estados Unid,,5.0,mortality,clave_incompleta
+2010,,Extranjeros,-1,Libano,,0.0,mortality,clave_incompleta
+2010,,Extranjeros,-1,México,,0.0,mortality,clave_incompleta
+2010,,Extranjeros,-1,Panamá,,0.0,mortality,clave_incompleta
+2010,,Extranjeros,-1,Perú,,2.0,mortality,clave_incompleta
+2010,,Extranjeros,-1,Resto de Paises,,0.0,mortality,clave_incompleta
+2010,,Extranjeros,-1,Sin Información,,0.0,mortality,clave_incompleta
+2010,,Extranjeros,-1,Suiza,,0.0,mortality,clave_incompleta
+2010,,Extranjeros,-1,Suriname,,2.0,mortality,clave_incompleta
+2010,,Extranjeros,-1,Territorio Ocupado de Palestina,,0.0,mortality,clave_incompleta
+2010,,Extranjeros,-1,Trinidad Y Tobago,,1.0,mortality,clave_incompleta
+2010,,Extranjeros,-1,Ucrania,,0.0,mortality,clave_incompleta
+2010,,Extranjeros,-1,Venezuela,,2.0,mortality,clave_incompleta
+2011,,Extranjeros,-1,Antillas Neerlandesas,6.0,,births,clave_incompleta
+2011,,Extranjeros,-1,Aruba,11.0,,births,clave_incompleta
+2011,,Extranjeros,-1,Brasil,42.0,,births,clave_incompleta
+2011,,Extranjeros,-1,China,2.0,,births,clave_incompleta
+2011,,Extranjeros,-1,Chipre,1.0,,births,clave_incompleta
+2011,,Extranjeros,-1,Congo,1.0,,births,clave_incompleta
+2011,,Extranjeros,-1,Costa Rica,1.0,,births,clave_incompleta
+2011,,Extranjeros,-1,Costa de Marfil,3.0,,births,clave_incompleta
+2011,,Extranjeros,-1,Ecuador,14.0,,births,clave_incompleta
+2011,,Extranjeros,-1,Estado de La Ciudad del Vaticano (Santa Sede),1.0,,births,clave_incompleta
+2011,,Extranjeros,-1,Estados Unidos de América,6.0,,births,clave_incompleta
+2011,,Extranjeros,-1,Holanda (Paises Bajos),1.0,,births,clave_incompleta
+2011,,Extranjeros,-1,Islas Vírgenes de Los Estados Unidos,1.0,,births,clave_incompleta
+2011,,Extranjeros,-1,Panamá,1.0,,births,clave_incompleta
+2011,,Extranjeros,-1,Perú,2.0,,births,clave_incompleta
+2011,,Extranjeros,-1,San Vicente Y Las Granadinas,1.0,,births,clave_incompleta
+2011,,Extranjeros,-1,Union de Las Comoras,3.0,,births,clave_incompleta
+2011,,Extranjeros,-1,Venezuela,121.0,,births,clave_incompleta
+2011,,Extranjeros,-1,Alemania,,0.0,mortality,clave_incompleta
+2011,,Extranjeros,-1,Antillas Neerlandesas,,0.0,mortality,clave_incompleta
+2011,,Extranjeros,-1,Argentina,,0.0,mortality,clave_incompleta
+2011,,Extranjeros,-1,Aruba,,4.0,mortality,clave_incompleta
+2011,,Extranjeros,-1,Bolivia,,0.0,mortality,clave_incompleta
+2011,,Extranjeros,-1,Brasil,,2.0,mortality,clave_incompleta
+2011,,Extranjeros,-1,Canadá,,0.0,mortality,clave_incompleta
+2011,,Extranjeros,-1,China,,0.0,mortality,clave_incompleta
+2011,,Extranjeros,-1,Congo,,0.0,mortality,clave_incompleta
+2011,,Extranjeros,-1,Cuba,,0.0,mortality,clave_incompleta
+2011,,Extranjeros,-1,Ecuador,,2.0,mortality,clave_incompleta
+2011,,Extranjeros,-1,Egipto,,0.0,mortality,clave_incompleta
+2011,,Extranjeros,-1,El Salvador,,0.0,mortality,clave_incompleta
+2011,,Extranjeros,-1,España,,0.0,mortality,clave_incompleta
+2011,,Extranjeros,-1,Estados Unidos de América,,0.0,mortality,clave_incompleta
+2011,,Extranjeros,-1,Federación de Rusia,,0.0,mortality,clave_incompleta
+2011,,Extranjeros,-1,Francia,,0.0,mortality,clave_incompleta
+2011,,Extranjeros,-1,Holanda (Paises Bajos),,0.0,mortality,clave_incompleta
+2011,,Extranjeros,-1,Honduras,,0.0,mortality,clave_incompleta
+2011,,Extranjeros,-1,Islas Vírgenes de Los Estados Unid,,0.0,mortality,clave_incompleta
+2011,,Extranjeros,-1,Japón,,0.0,mortality,clave_incompleta
+2011,,Extranjeros,-1,Libano,,0.0,mortality,clave_incompleta
+2011,,Extranjeros,-1,Nicaragua,,0.0,mortality,clave_incompleta
+2011,,Extranjeros,-1,Panamá,,0.0,mortality,clave_incompleta
+2011,,Extranjeros,-1,Perú,,1.0,mortality,clave_incompleta
+2011,,Extranjeros,-1,Puerto Rico,,0.0,mortality,clave_incompleta
+2011,,Extranjeros,-1,Reino Unido de Gran Bretaña E Irla,,0.0,mortality,clave_incompleta
+2011,,Extranjeros,-1,República Islámica de Afganistán,,0.0,mortality,clave_incompleta
+2011,,Extranjeros,-1,Resto de Paises,,0.0,mortality,clave_incompleta
+2011,,Extranjeros,-1,Sin Información,,0.0,mortality,clave_incompleta
+2011,,Extranjeros,-1,Suiza,,0.0,mortality,clave_incompleta
+2011,,Extranjeros,-1,Suriname,,0.0,mortality,clave_incompleta
+2011,,Extranjeros,-1,Territorio Ocupado de Palestina,,0.0,mortality,clave_incompleta
+2011,,Extranjeros,-1,Trinidad Y Tobago,,0.0,mortality,clave_incompleta
+2011,,Extranjeros,-1,Uruguay,,0.0,mortality,clave_incompleta
+2011,,Extranjeros,-1,Venezuela,,4.0,mortality,clave_incompleta
+2012,,Extranjeros,-1,Antillas Neerlandesas,19.0,,births,clave_incompleta
+2012,,Extranjeros,-1,Aruba,10.0,,births,clave_incompleta
+2012,,Extranjeros,-1,Bolivia,1.0,,births,clave_incompleta
+2012,,Extranjeros,-1,Brasil,60.0,,births,clave_incompleta
+2012,,Extranjeros,-1,Chile,1.0,,births,clave_incompleta
+2012,,Extranjeros,-1,Congo,1.0,,births,clave_incompleta
+2012,,Extranjeros,-1,Costa de Marfil,1.0,,births,clave_incompleta
+2012,,Extranjeros,-1,Cuba,1.0,,births,clave_incompleta
+2012,,Extranjeros,-1,Ecuador,8.0,,births,clave_incompleta
+2012,,Extranjeros,-1,Emiratos Arabes Unidos,1.0,,births,clave_incompleta
+2012,,Extranjeros,-1,España,1.0,,births,clave_incompleta
+2012,,Extranjeros,-1,Estados Unidos de América,1.0,,births,clave_incompleta
+2012,,Extranjeros,-1,Holanda (Paises Bajos),1.0,,births,clave_incompleta
+2012,,Extranjeros,-1,Islas Vírgenes de Los Estados Unidos,1.0,,births,clave_incompleta
+2012,,Extranjeros,-1,México,3.0,,births,clave_incompleta
+2012,,Extranjeros,-1,Nicaragua,1.0,,births,clave_incompleta
+2012,,Extranjeros,-1,Noruega,1.0,,births,clave_incompleta
+2012,,Extranjeros,-1,Panamá,2.0,,births,clave_incompleta
+2012,,Extranjeros,-1,Perú,7.0,,births,clave_incompleta
+2012,,Extranjeros,-1,República Dominicana,1.0,,births,clave_incompleta
+2012,,Extranjeros,-1,Sin Información,1.0,,births,clave_incompleta
+2012,,Extranjeros,-1,Union de Las Comoras,1.0,,births,clave_incompleta
+2012,,Extranjeros,-1,Venezuela,139.0,,births,clave_incompleta
+2012,,Extranjeros,-1,Albania,,0.0,mortality,clave_incompleta
+2012,,Extranjeros,-1,Antillas Neerlandesas,,2.0,mortality,clave_incompleta
+2012,,Extranjeros,-1,Argentina,,0.0,mortality,clave_incompleta
+2012,,Extranjeros,-1,Aruba,,1.0,mortality,clave_incompleta
+2012,,Extranjeros,-1,Austria,,0.0,mortality,clave_incompleta
+2012,,Extranjeros,-1,Bolivia,,0.0,mortality,clave_incompleta
+2012,,Extranjeros,-1,Brasil,,1.0,mortality,clave_incompleta
+2012,,Extranjeros,-1,Bulgaria,,0.0,mortality,clave_incompleta
+2012,,Extranjeros,-1,Canadá,,0.0,mortality,clave_incompleta
+2012,,Extranjeros,-1,Chile,,0.0,mortality,clave_incompleta
+2012,,Extranjeros,-1,Costa Rica,,0.0,mortality,clave_incompleta
+2012,,Extranjeros,-1,Ecuador,,2.0,mortality,clave_incompleta
+2012,,Extranjeros,-1,España,,0.0,mortality,clave_incompleta
+2012,,Extranjeros,-1,Estados Unidos de América,,0.0,mortality,clave_incompleta
+2012,,Extranjeros,-1,Filipinas,,0.0,mortality,clave_incompleta
+2012,,Extranjeros,-1,Francia,,0.0,mortality,clave_incompleta
+2012,,Extranjeros,-1,Holanda (Paises Bajos),,0.0,mortality,clave_incompleta
+2012,,Extranjeros,-1,Islas Vírgenes de Los Estados Unid,,0.0,mortality,clave_incompleta
+2012,,Extranjeros,-1,Italia,,0.0,mortality,clave_incompleta
+2012,,Extranjeros,-1,México,,0.0,mortality,clave_incompleta
+2012,,Extranjeros,-1,Panamá,,0.0,mortality,clave_incompleta
+2012,,Extranjeros,-1,Paraguay,,0.0,mortality,clave_incompleta
+2012,,Extranjeros,-1,Perú,,1.0,mortality,clave_incompleta
+2012,,Extranjeros,-1,Reino Unido de Gran Bretaña E Irla,,0.0,mortality,clave_incompleta
+2012,,Extranjeros,-1,República Dominicana,,0.0,mortality,clave_incompleta
+2012,,Extranjeros,-1,Resto de Paises,,0.0,mortality,clave_incompleta
+2012,,Extranjeros,-1,Sin Información,,0.0,mortality,clave_incompleta
+2012,,Extranjeros,-1,Suiza,,0.0,mortality,clave_incompleta
+2012,,Extranjeros,-1,Suriname,,0.0,mortality,clave_incompleta
+2012,,Extranjeros,-1,Ucrania,,0.0,mortality,clave_incompleta
+2012,,Extranjeros,-1,Union de Las Comoras,,0.0,mortality,clave_incompleta
+2012,,Extranjeros,-1,Venezuela,,9.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,Antillas Neerlandesas,6.0,,births,clave_incompleta
+2013,,Extranjeros,-1,Aruba,20.0,,births,clave_incompleta
+2013,,Extranjeros,-1,Australia,1.0,,births,clave_incompleta
+2013,,Extranjeros,-1,Bolivia,1.0,,births,clave_incompleta
+2013,,Extranjeros,-1,Brasil,36.0,,births,clave_incompleta
+2013,,Extranjeros,-1,Costa Rica,1.0,,births,clave_incompleta
+2013,,Extranjeros,-1,Costa de Marfil,2.0,,births,clave_incompleta
+2013,,Extranjeros,-1,Croacia,2.0,,births,clave_incompleta
+2013,,Extranjeros,-1,Dinamarca,1.0,,births,clave_incompleta
+2013,,Extranjeros,-1,Ecuador,11.0,,births,clave_incompleta
+2013,,Extranjeros,-1,Estados Unidos de América,1.0,,births,clave_incompleta
+2013,,Extranjeros,-1,Francia Metropolitana,1.0,,births,clave_incompleta
+2013,,Extranjeros,-1,Holanda (Paises Bajos),4.0,,births,clave_incompleta
+2013,,Extranjeros,-1,Panamá,1.0,,births,clave_incompleta
+2013,,Extranjeros,-1,Perú,3.0,,births,clave_incompleta
+2013,,Extranjeros,-1,República Dominicana,2.0,,births,clave_incompleta
+2013,,Extranjeros,-1,Sin Información,1.0,,births,clave_incompleta
+2013,,Extranjeros,-1,Union de Las Comoras,1.0,,births,clave_incompleta
+2013,,Extranjeros,-1,Venezuela,104.0,,births,clave_incompleta
+2013,,Extranjeros,-1,Alemania,,0.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,Antillas Neerlandesas,,3.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,Argentina,,0.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,Aruba,,5.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,Brasil,,1.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,Bélgica,,0.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,Chile,,0.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,China,,0.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,Costa Rica,,0.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,Dinamarca,,0.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,Ecuador,,1.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,España,,0.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,Estados Unidos de América,,0.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,Filipinas,,0.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,Francia,,0.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,Guyana,,0.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,Haití,,0.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,Holanda (Paises Bajos),,1.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,Honduras,,0.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,Irlanda,,0.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,Islas Vírgenes de Los Estados Unid,,0.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,Italia,,0.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,Jamaica,,0.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,México,,0.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,Nicaragua,,0.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,Panamá,,0.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,Paraguay,,0.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,Perú,,0.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,Portugal,,0.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,Puerto Rico,,0.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,República Dominicana,,0.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,República de La India,,0.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,San Marino,,0.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,Santa Lucía,,0.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,Sin Información,,0.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,Suiza,,0.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,Suriname,,1.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,Trinidad Y Tobago,,0.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,Union de Las Comoras,,0.0,mortality,clave_incompleta
+2013,,Extranjeros,-1,Venezuela,,5.0,mortality,clave_incompleta
+2014,,Extranjeros,-1,Antillas Neerlandesas,16.0,,births,clave_incompleta
+2014,,Extranjeros,-1,Argentina,1.0,,births,clave_incompleta
+2014,,Extranjeros,-1,Aruba,14.0,,births,clave_incompleta
+2014,,Extranjeros,-1,Brasil,40.0,,births,clave_incompleta
+2014,,Extranjeros,-1,Costa Rica,1.0,,births,clave_incompleta
+2014,,Extranjeros,-1,Costa de Marfil,2.0,,births,clave_incompleta
+2014,,Extranjeros,-1,Cuba,1.0,,births,clave_incompleta
+2014,,Extranjeros,-1,Ecuador,16.0,,births,clave_incompleta
+2014,,Extranjeros,-1,El Salvador,1.0,,births,clave_incompleta
+2014,,Extranjeros,-1,Estados Unidos de América,2.0,,births,clave_incompleta
+2014,,Extranjeros,-1,Francia,1.0,,births,clave_incompleta
+2014,,Extranjeros,-1,Guyana,2.0,,births,clave_incompleta
+2014,,Extranjeros,-1,Holanda (Paises Bajos),3.0,,births,clave_incompleta
+2014,,Extranjeros,-1,Panamá,2.0,,births,clave_incompleta
+2014,,Extranjeros,-1,Perú,6.0,,births,clave_incompleta
+2014,,Extranjeros,-1,Reino Unido de Gran Bretaña E Irlanda del Norte,1.0,,births,clave_incompleta
+2014,,Extranjeros,-1,República Dominicana,1.0,,births,clave_incompleta
+2014,,Extranjeros,-1,Swazilandia,1.0,,births,clave_incompleta
+2014,,Extranjeros,-1,Union de Las Comoras,2.0,,births,clave_incompleta
+2014,,Extranjeros,-1,Venezuela,105.0,,births,clave_incompleta
+2014,,Extranjeros,-1,Alemania,,0.0,mortality,clave_incompleta
+2014,,Extranjeros,-1,Antillas Neerlandesas,,4.0,mortality,clave_incompleta
+2014,,Extranjeros,-1,Argentina,,0.0,mortality,clave_incompleta
+2014,,Extranjeros,-1,Aruba,,1.0,mortality,clave_incompleta
+2014,,Extranjeros,-1,Austria,,0.0,mortality,clave_incompleta
+2014,,Extranjeros,-1,Brasil,,0.0,mortality,clave_incompleta
+2014,,Extranjeros,-1,Canadá,,0.0,mortality,clave_incompleta
+2014,,Extranjeros,-1,Chile,,0.0,mortality,clave_incompleta
+2014,,Extranjeros,-1,Congo,,0.0,mortality,clave_incompleta
+2014,,Extranjeros,-1,Ecuador,,2.0,mortality,clave_incompleta
+2014,,Extranjeros,-1,España,,0.0,mortality,clave_incompleta
+2014,,Extranjeros,-1,Estados Unidos de América,,0.0,mortality,clave_incompleta
+2014,,Extranjeros,-1,Francia,,1.0,mortality,clave_incompleta
+2014,,Extranjeros,-1,Haití,,0.0,mortality,clave_incompleta
+2014,,Extranjeros,-1,Holanda (Paises Bajos),,0.0,mortality,clave_incompleta
+2014,,Extranjeros,-1,Islas Malvinas (Falkland),,0.0,mortality,clave_incompleta
+2014,,Extranjeros,-1,Italia,,0.0,mortality,clave_incompleta
+2014,,Extranjeros,-1,México,,0.0,mortality,clave_incompleta
+2014,,Extranjeros,-1,Nicaragua,,0.0,mortality,clave_incompleta
+2014,,Extranjeros,-1,Nueva Zelanda,,0.0,mortality,clave_incompleta
+2014,,Extranjeros,-1,Panamá,,1.0,mortality,clave_incompleta
+2014,,Extranjeros,-1,Perú,,0.0,mortality,clave_incompleta
+2014,,Extranjeros,-1,Puerto Rico,,0.0,mortality,clave_incompleta
+2014,,Extranjeros,-1,Reino Unido de Gran Bretaña E Irla,,0.0,mortality,clave_incompleta
+2014,,Extranjeros,-1,República Dominicana,,0.0,mortality,clave_incompleta
+2014,,Extranjeros,-1,República Islámica de Irán,,0.0,mortality,clave_incompleta
+2014,,Extranjeros,-1,Santa Lucía,,0.0,mortality,clave_incompleta
+2014,,Extranjeros,-1,Sin Información,,0.0,mortality,clave_incompleta
+2014,,Extranjeros,-1,Suiza,,0.0,mortality,clave_incompleta
+2014,,Extranjeros,-1,Suriname,,0.0,mortality,clave_incompleta
+2014,,Extranjeros,-1,Trinidad Y Tobago,,1.0,mortality,clave_incompleta
+2014,,Extranjeros,-1,Venezuela,,7.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Antillas Neerlandesas,8.0,,births,clave_incompleta
+2015,,Extranjeros,-1,Aruba,26.0,,births,clave_incompleta
+2015,,Extranjeros,-1,Bolivia,1.0,,births,clave_incompleta
+2015,,Extranjeros,-1,Brasil,31.0,,births,clave_incompleta
+2015,,Extranjeros,-1,China,1.0,,births,clave_incompleta
+2015,,Extranjeros,-1,Costa Rica,1.0,,births,clave_incompleta
+2015,,Extranjeros,-1,Ecuador,21.0,,births,clave_incompleta
+2015,,Extranjeros,-1,Emiratos Arabes Unidos,1.0,,births,clave_incompleta
+2015,,Extranjeros,-1,España,1.0,,births,clave_incompleta
+2015,,Extranjeros,-1,Estados Unidos de América,2.0,,births,clave_incompleta
+2015,,Extranjeros,-1,Guayana Francesa,1.0,,births,clave_incompleta
+2015,,Extranjeros,-1,México,2.0,,births,clave_incompleta
+2015,,Extranjeros,-1,Panamá,2.0,,births,clave_incompleta
+2015,,Extranjeros,-1,Perú,6.0,,births,clave_incompleta
+2015,,Extranjeros,-1,República Islámica de Afganistán,1.0,,births,clave_incompleta
+2015,,Extranjeros,-1,Sin Información,2.0,,births,clave_incompleta
+2015,,Extranjeros,-1,Union de Las Comoras,1.0,,births,clave_incompleta
+2015,,Extranjeros,-1,Venezuela,66.0,,births,clave_incompleta
+2015,,Extranjeros,-1,Alemania,,1.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Antillas Neerlandesas,,1.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Argentina,,0.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Aruba,,5.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Barbados,,0.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Brasil,,2.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Canadá,,0.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Chile,,0.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,China,,0.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Congo,,0.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Costa Rica,,0.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Costa de Marfil,,0.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Cuba,,0.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Dinamarca,,0.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Ecuador,,5.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,El Salvador,,0.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,España,,0.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Estados Unidos de América,,0.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Francia,,0.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Haití,,0.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Holanda (Paises Bajos),,2.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Honduras,,0.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Irlanda,,0.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Islas Turcas Y Caicos,,1.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Islas Vírgenes de Los Estados Unid,,0.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Israel,,0.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Italia,,0.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Jamaica,,0.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Japón,,0.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Letonia,,0.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,México,,0.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Panamá,,2.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Perú,,0.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Reino Unido de Gran Bretaña E Irla,,0.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Resto de Paises,,0.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,San Kitts Y Nevis,,0.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Santa Lucía,,0.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Sin Información,,1.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Suecia,,0.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Suiza,,0.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Suriname,,0.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Trinidad Y Tobago,,0.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Union de Las Comoras,,0.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Uruguay,,0.0,mortality,clave_incompleta
+2015,,Extranjeros,-1,Venezuela,,4.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,Antillas Neerlandesas,11.0,,births,clave_incompleta
+2016,,Extranjeros,-1,Aruba,22.0,,births,clave_incompleta
+2016,,Extranjeros,-1,Bahrein,1.0,,births,clave_incompleta
+2016,,Extranjeros,-1,Bolivia,1.0,,births,clave_incompleta
+2016,,Extranjeros,-1,Brasil,44.0,,births,clave_incompleta
+2016,,Extranjeros,-1,Chile,1.0,,births,clave_incompleta
+2016,,Extranjeros,-1,Costa Rica,2.0,,births,clave_incompleta
+2016,,Extranjeros,-1,Costa de Marfil,1.0,,births,clave_incompleta
+2016,,Extranjeros,-1,Croacia,1.0,,births,clave_incompleta
+2016,,Extranjeros,-1,Cuba,1.0,,births,clave_incompleta
+2016,,Extranjeros,-1,Ecuador,18.0,,births,clave_incompleta
+2016,,Extranjeros,-1,España,2.0,,births,clave_incompleta
+2016,,Extranjeros,-1,Estados Unidos de América,1.0,,births,clave_incompleta
+2016,,Extranjeros,-1,Francia,1.0,,births,clave_incompleta
+2016,,Extranjeros,-1,Gabón,1.0,,births,clave_incompleta
+2016,,Extranjeros,-1,Gambia,2.0,,births,clave_incompleta
+2016,,Extranjeros,-1,Holanda (Paises Bajos),17.0,,births,clave_incompleta
+2016,,Extranjeros,-1,Islandia,1.0,,births,clave_incompleta
+2016,,Extranjeros,-1,Islas Vírgenes de Los Estados Unidos,1.0,,births,clave_incompleta
+2016,,Extranjeros,-1,Libano,1.0,,births,clave_incompleta
+2016,,Extranjeros,-1,Malí,1.0,,births,clave_incompleta
+2016,,Extranjeros,-1,Nueva Zelanda,1.0,,births,clave_incompleta
+2016,,Extranjeros,-1,Omán,1.0,,births,clave_incompleta
+2016,,Extranjeros,-1,Perú,7.0,,births,clave_incompleta
+2016,,Extranjeros,-1,Reino Unido de Gran Bretaña E Irlanda del Norte,2.0,,births,clave_incompleta
+2016,,Extranjeros,-1,Sin Información,1.0,,births,clave_incompleta
+2016,,Extranjeros,-1,Union de Las Comoras,2.0,,births,clave_incompleta
+2016,,Extranjeros,-1,Venezuela,202.0,,births,clave_incompleta
+2016,,Extranjeros,-1,Alemania,,0.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,Antigua Y Barbuda,,0.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,Antillas Neerlandesas,,2.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,Aruba,,4.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,Australia,,0.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,Bolivia,,0.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,Brasil,,0.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,Canadá,,0.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,Chile,,0.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,China,,0.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,Costa Rica,,0.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,Cuba,,0.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,Dinamarca,,0.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,Ecuador,,0.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,España,,0.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,Estados Unidos de América,,0.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,Filipinas,,0.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,Francia,,0.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,Granada,,0.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,Haití,,0.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,Holanda (Paises Bajos),,0.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,Honduras,,0.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,Hungría,,0.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,Indonesia,,0.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,Islas Vírgenes de Los Estados Unid,,0.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,Israel,,0.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,Italia,,0.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,Japón,,0.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,México,,0.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,Panamá,,0.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,Perú,,1.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,Polinesia Francesa,,0.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,Reino Unido de Gran Bretaña E Irla,,0.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,República Democrática de Santo Tom,,0.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,República Dominicana,,0.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,Rumania,,0.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,Sin Información,,3.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,Suiza,,0.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,Suriname,,2.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,Union de Las Comoras,,0.0,mortality,clave_incompleta
+2016,,Extranjeros,-1,Venezuela,,8.0,mortality,clave_incompleta
+2017,,Extranjeros,-1,Antillas Neerlandesas,8.0,,births,clave_incompleta
+2017,,Extranjeros,-1,Aruba,14.0,,births,clave_incompleta
+2017,,Extranjeros,-1,Bahamas,1.0,,births,clave_incompleta
+2017,,Extranjeros,-1,Brasil,24.0,,births,clave_incompleta
+2017,,Extranjeros,-1,Canadá,1.0,,births,clave_incompleta
+2017,,Extranjeros,-1,Chile,1.0,,births,clave_incompleta
+2017,,Extranjeros,-1,Costa de Marfil,1.0,,births,clave_incompleta
+2017,,Extranjeros,-1,Ecuador,11.0,,births,clave_incompleta
+2017,,Extranjeros,-1,El Salvador,1.0,,births,clave_incompleta
+2017,,Extranjeros,-1,España,2.0,,births,clave_incompleta
+2017,,Extranjeros,-1,Estados Unidos de América,2.0,,births,clave_incompleta
+2017,,Extranjeros,-1,Federación de Rusia,1.0,,births,clave_incompleta
+2017,,Extranjeros,-1,Francia,1.0,,births,clave_incompleta
+2017,,Extranjeros,-1,Holanda (Paises Bajos),17.0,,births,clave_incompleta
+2017,,Extranjeros,-1,Honduras,1.0,,births,clave_incompleta
+2017,,Extranjeros,-1,Jamaica,1.0,,births,clave_incompleta
+2017,,Extranjeros,-1,México,2.0,,births,clave_incompleta
+2017,,Extranjeros,-1,Panamá,1.0,,births,clave_incompleta
+2017,,Extranjeros,-1,Perú,9.0,,births,clave_incompleta
+2017,,Extranjeros,-1,Qatar,1.0,,births,clave_incompleta
+2017,,Extranjeros,-1,Sin Información,1.0,,births,clave_incompleta
+2017,,Extranjeros,-1,Trinidad Y Tobago,1.0,,births,clave_incompleta
+2017,,Extranjeros,-1,Union de Las Comoras,5.0,,births,clave_incompleta
+2017,,Extranjeros,-1,Vanuatu,1.0,,births,clave_incompleta
+2017,,Extranjeros,-1,Venezuela,1086.0,,births,clave_incompleta
+2017,,Extranjeros,-1,Vietnam,1.0,,births,clave_incompleta
+2017,,Extranjeros,-1,Yugoslavia,1.0,,births,clave_incompleta
+2017,,Extranjeros,-1,Albania,,0.0,mortality,clave_incompleta
+2017,,Extranjeros,-1,Antillas Neerlandesas,,2.0,mortality,clave_incompleta
+2017,,Extranjeros,-1,Arabia Saudí,,0.0,mortality,clave_incompleta
+2017,,Extranjeros,-1,Argentina,,0.0,mortality,clave_incompleta
+2017,,Extranjeros,-1,Aruba,,2.0,mortality,clave_incompleta
+2017,,Extranjeros,-1,Australia,,0.0,mortality,clave_incompleta
+2017,,Extranjeros,-1,Brasil,,0.0,mortality,clave_incompleta
+2017,,Extranjeros,-1,Camerún,,0.0,mortality,clave_incompleta
+2017,,Extranjeros,-1,Canadá,,0.0,mortality,clave_incompleta
+2017,,Extranjeros,-1,Chile,,0.0,mortality,clave_incompleta
+2017,,Extranjeros,-1,Congo,,0.0,mortality,clave_incompleta
+2017,,Extranjeros,-1,Costa Rica,,0.0,mortality,clave_incompleta
+2017,,Extranjeros,-1,Cuba,,0.0,mortality,clave_incompleta
+2017,,Extranjeros,-1,Ecuador,,0.0,mortality,clave_incompleta
+2017,,Extranjeros,-1,España,,0.0,mortality,clave_incompleta
+2017,,Extranjeros,-1,Estado de La Ciudad del Vaticano (San,,0.0,mortality,clave_incompleta
+2017,,Extranjeros,-1,Estados Unidos de América,,0.0,mortality,clave_incompleta
+2017,,Extranjeros,-1,Filipinas,,0.0,mortality,clave_incompleta
+2017,,Extranjeros,-1,Francia,,0.0,mortality,clave_incompleta
+2017,,Extranjeros,-1,Francia Metropolitana,,0.0,mortality,clave_incompleta
+2017,,Extranjeros,-1,Guayana Francesa,,0.0,mortality,clave_incompleta
+2017,,Extranjeros,-1,Holanda (Paises Bajos),,0.0,mortality,clave_incompleta
+2017,,Extranjeros,-1,Honduras,,0.0,mortality,clave_incompleta
+2017,,Extranjeros,-1,Israel,,0.0,mortality,clave_incompleta
+2017,,Extranjeros,-1,Jamaica,,1.0,mortality,clave_incompleta
+2017,,Extranjeros,-1,México,,0.0,mortality,clave_incompleta
+2017,,Extranjeros,-1,Nicaragua,,0.0,mortality,clave_incompleta
+2017,,Extranjeros,-1,Panamá,,0.0,mortality,clave_incompleta
+2017,,Extranjeros,-1,Perú,,1.0,mortality,clave_incompleta
+2017,,Extranjeros,-1,Puerto Rico,,0.0,mortality,clave_incompleta
+2017,,Extranjeros,-1,Reino Unido de Gran Bretaña E Irlanda,,0.0,mortality,clave_incompleta
+2017,,Extranjeros,-1,República Dominicana,,0.0,mortality,clave_incompleta
+2017,,Extranjeros,-1,Suriname,,0.0,mortality,clave_incompleta
+2017,,Extranjeros,-1,Trinidad Y Tobago,,0.0,mortality,clave_incompleta
+2017,,Extranjeros,-1,Union de Las Comoras,,0.0,mortality,clave_incompleta
+2017,,Extranjeros,-1,Uruguay,,0.0,mortality,clave_incompleta
+2017,,Extranjeros,-1,Venezuela,,23.0,mortality,clave_incompleta
+2018,,Extranjeros,-1,Antillas Neerlandesas,4.0,,births,clave_incompleta
+2018,,Extranjeros,-1,Argentina,1.0,,births,clave_incompleta
+2018,,Extranjeros,-1,Aruba,20.0,,births,clave_incompleta
+2018,,Extranjeros,-1,Brasil,29.0,,births,clave_incompleta
+2018,,Extranjeros,-1,Chile,2.0,,births,clave_incompleta
+2018,,Extranjeros,-1,Costa Rica,3.0,,births,clave_incompleta
+2018,,Extranjeros,-1,Croacia,1.0,,births,clave_incompleta
+2018,,Extranjeros,-1,Ecuador,15.0,,births,clave_incompleta
+2018,,Extranjeros,-1,El Salvador,1.0,,births,clave_incompleta
+2018,,Extranjeros,-1,España,1.0,,births,clave_incompleta
+2018,,Extranjeros,-1,Estados Unidos de América,2.0,,births,clave_incompleta
+2018,,Extranjeros,-1,Filipinas,1.0,,births,clave_incompleta
+2018,,Extranjeros,-1,Holanda (Paises Bajos),9.0,,births,clave_incompleta
+2018,,Extranjeros,-1,Islas Caimán,1.0,,births,clave_incompleta
+2018,,Extranjeros,-1,México,2.0,,births,clave_incompleta
+2018,,Extranjeros,-1,Panamá,1.0,,births,clave_incompleta
+2018,,Extranjeros,-1,Perú,22.0,,births,clave_incompleta
+2018,,Extranjeros,-1,San Vicente Y Las Granadinas,1.0,,births,clave_incompleta
+2018,,Extranjeros,-1,Union de Las Comoras,7.0,,births,clave_incompleta
+2018,,Extranjeros,-1,Uruguay,1.0,,births,clave_incompleta
+2018,,Extranjeros,-1,Vanuatu,1.0,,births,clave_incompleta
+2018,,Extranjeros,-1,Venezuela,3859.0,,births,clave_incompleta
+2018,,Extranjeros,-1,Vietnam,1.0,,births,clave_incompleta
+2018,,Extranjeros,-1,Yemen,2.0,,births,clave_incompleta
+2018,,Extranjeros,-1,Alemania,,0.0,mortality,clave_incompleta
+2018,,Extranjeros,-1,Antillas Neerlandesas,,2.0,mortality,clave_incompleta
+2018,,Extranjeros,-1,Argentina,,0.0,mortality,clave_incompleta
+2018,,Extranjeros,-1,Aruba,,4.0,mortality,clave_incompleta
+2018,,Extranjeros,-1,Bahamas,,0.0,mortality,clave_incompleta
+2018,,Extranjeros,-1,Bermudas,,0.0,mortality,clave_incompleta
+2018,,Extranjeros,-1,Bolivia,,0.0,mortality,clave_incompleta
+2018,,Extranjeros,-1,Brasil,,0.0,mortality,clave_incompleta
+2018,,Extranjeros,-1,Canadá,,0.0,mortality,clave_incompleta
+2018,,Extranjeros,-1,Chile,,0.0,mortality,clave_incompleta
+2018,,Extranjeros,-1,China,,0.0,mortality,clave_incompleta
+2018,,Extranjeros,-1,Costa Rica,,0.0,mortality,clave_incompleta
+2018,,Extranjeros,-1,Ecuador,,0.0,mortality,clave_incompleta
+2018,,Extranjeros,-1,El Salvador,,0.0,mortality,clave_incompleta
+2018,,Extranjeros,-1,España,,0.0,mortality,clave_incompleta
+2018,,Extranjeros,-1,Estado de La Ciudad del Vaticano (San,,0.0,mortality,clave_incompleta
+2018,,Extranjeros,-1,Estados Unidos de América,,0.0,mortality,clave_incompleta
+2018,,Extranjeros,-1,Guayana Francesa,,0.0,mortality,clave_incompleta
+2018,,Extranjeros,-1,Haití,,0.0,mortality,clave_incompleta
+2018,,Extranjeros,-1,Holanda (Paises Bajos),,1.0,mortality,clave_incompleta
+2018,,Extranjeros,-1,Islas Vírgenes Británicas,,0.0,mortality,clave_incompleta
+2018,,Extranjeros,-1,Italia,,0.0,mortality,clave_incompleta
+2018,,Extranjeros,-1,Jamaica,,1.0,mortality,clave_incompleta
+2018,,Extranjeros,-1,México,,0.0,mortality,clave_incompleta
+2018,,Extranjeros,-1,Nicaragua,,0.0,mortality,clave_incompleta
+2018,,Extranjeros,-1,Panamá,,3.0,mortality,clave_incompleta
+2018,,Extranjeros,-1,Perú,,0.0,mortality,clave_incompleta
+2018,,Extranjeros,-1,Portugal,,0.0,mortality,clave_incompleta
+2018,,Extranjeros,-1,Puerto Rico,,0.0,mortality,clave_incompleta
+2018,,Extranjeros,-1,Reino Unido de Gran Bretaña E Irlanda,,0.0,mortality,clave_incompleta
+2018,,Extranjeros,-1,República Dominicana,,0.0,mortality,clave_incompleta
+2018,,Extranjeros,-1,Sin Información,,0.0,mortality,clave_incompleta
+2018,,Extranjeros,-1,Suriname,,2.0,mortality,clave_incompleta
+2018,,Extranjeros,-1,Trinidad Y Tobago,,0.0,mortality,clave_incompleta
+2018,,Extranjeros,-1,Vanuatu,,0.0,mortality,clave_incompleta
+2018,,Extranjeros,-1,Venezuela,,72.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Antillas Neerlandesas,9.0,,births,clave_incompleta
+2019,,Extranjeros,-1,Aruba,29.0,,births,clave_incompleta
+2019,,Extranjeros,-1,Australia,1.0,,births,clave_incompleta
+2019,,Extranjeros,-1,Bolivia,1.0,,births,clave_incompleta
+2019,,Extranjeros,-1,Brasil,28.0,,births,clave_incompleta
+2019,,Extranjeros,-1,Canadá,2.0,,births,clave_incompleta
+2019,,Extranjeros,-1,China,2.0,,births,clave_incompleta
+2019,,Extranjeros,-1,Congo,1.0,,births,clave_incompleta
+2019,,Extranjeros,-1,Costa Rica,2.0,,births,clave_incompleta
+2019,,Extranjeros,-1,Ecuador,18.0,,births,clave_incompleta
+2019,,Extranjeros,-1,Estados Unidos de América,1.0,,births,clave_incompleta
+2019,,Extranjeros,-1,Haití,2.0,,births,clave_incompleta
+2019,,Extranjeros,-1,Holanda (Paises Bajos),6.0,,births,clave_incompleta
+2019,,Extranjeros,-1,Honduras,1.0,,births,clave_incompleta
+2019,,Extranjeros,-1,México,4.0,,births,clave_incompleta
+2019,,Extranjeros,-1,Panamá,1.0,,births,clave_incompleta
+2019,,Extranjeros,-1,Perú,11.0,,births,clave_incompleta
+2019,,Extranjeros,-1,República Dominicana,1.0,,births,clave_incompleta
+2019,,Extranjeros,-1,Union de Las Comoras,3.0,,births,clave_incompleta
+2019,,Extranjeros,-1,Vanuatu,2.0,,births,clave_incompleta
+2019,,Extranjeros,-1,Venezuela,11424.0,,births,clave_incompleta
+2019,,Extranjeros,-1,Vietnam,9.0,,births,clave_incompleta
+2019,,Extranjeros,-1,Zambia,1.0,,births,clave_incompleta
+2019,,Extranjeros,-1,Alemania,,0.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Anguila,,0.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Antillas Neerlandesas,,2.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Argentina,,0.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Aruba,,2.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Australia,,0.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Barbados,,0.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Bolivia,,0.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Brasil,,1.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Bélgica,,0.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Canadá,,0.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Chile,,0.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Costa Rica,,0.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Cuba,,0.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Ecuador,,0.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,España,,0.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Estado de La Ciudad del Vaticano (San,,0.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Estados Unidos de América,,0.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Filipinas,,0.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Francia,,0.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Guatemala,,0.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Haití,,0.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Holanda (Paises Bajos),,0.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Honduras,,1.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Islas Turcas Y Caicos,,0.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Italia,,0.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Japón,,0.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Martinica,,0.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,México,,0.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Nicaragua,,0.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Panamá,,1.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Perú,,1.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Portugal,,0.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Puerto Rico,,0.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Reino Unido de Gran Bretaña E Irlanda,,0.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,República Dominicana,,0.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Suriname,,3.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Territorios Australes Franceses,,0.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Trinidad Y Tobago,,0.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Venezuela,,147.0,mortality,clave_incompleta
+2019,,Extranjeros,-1,Yemen,,0.0,mortality,clave_incompleta
+2020,,Extranjeros,-1,Antillas Neerlandesas,3.0,,births,clave_incompleta
+2020,,Extranjeros,-1,Argentina,2.0,,births,clave_incompleta
+2020,,Extranjeros,-1,Aruba,13.0,,births,clave_incompleta
+2020,,Extranjeros,-1,Brasil,24.0,,births,clave_incompleta
+2020,,Extranjeros,-1,Congo,1.0,,births,clave_incompleta
+2020,,Extranjeros,-1,Ecuador,6.0,,births,clave_incompleta
+2020,,Extranjeros,-1,Estados Unidos de América,3.0,,births,clave_incompleta
+2020,,Extranjeros,-1,Guatemala,1.0,,births,clave_incompleta
+2020,,Extranjeros,-1,Holanda (Paises Bajos),2.0,,births,clave_incompleta
+2020,,Extranjeros,-1,Honduras,1.0,,births,clave_incompleta
+2020,,Extranjeros,-1,Italia,1.0,,births,clave_incompleta
+2020,,Extranjeros,-1,México,1.0,,births,clave_incompleta
+2020,,Extranjeros,-1,Panamá,3.0,,births,clave_incompleta
+2020,,Extranjeros,-1,Perú,3.0,,births,clave_incompleta
+2020,,Extranjeros,-1,Territorios Australes Franceses,1.0,,births,clave_incompleta
+2020,,Extranjeros,-1,Union de Las Comoras,3.0,,births,clave_incompleta
+2020,,Extranjeros,-1,Vanuatu,2.0,,births,clave_incompleta
+2020,,Extranjeros,-1,Venezuela,9716.0,,births,clave_incompleta
+2020,,Extranjeros,-1,Vietnam,2.0,,births,clave_incompleta
+2020,,Extranjeros,-1,Yemen,1.0,,births,clave_incompleta
+2020,,Extranjeros,-1,Alemania,,0.0,mortality,clave_incompleta
+2020,,Extranjeros,-1,Anguila,,0.0,mortality,clave_incompleta
+2020,,Extranjeros,-1,Antillas Neerlandesas,,2.0,mortality,clave_incompleta
+2020,,Extranjeros,-1,Argentina,,0.0,mortality,clave_incompleta
+2020,,Extranjeros,-1,Aruba,,2.0,mortality,clave_incompleta
+2020,,Extranjeros,-1,Bolivia,,0.0,mortality,clave_incompleta
+2020,,Extranjeros,-1,Brasil,,0.0,mortality,clave_incompleta
+2020,,Extranjeros,-1,Bélgica,,0.0,mortality,clave_incompleta
+2020,,Extranjeros,-1,Canadá,,0.0,mortality,clave_incompleta
+2020,,Extranjeros,-1,Chile,,0.0,mortality,clave_incompleta
+2020,,Extranjeros,-1,China,,0.0,mortality,clave_incompleta
+2020,,Extranjeros,-1,Chipre,,0.0,mortality,clave_incompleta
+2020,,Extranjeros,-1,Ecuador,,1.0,mortality,clave_incompleta
+2020,,Extranjeros,-1,España,,0.0,mortality,clave_incompleta
+2020,,Extranjeros,-1,Estado de La Ciudad del Vaticano (San,,0.0,mortality,clave_incompleta
+2020,,Extranjeros,-1,Estados Unidos de América,,0.0,mortality,clave_incompleta
+2020,,Extranjeros,-1,Francia,,0.0,mortality,clave_incompleta
+2020,,Extranjeros,-1,Guatemala,,1.0,mortality,clave_incompleta
+2020,,Extranjeros,-1,Haití,,0.0,mortality,clave_incompleta
+2020,,Extranjeros,-1,Holanda (Paises Bajos),,1.0,mortality,clave_incompleta
+2020,,Extranjeros,-1,Honduras,,0.0,mortality,clave_incompleta
+2020,,Extranjeros,-1,Irlanda,,0.0,mortality,clave_incompleta
+2020,,Extranjeros,-1,Israel,,0.0,mortality,clave_incompleta
+2020,,Extranjeros,-1,Italia,,0.0,mortality,clave_incompleta
+2020,,Extranjeros,-1,México,,0.0,mortality,clave_incompleta
+2020,,Extranjeros,-1,Nicaragua,,3.0,mortality,clave_incompleta
+2020,,Extranjeros,-1,Panamá,,1.0,mortality,clave_incompleta
+2020,,Extranjeros,-1,Perú,,0.0,mortality,clave_incompleta
+2020,,Extranjeros,-1,Puerto Rico,,0.0,mortality,clave_incompleta
+2020,,Extranjeros,-1,Reino Unido de Gran Bretaña E Irlanda,,0.0,mortality,clave_incompleta
+2020,,Extranjeros,-1,República Dominicana,,0.0,mortality,clave_incompleta
+2020,,Extranjeros,-1,República Popular del Congo,,1.0,mortality,clave_incompleta
+2020,,Extranjeros,-1,Santa Lucía,,0.0,mortality,clave_incompleta
+2020,,Extranjeros,-1,Suriname,,1.0,mortality,clave_incompleta
+2020,,Extranjeros,-1,Union de Las Comoras,,0.0,mortality,clave_incompleta
+2020,,Extranjeros,-1,Venezuela,,55.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,Antillas Neerlandesas,3.0,,births,clave_incompleta
+2021,,Extranjeros,-1,Argentina,1.0,,births,clave_incompleta
+2021,,Extranjeros,-1,Aruba,14.0,,births,clave_incompleta
+2021,,Extranjeros,-1,Australia,1.0,,births,clave_incompleta
+2021,,Extranjeros,-1,Bolivia,1.0,,births,clave_incompleta
+2021,,Extranjeros,-1,Brasil,35.0,,births,clave_incompleta
+2021,,Extranjeros,-1,Bélgica,1.0,,births,clave_incompleta
+2021,,Extranjeros,-1,Canadá,1.0,,births,clave_incompleta
+2021,,Extranjeros,-1,Chile,3.0,,births,clave_incompleta
+2021,,Extranjeros,-1,Chipre,1.0,,births,clave_incompleta
+2021,,Extranjeros,-1,Costa Rica,1.0,,births,clave_incompleta
+2021,,Extranjeros,-1,Cuba,1.0,,births,clave_incompleta
+2021,,Extranjeros,-1,Ecuador,8.0,,births,clave_incompleta
+2021,,Extranjeros,-1,Estados Unidos de América,8.0,,births,clave_incompleta
+2021,,Extranjeros,-1,Gambia,1.0,,births,clave_incompleta
+2021,,Extranjeros,-1,Haití,2.0,,births,clave_incompleta
+2021,,Extranjeros,-1,Lesoto,1.0,,births,clave_incompleta
+2021,,Extranjeros,-1,México,2.0,,births,clave_incompleta
+2021,,Extranjeros,-1,Panamá,1.0,,births,clave_incompleta
+2021,,Extranjeros,-1,Perú,15.0,,births,clave_incompleta
+2021,,Extranjeros,-1,República Dominicana,1.0,,births,clave_incompleta
+2021,,Extranjeros,-1,República Islámica de Afganistán,1.0,,births,clave_incompleta
+2021,,Extranjeros,-1,Singapur,1.0,,births,clave_incompleta
+2021,,Extranjeros,-1,Suiza,2.0,,births,clave_incompleta
+2021,,Extranjeros,-1,Union de Las Comoras,1.0,,births,clave_incompleta
+2021,,Extranjeros,-1,Vanuatu,1.0,,births,clave_incompleta
+2021,,Extranjeros,-1,Venezuela,8716.0,,births,clave_incompleta
+2021,,Extranjeros,-1,Vietnam,3.0,,births,clave_incompleta
+2021,,Extranjeros,-1,Yugoslavia,1.0,,births,clave_incompleta
+2021,,Extranjeros,-1,Anguila,,0.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,Antillas Neerlandesas,,0.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,Argentina,,0.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,Aruba,,6.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,Australia,,0.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,Bahamas,,0.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,Bolivia,,0.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,Brasil,,1.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,Canadá,,0.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,Chile,,0.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,Costa Rica,,0.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,Cuba,,0.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,Ecuador,,1.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,El Salvador,,0.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,Emiratos Arabes Unidos,,0.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,España,,0.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,Estado de La Ciudad del Vaticano (Santa,,0.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,Estados Unidos de América,,0.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,Guatemala,,0.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,Guyana,,0.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,Haití,,0.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,Holanda (Paises Bajos),,0.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,Honduras,,0.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,Islas Turcas Y Caicos,,0.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,Italia,,0.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,Japón,,0.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,México,,0.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,Panamá,,2.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,Perú,,2.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,Reino Unido de Gran Bretaña E Irlanda,,0.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,República Dominicana,,0.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,República Popular del Congo,,0.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,Santa Lucía,,0.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,Singapur,,0.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,Suiza,,0.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,Suriname,,0.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,Turquía,,0.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,Union de Las Comoras,,0.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,Uzbekistan,,0.0,mortality,clave_incompleta
+2021,,Extranjeros,-1,Venezuela,,49.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,Albania,1.0,,births,clave_incompleta
+2022,,Extranjeros,-1,Anguila,1.0,,births,clave_incompleta
+2022,,Extranjeros,-1,Aruba,18.0,,births,clave_incompleta
+2022,,Extranjeros,-1,Bolivia,1.0,,births,clave_incompleta
+2022,,Extranjeros,-1,Brasil,48.0,,births,clave_incompleta
+2022,,Extranjeros,-1,Canadá,1.0,,births,clave_incompleta
+2022,,Extranjeros,-1,Congo,1.0,,births,clave_incompleta
+2022,,Extranjeros,-1,Ecuador,12.0,,births,clave_incompleta
+2022,,Extranjeros,-1,España,1.0,,births,clave_incompleta
+2022,,Extranjeros,-1,Estados Unidos de América,4.0,,births,clave_incompleta
+2022,,Extranjeros,-1,Francia,1.0,,births,clave_incompleta
+2022,,Extranjeros,-1,Holanda (Paises Bajos),2.0,,births,clave_incompleta
+2022,,Extranjeros,-1,Honduras,1.0,,births,clave_incompleta
+2022,,Extranjeros,-1,Kenya,1.0,,births,clave_incompleta
+2022,,Extranjeros,-1,México,2.0,,births,clave_incompleta
+2022,,Extranjeros,-1,Panamá,2.0,,births,clave_incompleta
+2022,,Extranjeros,-1,Perú,13.0,,births,clave_incompleta
+2022,,Extranjeros,-1,Puerto Rico,1.0,,births,clave_incompleta
+2022,,Extranjeros,-1,República de Zimbabue,1.0,,births,clave_incompleta
+2022,,Extranjeros,-1,Santa Lucía,2.0,,births,clave_incompleta
+2022,,Extranjeros,-1,Union de Las Comoras,5.0,,births,clave_incompleta
+2022,,Extranjeros,-1,Vanuatu,1.0,,births,clave_incompleta
+2022,,Extranjeros,-1,Venezuela,4193.0,,births,clave_incompleta
+2022,,Extranjeros,-1,Albania,,0.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,Alemania,,0.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,Anguila,,0.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,Antillas Neerlandesas,,1.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,Argentina,,0.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,Armenia,,0.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,Aruba,,1.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,Austria,,0.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,Barbados,,0.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,Brasil,,0.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,Camboya,,0.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,Canadá,,0.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,Chile,,0.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,China,,0.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,Cuba,,0.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,Ecuador,,2.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,España,,0.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,Estado de La Ciudad del Vaticano (Santa,,0.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,Estados Unidos de América,,0.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,Francia,,0.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,Granada,,0.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,Guyana,,0.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,Haití,,0.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,Holanda (Paises Bajos),,0.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,Islas Turcas Y Caicos,,1.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,Israel,,0.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,Italia,,0.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,Jamaica,,0.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,Macao,,0.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,México,,0.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,Panamá,,2.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,Paraguay,,0.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,Perú,,0.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,Puerto Rico,,0.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,Reino Unido de Gran Bretaña E Irlanda,,0.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,Suiza,,0.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,Suriname,,1.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,Ucrania,,0.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,Uruguay,,0.0,mortality,clave_incompleta
+2022,,Extranjeros,-1,Venezuela,,57.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Alemania,2.0,,births,clave_incompleta
+2023,,Extranjeros,-1,Anguila,1.0,,births,clave_incompleta
+2023,,Extranjeros,-1,Aruba,17.0,,births,clave_incompleta
+2023,,Extranjeros,-1,Bolivia (Estado Plurinacional de),1.0,,births,clave_incompleta
+2023,,Extranjeros,-1,Brasil,42.0,,births,clave_incompleta
+2023,,Extranjeros,-1,Chile,2.0,,births,clave_incompleta
+2023,,Extranjeros,-1,Curazao,1.0,,births,clave_incompleta
+2023,,Extranjeros,-1,Ecuador,18.0,,births,clave_incompleta
+2023,,Extranjeros,-1,España,1.0,,births,clave_incompleta
+2023,,Extranjeros,-1,Estados Unidos de América,2.0,,births,clave_incompleta
+2023,,Extranjeros,-1,Filipinas,1.0,,births,clave_incompleta
+2023,,Extranjeros,-1,Guatemala,2.0,,births,clave_incompleta
+2023,,Extranjeros,-1,Guinea,1.0,,births,clave_incompleta
+2023,,Extranjeros,-1,Haití,2.0,,births,clave_incompleta
+2023,,Extranjeros,-1,Italia,1.0,,births,clave_incompleta
+2023,,Extranjeros,-1,Libano,1.0,,births,clave_incompleta
+2023,,Extranjeros,-1,Liberia,1.0,,births,clave_incompleta
+2023,,Extranjeros,-1,México,1.0,,births,clave_incompleta
+2023,,Extranjeros,-1,Panamá,2.0,,births,clave_incompleta
+2023,,Extranjeros,-1,Perú,16.0,,births,clave_incompleta
+2023,,Extranjeros,-1,Puerto Rico,2.0,,births,clave_incompleta
+2023,,Extranjeros,-1,República Dominicana,1.0,,births,clave_incompleta
+2023,,Extranjeros,-1,Venezuela (República Bolivariana de),3044.0,,births,clave_incompleta
+2023,,Extranjeros,-1,Alemania,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Anguila,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Argentina,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Armenia,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Aruba,,2.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Austria,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Bahamas,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Barbados,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Bermuda,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Bolivia (Estado Plurinacional de),,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Brasil,,2.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Cabo Verde,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Canadá,,1.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Chile,,1.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Chipre,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Curazao,,1.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Ecuador,,3.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,El Salvador,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,España,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Estado de Palestina,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Estados Unidos de América,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Filipinas,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Finlandia,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Francia,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Ghana,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Hungría,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Irlanda,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Islas Turcas y Caicos,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Italia,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Jamaica,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,México,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Nicaragua,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Panamá,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Países Bajos (Reino de los),,1.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Perú,,2.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Puerto Rico,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Reino Unido de Gran Bretaña e Irlanda,,1.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,República Centroafricana,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,República Dominicana,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,San Pedro y Miquelón,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Santa Sede,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Suecia,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Suiza,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Suriname,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Trinidad y Tabago,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Türkiye,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Ucrania,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Uruguay,,0.0,mortality,clave_incompleta
+2023,,Extranjeros,-1,Venezuela (República Bolivariana de),,53.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Albania,2.0,,births,clave_incompleta
+2024,,Extranjeros,-1,Argelia,1.0,,births,clave_incompleta
+2024,,Extranjeros,-1,Argentina,1.0,,births,clave_incompleta
+2024,,Extranjeros,-1,Armenia,1.0,,births,clave_incompleta
+2024,,Extranjeros,-1,Aruba,30.0,,births,clave_incompleta
+2024,,Extranjeros,-1,Barbados,1.0,,births,clave_incompleta
+2024,,Extranjeros,-1,Brasil,46.0,,births,clave_incompleta
+2024,,Extranjeros,-1,Chile,4.0,,births,clave_incompleta
+2024,,Extranjeros,-1,Chipre,1.0,,births,clave_incompleta
+2024,,Extranjeros,-1,Ecuador,18.0,,births,clave_incompleta
+2024,,Extranjeros,-1,Estados Unidos de América,2.0,,births,clave_incompleta
+2024,,Extranjeros,-1,Granada,2.0,,births,clave_incompleta
+2024,,Extranjeros,-1,Guadalupe,1.0,,births,clave_incompleta
+2024,,Extranjeros,-1,Guatemala,1.0,,births,clave_incompleta
+2024,,Extranjeros,-1,Italia,1.0,,births,clave_incompleta
+2024,,Extranjeros,-1,México,1.0,,births,clave_incompleta
+2024,,Extranjeros,-1,Panamá,3.0,,births,clave_incompleta
+2024,,Extranjeros,-1,Países Bajos (Reino de los),4.0,,births,clave_incompleta
+2024,,Extranjeros,-1,Perú,20.0,,births,clave_incompleta
+2024,,Extranjeros,-1,Puerto Rico,2.0,,births,clave_incompleta
+2024,,Extranjeros,-1,República Dominicana,1.0,,births,clave_incompleta
+2024,,Extranjeros,-1,Singapur,1.0,,births,clave_incompleta
+2024,,Extranjeros,-1,Uruguay,1.0,,births,clave_incompleta
+2024,,Extranjeros,-1,Venezuela (República Bolivariana de),2303.0,,births,clave_incompleta
+2024,,Extranjeros,-1,Alemania,,1.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Anguila,,1.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Antigua y Barbuda,,0.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Argentina,,0.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Armenia,,0.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Aruba,,3.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Australia,,0.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Barbados,,0.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Bolivia (Estado Plurinacional de),,0.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Brasil,,1.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Canadá,,0.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Chile,,0.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,China,,0.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Costa Rica,,0.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Curazao,,1.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Dominica,,0.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Ecuador,,3.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,El Salvador,,0.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,España,,0.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Estados Unidos de América,,0.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Francia,,0.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Granada,,0.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Guatemala,,0.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Honduras,,0.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,India,,0.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Islas Turcas y Caicos,,0.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Islas Vírgenes de los Estados Unidos,,0.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Israel,,0.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Italia,,0.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Líbano,,0.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,México,,0.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Panamá,,1.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Paraguay,,0.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Países Bajos (Reino de los),,4.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Perú,,3.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Portugal,,0.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Puerto Rico,,0.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Reino Unido de Gran Bretaña e Irlanda,,0.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,República Dominicana,,1.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Saint Kitts y Nevis,,0.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Santa Sede,,0.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Suiza,,0.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Suriname,,1.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Ucrania,,0.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Uruguay,,0.0,mortality,clave_incompleta
+2024,,Extranjeros,-1,Venezuela (República Bolivariana de),,33.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Anguila,4.0,,births,clave_incompleta
+2025,,Extranjeros,-1,Aruba,19.0,,births,clave_incompleta
+2025,,Extranjeros,-1,Bolivia (Estado Plurinacional de),1.0,,births,clave_incompleta
+2025,,Extranjeros,-1,Brasil,59.0,,births,clave_incompleta
+2025,,Extranjeros,-1,Ecuador,21.0,,births,clave_incompleta
+2025,,Extranjeros,-1,Estados Unidos de América,8.0,,births,clave_incompleta
+2025,,Extranjeros,-1,Francia,1.0,,births,clave_incompleta
+2025,,Extranjeros,-1,Granada,2.0,,births,clave_incompleta
+2025,,Extranjeros,-1,Guatemala,1.0,,births,clave_incompleta
+2025,,Extranjeros,-1,Guyana,1.0,,births,clave_incompleta
+2025,,Extranjeros,-1,Islas Turcas y Caicos,3.0,,births,clave_incompleta
+2025,,Extranjeros,-1,Marruecos,1.0,,births,clave_incompleta
+2025,,Extranjeros,-1,Martinica,1.0,,births,clave_incompleta
+2025,,Extranjeros,-1,Mauricio,2.0,,births,clave_incompleta
+2025,,Extranjeros,-1,Mauritania,1.0,,births,clave_incompleta
+2025,,Extranjeros,-1,México,2.0,,births,clave_incompleta
+2025,,Extranjeros,-1,Nigeria,1.0,,births,clave_incompleta
+2025,,Extranjeros,-1,Panamá,1.0,,births,clave_incompleta
+2025,,Extranjeros,-1,Países Bajos (Reino de los),9.0,,births,clave_incompleta
+2025,,Extranjeros,-1,Perú,28.0,,births,clave_incompleta
+2025,,Extranjeros,-1,Puerto Rico,3.0,,births,clave_incompleta
+2025,,Extranjeros,-1,Reino Unido de Gran Bretaña e Irlanda del Norte,2.0,,births,clave_incompleta
+2025,,Extranjeros,-1,República Dominicana,1.0,,births,clave_incompleta
+2025,,Extranjeros,-1,Santa Lucía,1.0,,births,clave_incompleta
+2025,,Extranjeros,-1,Suriname,2.0,,births,clave_incompleta
+2025,,Extranjeros,-1,Uzbekistán,1.0,,births,clave_incompleta
+2025,,Extranjeros,-1,Venezuela (República Bolivariana de),2060.0,,births,clave_incompleta
+2025,,Extranjeros,-1,Albania,,1.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Alemania,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Anguila,,2.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Antigua y Barbuda,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Argentina,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Armenia,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Aruba,,4.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Austria,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Bahamas,,1.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Barbados,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Bolivia (Estado Plurinacional de),,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Brasil,,2.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Bélgica,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Canadá,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Chile,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,China,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Costa Rica,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Cuba,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Curazao,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Ecuador,,1.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,El Salvador,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,España,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Estados Unidos de América,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Filipinas,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Finlandia,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Francia,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Guatemala,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Guyana,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Honduras,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,India,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Irlanda,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Islas Caimán,,2.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Islas Cocos (Keeling),,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Islas Turcas y Caicos,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Islas Vírgenes Británicas,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Israel,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Italia,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,México,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Nicaragua,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Panamá,,2.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Países Bajos (Reino de los),,1.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Perú,,1.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Polonia,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Puerto Rico,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Reino Unido de Gran Bretaña e Irlanda del Norte,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,República Centroafricana,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,República Dominicana,,1.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Santa Lucía,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Santa Sede,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Suriname,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Tailandia,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Trinidad y Tabago,,0.0,mortality,clave_incompleta
+2025,,Extranjeros,-1,Venezuela (República Bolivariana de),,44.0,mortality,clave_incompleta

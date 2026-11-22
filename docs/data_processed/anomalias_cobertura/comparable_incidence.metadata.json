@@ -1,0 +1,41 @@
+{
+  "universe": "same 1102 municipalities and age counts/populations as existing SIR read_panel; national row is this panel, not all national entities",
+  "age_groups": [
+    "under_1",
+    "1_4",
+    "5_14",
+    "15_49",
+    "50_plus"
+  ],
+  "reference_years": [
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014
+  ],
+  "weights": [
+    0.01704621830001292,
+    0.06913901081397321,
+    0.18382768277907002,
+    0.5280938287415462,
+    0.20189325936539765
+  ],
+  "sensitivity_year": 2025,
+  "sensitivity_weights": [
+    0.013524886875434633,
+    0.05594876189968114,
+    0.15178062520369148,
+    0.5264841603695006,
+    0.25226156565169217
+  ],
+  "formula": "100000 * sum(age_weight * sum(known_age_cases) / sum(age_population_years))",
+  "baseline": "municipality-specific directly standardized rate in 2008-2014 with the same fixed weights",
+  "zero_baseline": "ratio missing if baseline rate is zero; absolute difference retained",
+  "unknown_age": "excluded from standardized and crude-known-age rates; reported separately; crude-all-age includes them",
+  "interpretation": "descriptive standardized indexes, not actual individual risks or vaccine effects; no sampling confidence intervals are supplied",
+  "population_geography": "same corrected SIR read_panel: normalize codes and sum age populations before geographic filtering; historical Mapiripana 94663 included in Barrancominas 94343, not a separate municipality",
+  "reference": "https://www.cdc.gov/nchs/hus/sources-definitions/age-adjustment.htm"
+}
