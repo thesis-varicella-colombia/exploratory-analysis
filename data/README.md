@@ -297,3 +297,63 @@ independiente del territorio o límite seleccionado en la tabla interactiva.
 Si Rₜ pasa a ser un resultado principal, queda pendiente comprobar estabilidad
 ante cambios de previa, ventana e intervalo serial: variar únicamente el umbral
 de anchura del diagnóstico no realiza esa sensibilidad.
+
+## Comparación municipal anual de coberturas
+
+[`generate_vaccine_coverage_comparison.py`](../scripts/generate_vaccine_coverage_comparison.py)
+genera [`vaccine_coverage_comparison.csv`](../docs/data_processed/cobertura_vacunacion/vaccine_coverage_comparison.csv)
+y sus [metadatos](../docs/data_processed/cobertura_vacunacion/vaccine_coverage_comparison.metadata.json).
+Conserva el año de análisis de la fuente, **2016–2025**, que ya corresponde al año
+de la hoja PAI más uno. No elimina ni duplica ese desplazamiento metodológico.
+La población utilizada es la del mismo año de análisis: primera dosis dividida
+entre población de exactamente 1 año, y refuerzo dividido entre población de
+exactamente 5 años,
+ambos multiplicados por 100. El refuerzo se ofrece desde 2019; ese año no tiene
+dosis en la fuente rezagada y permanece sin dato. Las primeras dosis de 2016
+proceden de la hoja PAI 2015, cuya meta administrativa era media cohorte; la
+nueva medida usa la población de 1 año de 2016.
+
+El porcentaje administrativo se conserva tal como fue publicado, aunque difiera
+del cociente dosis/meta por redondeo. Para adaptar códigos históricos a los 1.122
+polígonos DANE, el script suma dosis y poblaciones homologadas; si se combinan
+registros PAI, pondera sus porcentajes originales por sus metas PAI. La tabla
+indica esas combinaciones. Los dos registros sin DIVIPOLA se documentan en los
+metadatos y no se asignan a un polígono.
+
+El mapa de la sección independiente «Cobertura administrativa y dosis sobre
+población de referencia», anterior a «Anomalías (O/E) y cobertura», permite elegir año, dosis y
+medida; conserva los valores
+superiores a 100 %, con escala fija 0–200 % e intensidad máxima desde 200 %.
+La animación recorre los años en orden ascendente y vuelve al inicio, con pausa,
+barra de año y velocidades 0,5×, 1× y 2×. El refuerzo recorre 2019–2025.
+Cambiar año, dosis o medida pausa la reproducción; ocultar la pestaña también.
+Cada paso actualiza los colores sobre la misma cartografía y conserva el zoom.
+Los detalles muestran el porcentaje completo. Un numerador cero válido produce
+0 %; dosis ausentes o población ausente/nula producen un dato faltante gris.
+La primera dosis usa la población DANE de 1 año; el refuerzo usa únicamente
+la población DANE de 5 años. La razón anual de dosis sobre esa edad no identifica
+por sí sola a las personas que completaron el esquema.
+No requiere el área municipal. El script y la tabla son independientes del cruce
+SIR/cobertura existente.
+
+Las edades simples se extraen directamente de los dos Excel DANE originales
+en `../data-processing/data/raw/population`, mediante
+[`extract_vaccine_age_population.py`](../scripts/extract_vaccine_age_population.py).
+Se seleccionan únicamente el área `Total` y las columnas de edad `Total` de ambos
+sexos. Se conserva cada edad (1, 4, 5 y 6) sin interpolar a partir de grupos amplios.
+La suma 4+5+6 permanece como columna auxiliar histórica y ya no se usa para
+calcular cobertura de refuerzo; se toma directamente `poblacion_5_anios`. El extracto
+[`population_vaccine_ages_municipal_2016_2025.csv`](population_vaccine_ages_municipal_2016_2025.csv)
+y sus [metadatos](population_vaccine_ages_municipal_2016_2025.metadata.json) registran
+el resultado y los SHA-256 de ambos libros. Si falta la población de 5 años,
+la razón de refuerzo queda ausente; no se sustituye por la de otras edades. El CSV de población por grupos amplios permanece intacto.
+
+```bash
+.venv/bin/python scripts/extract_vaccine_age_population.py
+.venv/bin/python scripts/generate_vaccine_coverage_comparison.py
+```
+
+### Cobertura Sobrevivientes (solo primera dosis)
+
+Se incorpora la [copia local de nacimientos y mortalidad infantil DANE](births_mortality_dane/integration/README.md), con Parquet y reportes originales. La medida **Cobertura Sobrevivientes** es `100 × primeras dosis / sobrevivientes_edad_1`. Se une por municipio homologado y año de análisis: la columna ya resta defunciones de menores de un año a nacimientos del año anterior. No se aplica otro rezago. Denominadores ausentes, no positivos o inválidos dejan la estimación sin dato. El CSV de comparación y las series municipales incluyen esta medida; para refuerzo queda no aplicable. En el agregado se dividen las sumas del mismo subconjunto con datos válidos, conservando el conteo de entidades.
+

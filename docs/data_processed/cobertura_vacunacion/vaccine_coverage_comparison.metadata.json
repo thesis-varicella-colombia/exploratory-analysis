@@ -1,0 +1,198 @@
+{
+  "dose_year_rule": "preserve source anio as analysis year; population from that same analysis year; original dose sheet is anio minus one",
+  "years": [
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+  ],
+  "booster_first_year": 2019,
+  "mapped_entities": 1122,
+  "reference_denominators": {
+    "first_dose": "poblacion_1_anio",
+    "booster": "poblacion_5_anios"
+  },
+  "population_source": "population_vaccine_ages_municipal_2016_2025.csv; exact ages extracted from DANE workbooks, Total area and both sexes",
+  "reference_ages": {
+    "first_dose": [
+      1
+    ],
+    "booster": [
+      5
+    ]
+  },
+  "survivor_source": "data/births_mortality_dane/integration/surviving_infants.parquet",
+  "survivor_rule": "first dose only: 100 * doses / sobrevivientes_edad_1(analysis year); denominator already equals births(t-1) minus deaths under age one(t-1); no extra shift",
+  "survivor_excluded_special_rows": 1674,
+  "survivor_missingness": "missing, negative or incomplete merged denominators remain missing; zero denominator is nonpositive; no fallback to reference population",
+  "booster_population_rule": "population exactly age 5; no other ages",
+  "administrative_rule": "published percentage; merged territories use original PAI-target-weighted percentages",
+  "aliases": {
+    "00011": "11001",
+    "27086": "27493",
+    "94663": "94343",
+    "88000": "88001"
+  },
+  "unmapped_source_rows": 2,
+  "unmapped_source_records": [
+    {
+      "DIVIPOLA": "",
+      "anio": 2023
+    },
+    {
+      "DIVIPOLA": "",
+      "anio": 2024
+    }
+  ],
+  "color_scale_upper_pct": 200,
+  "values_above_100_retained": true,
+  "measures_immunity": false,
+  "counts": [
+    {
+      "year": 2016,
+      "dose": "booster",
+      "administrative_coverage_pct": 0,
+      "reference_coverage_pct": 0,
+      "survivor_coverage_pct": 0
+    },
+    {
+      "year": 2016,
+      "dose": "first_dose",
+      "administrative_coverage_pct": 1121,
+      "reference_coverage_pct": 1121,
+      "survivor_coverage_pct": 1119
+    },
+    {
+      "year": 2017,
+      "dose": "booster",
+      "administrative_coverage_pct": 0,
+      "reference_coverage_pct": 0,
+      "survivor_coverage_pct": 0
+    },
+    {
+      "year": 2017,
+      "dose": "first_dose",
+      "administrative_coverage_pct": 1121,
+      "reference_coverage_pct": 1121,
+      "survivor_coverage_pct": 1120
+    },
+    {
+      "year": 2018,
+      "dose": "booster",
+      "administrative_coverage_pct": 0,
+      "reference_coverage_pct": 0,
+      "survivor_coverage_pct": 0
+    },
+    {
+      "year": 2018,
+      "dose": "first_dose",
+      "administrative_coverage_pct": 1121,
+      "reference_coverage_pct": 1121,
+      "survivor_coverage_pct": 1120
+    },
+    {
+      "year": 2019,
+      "dose": "booster",
+      "administrative_coverage_pct": 0,
+      "reference_coverage_pct": 0,
+      "survivor_coverage_pct": 0
+    },
+    {
+      "year": 2019,
+      "dose": "first_dose",
+      "administrative_coverage_pct": 1121,
+      "reference_coverage_pct": 1121,
+      "survivor_coverage_pct": 1121
+    },
+    {
+      "year": 2020,
+      "dose": "booster",
+      "administrative_coverage_pct": 1121,
+      "reference_coverage_pct": 1121,
+      "survivor_coverage_pct": 0
+    },
+    {
+      "year": 2020,
+      "dose": "first_dose",
+      "administrative_coverage_pct": 1121,
+      "reference_coverage_pct": 1121,
+      "survivor_coverage_pct": 1120
+    },
+    {
+      "year": 2021,
+      "dose": "booster",
+      "administrative_coverage_pct": 1121,
+      "reference_coverage_pct": 1121,
+      "survivor_coverage_pct": 0
+    },
+    {
+      "year": 2021,
+      "dose": "first_dose",
+      "administrative_coverage_pct": 1121,
+      "reference_coverage_pct": 1121,
+      "survivor_coverage_pct": 1120
+    },
+    {
+      "year": 2022,
+      "dose": "booster",
+      "administrative_coverage_pct": 1121,
+      "reference_coverage_pct": 1121,
+      "survivor_coverage_pct": 0
+    },
+    {
+      "year": 2022,
+      "dose": "first_dose",
+      "administrative_coverage_pct": 1121,
+      "reference_coverage_pct": 1121,
+      "survivor_coverage_pct": 1120
+    },
+    {
+      "year": 2023,
+      "dose": "booster",
+      "administrative_coverage_pct": 1121,
+      "reference_coverage_pct": 1121,
+      "survivor_coverage_pct": 0
+    },
+    {
+      "year": 2023,
+      "dose": "first_dose",
+      "administrative_coverage_pct": 1121,
+      "reference_coverage_pct": 1121,
+      "survivor_coverage_pct": 1121
+    },
+    {
+      "year": 2024,
+      "dose": "booster",
+      "administrative_coverage_pct": 1121,
+      "reference_coverage_pct": 1121,
+      "survivor_coverage_pct": 0
+    },
+    {
+      "year": 2024,
+      "dose": "first_dose",
+      "administrative_coverage_pct": 1121,
+      "reference_coverage_pct": 1121,
+      "survivor_coverage_pct": 1120
+    },
+    {
+      "year": 2025,
+      "dose": "booster",
+      "administrative_coverage_pct": 1121,
+      "reference_coverage_pct": 1122,
+      "survivor_coverage_pct": 0
+    },
+    {
+      "year": 2025,
+      "dose": "first_dose",
+      "administrative_coverage_pct": 1121,
+      "reference_coverage_pct": 1122,
+      "survivor_coverage_pct": 1120
+    }
+  ]
+}

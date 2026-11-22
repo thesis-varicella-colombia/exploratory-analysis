@@ -1055,6 +1055,7 @@
     <script defer src="climate_map.js?v=20261107-section-folders"></script>
     <script defer src="moran_lisa.js?v=20261107-section-folders"></script>
     <script defer src="phase.js?v=20261115-department-selection-fix"></script>
+    <script defer src="vaccine_coverage_comparison.js?v=20261107-section-folders"></script>
 </head>
 <body>
 <header>
@@ -1087,6 +1088,7 @@
             <li><a href="#age-shift-title">Impacto vacunación y cambios en la distribución etaria</a></li>
             <li><a href="#r0-age-proxy-title">7. Número reproductivo básico (R₀): escenario prevacunal</a></li>
             <li><a href="#spatial-title">8. Heterogeneidad espacial</a></li>
+            <li><a href="#vaccine-comparison-title">9. Cobertura administrativa y dosis sobre población de referencia</a></li>
             <li><a href="#method-title">Datos y método</a></li>
         </ul>
     </nav>
@@ -2409,6 +2411,94 @@
             <p>Las dos amplitudes pueden contar historias opuestas, y 2020–2021 lo muestra. La amplitud relativa salta a 1,95 justo cuando la absoluta cae, porque la tasa media semanal se desploma a 0,64 por 100.000: una oscilación pequeña pesa mucho frente a un nivel muy bajo. Por eso la relativa alta de ese período no indica un ciclo estacional más marcado, sino un denominador deprimido. En 2022–2025 vuelve a 0,99, cercana a los 0,79 y 0,73 de antes y después de 2015.</p>
             <p>Esa misma mecánica explica los valores extremos de la periferia: en 2022–2025 Guainía llega a 2,45 de amplitud relativa, Vaupés a 2,24 y Amazonas a 1,04, departamentos con pocas notificaciones donde unos pocos registros disparan el cociente. Conviene leer siempre la relativa junto con la amplitud absoluta y la tasa media antes de interpretarla como estacionalidad real.</p>
             <p>En conjunto, los mapas describen cuándo y cuánto oscila la varicela notificada por departamento, no su transmisión ni el efecto de una intervención. El calendario del pico es inestable entre años, la oscilación absoluta baja en los períodos recientes y la relativa depende fuertemente del nivel de notificación. Las cifras por período son medianas de los 32 departamentos, no tasas nacionales, y ninguna demuestra extinciones y reintroducciones del virus ni una relación con la lluvia o la vacuna.</p>
+        </div>
+    </section>
+
+    <section class="panel" aria-labelledby="vaccine-comparison-title">
+        <h2 id="vaccine-comparison-title">9. Cobertura administrativa y dosis sobre población de referencia</h2>
+        <h3 id="eb-smoothing-title">Suavizado de tasas por Empirical Bayes</h3>
+        <p>Las tasas de incidencia de los municipios pequeños son inestables: unos pocos casos sobre una población reducida producen valores extremos, y una basal casi nula infla el cociente de un año frente a su basal. Para leer esos municipios junto a los grandes, esta sección ofrece, además de la tasa cruda, una tasa <strong>suavizada por Empirical Bayes (EB)</strong>.</p>
+        <p>El suavizado encoge la tasa de cada municipio hacia la media de su grupo de edad, en proporción a cuánta información aporta: los municipios grandes conservan casi su tasa observada y los pequeños se acercan a la media del grupo. Se aplica por grupo de edad y año a todo el período <strong>2008–2025</strong> y a la basal 2008–2014; la gráfica de evolución usa la serie suavizada completa y la lista de municipios lee sus valores de 2024 y 2025. El EB estabiliza la variabilidad por tamaño de población, no corrige subregistro ni cambios de notificación, y la tasa cruda se conserva siempre como opción.</p>
+        <p class="data-specifications"><a href="https://github.com/thesis-varicella-colombia/exploratory-analysis/blob/main/docs/data_processed/cobertura_vacunacion/empirical_bayes/README.md">Suavizado Empirical Bayes: Metodología del cálculo</a>.</p>
+        <p class="data-specifications"><a href="https://github.com/thesis-varicella-colombia/exploratory-analysis/blob/main/docs/data_processed/cobertura_vacunacion/empirical_bayes/README_data.md">Tasas municipales suavizadas: Especificaciones de los datos</a>.</p>
+        <h3>Comparación de coberturas</h3>
+        <p>La <strong>cobertura de vacunación</strong> es el porcentaje de la población objetivo que recibió una dosis determinada. Esta vista muestra cinco cifras en total:</p>
+        <ul>
+            <li><strong>PAI – primera dosis:</strong> cobertura administrativa que reporta el Instituto Nacional de Salud.</li>
+            <li><strong>Población proyectada – primera dosis:</strong> estimación propia.</li>
+            <li><strong>Sobrevivientes – primera dosis:</strong> estimación propia.</li>
+            <li><strong>PAI – segunda dosis:</strong> cobertura administrativa que reporta el Instituto Nacional de Salud.</li>
+            <li><strong>Población proyectada – segunda dosis:</strong> estimación propia.</li>
+        </ul>
+        <p>Las dos cifras del PAI provienen del Instituto Nacional de Salud; las otras tres son estimaciones propias, calculadas a partir de las dosis aplicadas y distintos denominadores de población.</p>
+        <p>El <strong>período de análisis es 2016–2025</strong>. Se conserva el desplazamiento metodológico de la fuente: las dosis de la hoja 2015, por ejemplo, están etiquetadas como 2016 y aquí se dividen entre la población de 2016.</p>
+        <p>Las estimaciones propias se calculan así:</p>
+        <div class="formula">
+            <p><strong>Primera dosis (población proyectada):</strong> 100 × primeras dosis administradas / población de 1 año de edad del año de análisis. El denominador se toma de las edades simples de las estimaciones y proyecciones del DANE, para ambos sexos y el total municipal, usando únicamente la edad de 1 año.</p>
+            <p><strong>Sobrevivientes (solo primera dosis):</strong> 100 × primeras dosis / sobrevivientes de 1 año del año de análisis. El denominador son los nacimientos menos las defunciones de menores de 1 año del año anterior; por ejemplo, 2016 usa los nacimientos menos las defunciones infantiles de 2015. La columna ya incorpora este desplazamiento.</p>
+            <p><strong>Segunda dosis o refuerzo (población proyectada):</strong> 100 × dosis de refuerzo / población de 5 años de edad del año de análisis. El denominador se toma de las mismas edades simples del DANE (ambos sexos, total municipal), usando únicamente la edad de 5 años.</p>
+        </div>
+        <p class="age-note">Dos advertencias sobre la lectura de estas cifras. La razón anual de dosis sobre población de 5 años no identifica por sí sola a las personas con esquema completo.
+            El refuerzo (segunda dosis) solo puede seleccionarse a partir de 2019; sin embargo, en 2019 no se registraron dosis de refuerzo en la fuente, por lo que ese año aparece sin dato (no como cero).
+            Los porcentajes superiores a 100 % se conservan y pueden consultarse al seleccionar una entidad.</p>
+        <fieldset id="vaccine-comparison-controls" disabled>
+            <legend>Filtros del mapa de coberturas</legend>
+            <div class="weekly-filter">
+                <label for="vaccine-comparison-year">Año de análisis</label>
+                <select id="vaccine-comparison-year"></select>
+                <label for="vaccine-comparison-dose">Dosis</label>
+                <select id="vaccine-comparison-dose">
+                    <option value="first_dose">Primera dosis</option>
+                    <option value="booster">Segunda dosis / refuerzo</option>
+                </select>
+                <label for="vaccine-comparison-metric">Medida de cobertura</label>
+                <select id="vaccine-comparison-metric">
+                    <option value="administrative">Cobertura PAI</option>
+                    <option value="reference">Dosis / población de referencia</option>
+                    <option value="survivors">Cobertura Sobrevivientes (solo primera dosis)</option>
+                </select>
+            </div>
+            <div class="climate-map-player">
+                <label for="vaccine-comparison-timeline">Recorrer años</label>
+                <input id="vaccine-comparison-timeline" type="range" min="2016" max="2025" step="1" value="2025">
+                <output id="vaccine-comparison-frame" for="vaccine-comparison-timeline">Año: 2025</output>
+                <label for="vaccine-comparison-speed">Velocidad</label>
+                <select id="vaccine-comparison-speed">
+                    <option value="0.5">0,5×</option>
+                    <option value="1" selected>1×</option>
+                    <option value="2">2×</option>
+                </select>
+                <button id="vaccine-comparison-play" class="phase-map-play" type="button" aria-pressed="false">▶ Reproducir</button>
+            </div>
+        </fieldset>
+        <p class="age-note">La animación recorre los años en orden ascendente y vuelve al inicio después del último.
+            Cambiar el año, la dosis o la medida pausa la reproducción. Para refuerzo, el recorrido comienza en 2019.</p>
+        <p id="vaccine-comparison-formula" class="age-note"></p>
+        <div id="vaccine-comparison-legend" class="climate-map-legend" aria-label="Escala de porcentaje de cobertura"></div>
+        <div id="vaccine-comparison-map" class="spatial-map" role="img"
+             aria-label="Mapa municipal comparativo de coberturas de vacunación contra varicela"></div>
+        <p id="vaccine-comparison-status" class="age-note" role="status">El mapa se carga al acercarse a esta subsección…</p>
+        <p class="age-note">La cartografía incluye municipios, áreas no municipalizadas e islas. Los códigos históricos se homologan a la
+            geografía del mapa: se suman dosis y poblaciones y, si se unen registros PAI, se ponderan los porcentajes administrativos por sus metas originales.
+            Con cantidad de dosis no registrada o denominador ausente, no positivo o inválido, la medida calculada queda sin dato y se representa en gris.
+            Una cantidad registrada de cero dosis sí produce 0 %.</p>
+        <p class="data-specifications"><a href="https://github.com/thesis-varicella-colombia/exploratory-analysis/blob/main/docs/data_processed/cobertura_vacunacion/README_coverage_comparison.md">Comparación municipal de cobertura por año: Especificaciones de los datos</a>.</p>
+        <h3 id="vaccine-comparison-findings-title">Comparación de coberturas · 2025</h3>
+        <p>Resumen fijo de 2025 para las 1.121 entidades con ambas medidas disponibles por dosis.
+            La media da el mismo peso a cada entidad; la mediana divide las entidades en dos mitades.
+            El intervalo Q1–Q3 contiene el 50 % central de los porcentajes municipales.</p>
+        <div class="table-scroll">
+            <table>
+                <caption>Porcentajes municipales en 2025: media, mediana y dispersión</caption>
+                <thead><tr><th scope="col">Dosis</th><th scope="col">Medida</th>
+                    <th scope="col">Media</th><th scope="col">Mediana</th><th scope="col">Q1–Q3</th></tr></thead>
+                <tbody>
+                    <tr><th scope="row">Primera</th><td>Administrativa</td><td>90,28 %</td><td>91,20 %</td><td>85,80–96,40 %</td></tr>
+                    <tr><th scope="row">Primera</th><td>Dosis / población de 1 año</td><td>64,77 %</td><td>63,60 %</td><td>51,04–75,73 %</td></tr>
+                    <tr><th scope="row">Segunda / refuerzo</th><td>Administrativa</td><td>89,22 %</td><td>90,60 %</td><td>83,40–96,70 %</td></tr>
+                    <tr><th scope="row">Segunda / refuerzo</th><td>Dosis / población de 5 años</td><td>68,70 %</td><td>68,73 %</td><td>56,81–79,28 %</td></tr>
+                </tbody>
+            </table>
         </div>
     </section>
 
