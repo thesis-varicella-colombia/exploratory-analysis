@@ -1,0 +1,14 @@
+{
+  "geography": "fixed DANE MGN 2025 municipality boundaries; same 1102 municipalities with 18 years of population",
+  "population_rule": "normalize territory codes and sum age populations before filtering to current municipalities",
+  "aliases": {
+    "00011": "11001",
+    "27086": "27493",
+    "94663": "94343",
+    "88000": "88001"
+  },
+  "mapiripana": "94663 is a former non-municipalized area now included in Barrancominas 94343, not a separate municipality in the output",
+  "historical_population": "sum the separately recorded populations of 94343 and 94663; 94663 has zero population in all five age groups from 2020 onward in the source, so no post-merger duplication",
+  "case_rule": "normalize residence codes before grouping; raw notifications are not modified",
+  "references": "age-specific rates by period and fixed 2008-2014 reference, regenerated after population harmonization"
+}

@@ -62,10 +62,11 @@ Se usan 0,82 y 0,92 como escenarios, aunque las cifras publicadas por los
 [CDC](https://www.cdc.gov/vaccines/hcp/by-disease/varicella.html) describen
 efectividad frente a varicela clínica, no protección medida contra la
 infección en Colombia. Con esos supuestos, las coberturas teóricas
-`(1 − 1/R₀) / ε` son 104,2 % y 92,9 %. El corte fijo de 92,7 % empleado en
-los resultados municipales de otras secciones se conserva para describir
-esos resultados ya calculados; no representa la cobertura teórica de 92,9 %
-del escenario R₀ con edades individuales.
+`(1 − 1/R₀) / ε` son 104,2 % y 92,9 %. El corte de 92,9 % empleado en
+los análisis municipales corresponde al resultado redondeado del escenario
+con R₀ ≈ 6,8636 y ε = 0,92: `(1 − 1/R₀) / ε ≈ 0,9286`.
+Se utiliza ese valor redondeado en la matriz y en sus análisis asociados como
+referencia descriptiva; no es una meta calibrada para Colombia.
 
 ## Sensibilidad descriptiva
 
