@@ -1,0 +1,31 @@
+{
+  "recent": "2022-2025",
+  "baselines": [
+    "2008-2014",
+    "2015-2019",
+    "2020-2021"
+  ],
+  "cutoffs": [
+    80.0,
+    90.0,
+    92.9,
+    95.0
+  ],
+  "main_cutoff": 92.9,
+  "age_standards": {
+    "2008-2014": "adjusted_pre_weights",
+    "2025": "adjusted_2025_weights"
+  },
+  "universe": "same 1102 municipalities as SIR; require complete usable 2022-2025 coverage per dose",
+  "groups": "fixed retrospective groups defined by recent coverage; never reclassify earlier years",
+  "coverage": "arithmetic mean after annual cap at 100, no additional lag, original percentages retained in source",
+  "outcomes": "municipality-specific direct age-adjusted notification rates; standard proportions fixed across periods",
+  "summaries": "equal municipality weight; median of individual recent/baseline ratios, not ratio of group medians or pooled incidence",
+  "zero_baseline": "exclude zero baseline from ratios and Spearman of ratios, retain absolute differences; report denominators",
+  "uncertainty": "descriptive full-panel summaries, no confidence intervals, hypothesis tests or equivalence claim",
+  "limits": "concurrent retrospective grouping, overlapping groups across dose/cutoffs, ecological confounding, notification changes, small counts, no causal vaccine effect",
+  "sources": [
+    "comparable_incidence_periods.csv",
+    "age_standardized_sir_coverage_periods.csv"
+  ]
+}
