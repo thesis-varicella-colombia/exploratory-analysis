@@ -483,3 +483,25 @@ usan el mismo conjunto de municipios, dosis y período. El corte inicial es
 .venv/bin/python scripts/generate_age_standardized_sir.py
 .venv/bin/python scripts/generate_sir_coverage_panel.py
 ```
+
+## Evolución de la incidencia ajustada según cobertura reciente
+
+[`analyze_coverage_incidence_evolution.py`](../scripts/analyze_coverage_incidence_evolution.py)
+compara los cambios dentro de cada municipio y los resume por grupos fijos de
+cobertura de 2022–2025. No usa el SIR para medir cambios temporales ni agrupa
+municipios distintos en cada etapa. Contrasta 2022–2025 con 2008–2014, 2015–2019
+y 2020–2021, para ambas dosis, cuatro cortes y dos referencias de edad.
+El contraste principal de refuerzo frente a 2015–2019 presenta razones medianas
+municipales de 0,322 bajo 92,9 % y 0,321 sobre el corte. La clasificación es
+retrospectiva y no estima efectos causales ni equivalencia entre grupos.
+
+Las [especificaciones de los datos](../docs/data_processed/anomalias_cobertura/README_coverage_incidence_evolution.md)
+describen los archivos, los denominadores efectivos, las tasas iniciales cero
+y las diferencias entre medianas de razones y razones de medianas. Los
+resultados sustituyen la antigua tabla independiente de comparación temporal
+en las conclusiones de la sección 10; las tasas de entrada se conservan para
+los demás análisis.
+
+```bash
+.venv/bin/python scripts/analyze_coverage_incidence_evolution.py
+```
