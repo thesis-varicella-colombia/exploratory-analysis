@@ -467,3 +467,19 @@ administrativas fuera de 0–100 % no se consideran bajas. Basal cero exige tasa
 positiva, sin forzar razones infinitas. Es una selección exploratoria sin
 intervalos municipales ni inferencia causal y no elimina automáticamente
 desenlaces del modelo por pocos casos.
+
+## Anomalías O/E y cobertura municipal
+
+La sección 10 usa los datos del panel de SIR y el cruce municipal con cobertura
+administrativa. Las [especificaciones de SIR](../docs/data_processed/anomalias_cobertura/README_sir.md)
+y del [cruce con cobertura](../docs/data_processed/anomalias_cobertura/README_sir_coverage.md)
+describen sus fuentes, campos, calendario, universo y límites.
+Se limita cada porcentaje anual finito y no negativo a 100 % antes de promediar;
+se conservan los originales y los años ajustados. La matriz, LOESS y el mapa
+usan el mismo conjunto de municipios, dosis y período. El corte inicial es
+92,9 %, redondeado del escenario R₀ con edades individuales.
+
+```bash
+.venv/bin/python scripts/generate_age_standardized_sir.py
+.venv/bin/python scripts/generate_sir_coverage_panel.py
+```
