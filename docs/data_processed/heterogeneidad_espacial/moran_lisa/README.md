@@ -236,8 +236,12 @@ proporción de barajados cuya estadística iguala o supera la observada, con la
 corrección de muestreo de Monte Carlo:
 
 $$
-p=\frac{1+\#\{\,I^{*}\ge I\,\}}{B+1}.
+p=\frac{1+\sum_{b=1}^{B}\mathbf{1}\left(I^{*(b)}\ge I\right)}{B+1}.
 $$
+
+Aquí $I^{*(b)}$ es la estadística de la permutación $b$ y $\mathbf{1}$ vale uno
+si se cumple la condición y cero en otro caso; la suma cuenta las permutaciones
+tan extremas como la observada o más.
 
 Es una **prueba unilateral para asociación positiva**; con $B=9.999$ el valor $p$
 mínimo posible es $1/(9.999+1)=0{,}0001$. Se publica como `p_positive`.
@@ -249,8 +253,11 @@ porque un clúster puede ser de concordancia ($I_i$ grande positivo) o de
 discordancia ($I_i$ grande negativo):
 
 $$
-p_i=\frac{1+\#\{\,|I_i^{*}|\ge |I_i|\,\}}{B+1}.
+p_i=\frac{1+\sum_{b=1}^{B}\mathbf{1}\left(|I_i^{*(b)}|\ge |I_i|\right)}{B+1}.
 $$
+
+Aquí $I_i^{*(b)}$ es el indicador local de la permutación $b$ para el municipio
+$i$; se cuentan los valores absolutos tan grandes como el observado o mayores.
 
 Un municipio con $d_i=0$ no se contrasta y recibe $p_i=1$. Se publica como
 `p_two_sided`.
@@ -278,7 +285,7 @@ En fórmula: ordenados los valores $p$ de menor a mayor, $p_{(1)}\le\cdots\le p_
 el valor $q$ del municipio en la posición $r$ es
 
 $$
-q_{(r)}=\min_{s\ge r}\ \min\!\left(\frac{n}{s}\,p_{(s)},\,1\right).
+q_{(r)}=\min\left(1,\min_{r\le s\le n}\frac{n}{s}\,p_{(s)}\right).
 $$
 
 **El resultado.** Cada municipio se clasifica de dos formas, con el mismo umbral de
@@ -316,8 +323,11 @@ Para cada período se recalcula la tasa exacta a partir de los conteos y la
 población, en lugar de releer el valor redondeado:
 
 $$
-x_i=\frac{\text{notifications}_i}{\text{population\_years}_i}\times 100.000 .
+x_i=\frac{N_i}{P_i}\times 100\,000.
 $$
+
+donde $N_i$ es el número de notificaciones (`notifications`) y $P_i$ es la suma
+de las poblaciones anuales del período (`population_years`) para el municipio $i$.
 
 Una fila se incluye solo si `rate_per_100k` no está vacío y `population_years > 0`;
 en otro caso se trata como tasa faltante y el municipio no participa en ese período.
